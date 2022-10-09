@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(),
               SizedBox(),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   SizedBox(),
                   Row(
