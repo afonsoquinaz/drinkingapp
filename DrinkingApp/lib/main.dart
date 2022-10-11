@@ -32,13 +32,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final playersTextController  = TextEditingController();
-  int _counter = 0;
-  String Players = "";
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  // int _counter = 0;
+  List<String> players = [];
+  // String Players = "";
+
+  // void _incrementCounter() {
+  //   setState(() {
+  //     _counter++;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -52,13 +54,18 @@ class _MyHomePageState extends State<MyHomePage> {
               "Picolo",
               style: TextStyle(fontSize: 50),
             ),
-
             Column(
               children: [
-                Text(
-                  Players,
-                  style: TextStyle(fontSize: 23),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    for(var playerName in players ) Text(playerName, style: TextStyle(fontSize: 23))
+                  ],
                 ),
+                // Text(
+                //   players,
+                //   style: TextStyle(fontSize: 23),
+                // ),
                 TextField(
                   controller: playersTextController,
                   decoration: InputDecoration(
@@ -74,9 +81,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: Colors.white,
                     onPressed: () {
                       setState(() {
-                        Players = Players + playersTextController.text + "\n";
+                        players.add(playersTextController.text);
+                        // Players = Players + playersTextController.text + "\n";
                         playersTextController.text = "";
-                        _counter++;
+                        // _counter++;
                       });
                     },
                   ),
@@ -84,9 +92,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     icon: const Icon(Icons.next_plan),
                     color: Colors.white,
                     onPressed: () {
+                      if (playersTextController.text.trim() != ''){
+                        players.add(playersTextController.text);
+                        playersTextController.text = "";
+                      }
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) =>  GameModeSelection(Players: Players)),
+                        MaterialPageRoute(builder: (context) =>  GameModeSelection(players: players)),
                             (Route<dynamic> route) => false,
                       );
                     },

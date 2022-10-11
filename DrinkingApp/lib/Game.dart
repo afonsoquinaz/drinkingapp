@@ -5,8 +5,8 @@ import 'Views/EndGameView.dart';
 import 'Views/GameFeedView.dart';
 
 class Game extends StatelessWidget {
-  final String Players;
-  const Game({Key? key , required this.Players}) : super(key: key);
+  final List<String> players;
+  const Game({Key? key , required this.players}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -16,24 +16,24 @@ class Game extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home:  MyHomePage(title: 'Flutter Demo Home Page', Players: Players),
+      home:  MyHomePage(title: 'Flutter Demo Home Page', players: players),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title, required this.Players}) : super(key: key);
-  final String Players;
+  const MyHomePage({Key? key, required this.title, required this.players}) : super(key: key);
+  final List<String> players;
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState(Players);
+  State<MyHomePage> createState() => _MyHomePageState(players);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  _MyHomePageState(this.Players);
-  final String Players;
+  _MyHomePageState(this.players);
+  final List<String> players;
 
   final playersTextController  = TextEditingController();
   int _counter = 0;
@@ -79,7 +79,13 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(),
               SizedBox(),
               Text(questionText),
-              Text(Players.toString()),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  for(var playerName in players ) Text(playerName)
+                ],
+              ),
+              // Text(players.toString()),
               SizedBox(),
               SizedBox(),
               SizedBox(),

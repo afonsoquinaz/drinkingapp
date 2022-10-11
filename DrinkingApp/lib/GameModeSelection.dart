@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 import 'Game.dart';
 class GameModeSelection extends StatelessWidget {
-  final String Players;
-  const GameModeSelection({ super.key , required this.Players});
+  final List<String> players;
+  const GameModeSelection({ super.key , required this.players});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class GameModeSelection extends StatelessWidget {
 
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) =>  Game(Players: Players)),
+                    MaterialPageRoute(builder: (context) =>  Game(players: players)),
                         (Route<dynamic> route) => false,
                   );
 
