@@ -8,10 +8,12 @@ import 'package:flutter/material.dart';
 import 'NamesWheel.dart';
 
 class QuestionsManager {
-  int index = 0;
+  int index_mostLikely = 0;
+  int index_challenges = 0;
 
   QuestionManager(){
     mostLikelyQuestions.shuffle();
+    challenges.shuffle();
   }
   final List<String> mostLikelyQuestions = ["Who is most likely to become a stripper?",
     "Who is most likely to become engaged?",
@@ -45,14 +47,18 @@ class QuestionsManager {
     "Who is most likely to watch porn?"
   ];
 
+  final List<String> challenges = ["The best to imitate a dog wins.\nThe other players vote."];
+
   Widget getWidgetForQuestion(List<String> players){
     var doubleValue = Random().nextDouble();
-    if (doubleValue <= 0.0001) {
-      return getNewQuestion(players);
-    } else if (doubleValue <= 0.0002){
+    if (doubleValue <= 0.1) {
       return getWheelOfNames(players);
+    } else if (doubleValue <= 0.45){
+      return getNewQuestion(players);
+    } else if (doubleValue <= 0.8){
+      return getMostLikelyTo(players);
     }
-    return getMostLikelyTo(players);
+    return get1vs1(players);
   }
 
   Column getNewQuestion(List<String> players){
@@ -75,15 +81,36 @@ class QuestionsManager {
   }
 
   Widget getMostLikelyTo(List<String> players) {
-    if (index == mostLikelyQuestions.length){
+    if (index_mostLikely == mostLikelyQuestions.length){
       mostLikelyQuestions.shuffle();
-      index = 0;
+      index_mostLikely = 0;
     }
-    var question = mostLikelyQuestions[index];
-    index++;
+    var question = mostLikelyQuestions[index_mostLikely];
+    index_mostLikely++;
     return Column(
       children: [
         Text(question)
+      ],
+    );
+  }
+
+  Widget get1vs1(List<String> players){
+    int player1 = Random().nextInt(players.length);
+    int player2;
+    do {
+      player2 = Random().nextInt(players.length);
+    } while (player2 == player1);
+    if (index_challenges == challenges.length){
+      challenges.shuffle();
+      index_challenges = 0;
+    }
+    var challenge = challenges[index_challenges];
+    index_challenges++;
+    return Column(
+      children: [
+        Text("${players[player1]} vs ${players[player2]}", textAlign:TextAlign.center, style: TextStyle(fontSize: 20),),
+        const SizedBox( height: 40),
+        Text(challenge, textAlign:TextAlign.center)
       ],
     );
   }
