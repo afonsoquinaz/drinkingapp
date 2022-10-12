@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
+import 'dart:async';
 import 'package:drinkingapp/questionsManager/questionsManager.dart';
+import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'Views/EndGameView.dart';
 import 'Views/GameFeedView.dart';
 
@@ -27,29 +29,28 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState(players);
+  State<StatefulWidget> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  _MyHomePageState(this.players);
-  final List<String> players;
-  final q = questionsManager();
-  final playersTextController  = TextEditingController();
-  int _counter = 0;
+  QuestionsManager q;
+
+  _MyHomePageState() : q = QuestionsManager();
+
   Widget question = Text("The game starts here");
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+
+
+  // StreamController<int> selected = StreamController<int>();
+
+  // @override
+  // void dispose() {
+  //   selected.close();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
-
-
-
-
 
     return Scaffold(
       backgroundColor: Colors.teal,
@@ -80,12 +81,39 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(),
               // Text(questionText),
               question,
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  for(var playerName in players ) Text(playerName)
-                ],
-              ),
+              // Expanded(
+              //   child:
+              //       Container(
+              //         margin: const EdgeInsets.all(20.0),
+              //     child: GestureDetector(
+              //       onTap: () {
+              //         setState(() {
+              //           selected.add(
+              //             Fortune.randomInt(0, players.length),
+              //           );
+              //         });
+              //       },
+              //       child: Column(
+              //           children: [
+              //             Expanded(
+              //               child: FortuneWheel(
+              //                 selected: selected.stream,
+              //                 items: [
+              //                   for (var playerName in players) FortuneItem(child: Text(playerName)),
+              //                 ],
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              // ),
+              // ),
+              // Column(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: <Widget>[
+              //     for(var playerName in players ) Text(playerName)
+              //   ],
+              // ),
               // Text(players.toString()),
               SizedBox(),
               SizedBox(),
@@ -115,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () {
 
                           setState(() {
-                            question = q.getWidgetForQuestion();
+                            question = q.getWidgetForQuestion(widget.players);
                             // questionText = q.getNewQuestion().toString();
                             // print(q.getNewQuestion());
                           });

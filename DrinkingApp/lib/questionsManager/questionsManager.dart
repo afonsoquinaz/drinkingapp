@@ -1,18 +1,36 @@
+import 'dart:async';
+import 'dart:math';
+import 'package:drinkingapp/questionsManager/NamesWheel.dart';
 import 'package:flutter_lorem/flutter_lorem.dart';
 import 'package:flutter/material.dart';
-class questionsManager {
+import 'NamesWheel.dart';
+class QuestionsManager {
 
-
-  questionsManager(){
-
+  Widget getWidgetForQuestion(List<String> players){
+    var doubleValue = Random().nextDouble();
+    if (doubleValue <= 0.7) {
+      return getNewQuestion(players);
+    }
+    return getWheelOfNames(players);
   }
 
-  Widget getWidgetForQuestion(){
-    return getNewQuestion();
+  Column getNewQuestion(List<String> players){
+    return
+    Column(
+      children: [
+        Text(lorem(paragraphs: 1, words: 10)),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            for(var playerName in players) Text(playerName)
+          ],
+        )
+      ]
+    );
   }
 
-  Text getNewQuestion(){
-    return Text(lorem(paragraphs: 1, words: 10));
+  NamesWheel getWheelOfNames(List<String> players){
+    return NamesWheel(players: players);
   }
 
 
