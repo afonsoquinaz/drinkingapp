@@ -7,13 +7,14 @@ class questionsManager {
 
   }
 
-  String getNewQuestion(){
-    return lorem(paragraphs: 1, words: 10);
+  Widget getWidgetForQuestion(){
+    return getNewQuestion();
   }
 
-  Widget getWidgetForQuestion(){
-  return Text("data");
+  Text getNewQuestion(){
+    return Text(lorem(paragraphs: 1, words: 10));
   }
+
 
 
 }

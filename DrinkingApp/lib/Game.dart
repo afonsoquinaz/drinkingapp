@@ -34,10 +34,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _MyHomePageState(this.players);
   final List<String> players;
-
+  final q = questionsManager();
   final playersTextController  = TextEditingController();
   int _counter = 0;
-  String questionText = "The game starts here";
+  Widget question = Text("The game starts here");
   void _incrementCounter() {
     setState(() {
       _counter++;
@@ -78,7 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               SizedBox(),
               SizedBox(),
-              Text(questionText),
+              // Text(questionText),
+              question,
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -114,9 +115,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () {
 
                           setState(() {
-                            var q = questionsManager();
-                            questionText = q.getNewQuestion().toString();
-                            print(q.getNewQuestion());
+                            question = q.getWidgetForQuestion();
+                            // questionText = q.getNewQuestion().toString();
+                            // print(q.getNewQuestion());
                           });
 
 
