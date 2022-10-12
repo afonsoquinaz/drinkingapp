@@ -42,6 +42,13 @@ class _MyHomePageState extends State<MyHomePage> {
   //   });
   // }
 
+  addPlayer(){
+    players.add(playersTextController.text.trim());
+    // Players = Players + playersTextController.text + "\n";
+    playersTextController.clear();
+    // _counter++;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,6 +79,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     border: OutlineInputBorder(),
                     hintText: 'Add a new player',
                   ),
+                  onSubmitted: (value) {
+                    setState(()  => addPlayer());
+                  },
+                    onEditingComplete: () {},
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -80,12 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     icon: const Icon(Icons.add_circle),
                     color: Colors.white,
                     onPressed: () {
-                      setState(() {
-                        players.add(playersTextController.text);
-                        // Players = Players + playersTextController.text + "\n";
-                        playersTextController.text = "";
-                        // _counter++;
-                      });
+                      setState(()  => addPlayer());
                     },
                   ),
                   IconButton(
@@ -93,8 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: Colors.white,
                     onPressed: () {
                       if (playersTextController.text.trim() != ''){
-                        players.add(playersTextController.text);
-                        playersTextController.text = "";
+                        addPlayer();
                       }
                       Navigator.pushAndRemoveUntil(
                         context,
