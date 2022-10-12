@@ -91,7 +91,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     icon: const Icon(Icons.add_circle),
                     color: Colors.white,
                     onPressed: () {
-                      setState(()  => addPlayer());
+                      if (playersTextController.text.trim() != ''){
+                        setState(()  => addPlayer());
+                      }
                     },
                   ),
                   IconButton(
