@@ -65,7 +65,8 @@ class QuestionsManager {
     return
     Column(
       children: [
-        Text(lorem(paragraphs: 1, words: 10)),
+        Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center),
+        SizedBox(height: 40),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
