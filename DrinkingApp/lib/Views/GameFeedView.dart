@@ -4,8 +4,9 @@ import 'package:drinkingapp/questionsManager/questionsManager.dart';
 import 'package:drinkingapp/Game.dart';
 
 class GameFeedView extends StatelessWidget {
-  const GameFeedView({Key? key}) : super(key: key);
 
+  const GameFeedView( {Key? key ,required this.questionsManager}) : super(key: key);
+  final QuestionsManager questionsManager;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -14,21 +15,27 @@ class GameFeedView extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home:  MyHomePage(title: 'Flutter Demo Home Page', questionsManager: questionsManager),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key, required this.title, required this.questionsManager}) : super(key: key);
 
+  final QuestionsManager questionsManager;
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState(questionsManager: questionsManager);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+   _MyHomePageState({Key? key, required this.questionsManager});
+
+  final QuestionsManager questionsManager;
+
   final playersTextController  = TextEditingController();
   int _counter = 0;
   String Players = "";
@@ -42,13 +49,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
 
-
-
-
-
     return Scaffold(
       backgroundColor: Colors.teal,
-
       body: Center(
           child:  Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -57,23 +59,28 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    color: Colors.white,
-                    onPressed: () {
-
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => const MyApp()),
-                            (Route<dynamic> route) => false,
-                      );
-                    },
-                  ),
+                 // IconButton(
+                 //   icon: const Icon(Icons.close),
+                 //   color: Colors.white,
+                 //   onPressed: () {
+                 //     Navigator.pop(context);
+                     // Navigator.pushAndRemoveUntil(
+                     //   context,
+                     //   MaterialPageRoute(builder: (context) => const MyApp()),
+                     //       (Route<dynamic> route) => false,
+                     // );
+                 //   },
+                 // ),
                 ],
               ),
               SizedBox(),
               SizedBox(),
-              Text("FEED VIEW"),
+              Column(
+                  children: [
+                    for(Widget post in questionsManager.getFeed())
+                      Row(children: [post]),
+                  ])
+              ,
               SizedBox(),
               SizedBox(),
               SizedBox(),
@@ -87,12 +94,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         icon: const Icon(Icons.play_arrow_outlined),
                         color: Colors.white,
                         onPressed: () {
-
-                       //   Navigator.pushAndRemoveUntil(
-                       //     context,
-                       //     MaterialPageRoute(builder: (context) => const Game()),
-                       //         (Route<dynamic> route) => false,
-                       //   );
 
                         },
                       ),

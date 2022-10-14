@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:drinkingapp/questionsManager/FeedManager.dart';
 import 'package:flutter/services.dart' as rootBundle;
 import 'package:drinkingapp/questionsManager/NamesWheel.dart';
 import 'package:flutter_lorem/flutter_lorem.dart';
@@ -10,10 +11,15 @@ import 'NamesWheel.dart';
 class QuestionsManager {
   int index_mostLikely = 0;
   int index_challenges = 0;
+  FeedManager feedManager = FeedManager();
 
   QuestionManager(){
     mostLikelyQuestions.shuffle();
     challenges.shuffle();
+  }
+
+  List<Widget> getFeed(){
+    return feedManager.getFeed();
   }
   final List<String> mostLikelyQuestions = ["Who is most likely to become a stripper?",
     "Who is most likely to become engaged?",
@@ -78,6 +84,7 @@ class QuestionsManager {
   }
 
   NamesWheel getWheelOfNames(List<String> players){
+    feedManager.addNamesWheelPost("winner player");
     return NamesWheel(players: players);
   }
 

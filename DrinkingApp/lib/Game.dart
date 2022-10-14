@@ -142,11 +142,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             icon: const Icon(Icons.dynamic_feed),
                             color: Colors.white,
                             onPressed: () {
-                              Navigator.pushAndRemoveUntil(
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const GameFeedView()),
-                                    (Route<dynamic> route) => false,
+                                    builder: (context) =>  GameFeedView(questionsManager: q))
                               );
                             },
                           ),
