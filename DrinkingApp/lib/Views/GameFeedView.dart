@@ -59,31 +59,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(),
-                 // IconButton(
-                 //   icon: const Icon(Icons.close),
-                 //   color: Colors.white,
-                 //   onPressed: () {
-                 //     Navigator.pop(context);
-                     // Navigator.pushAndRemoveUntil(
-                     //   context,
-                     //   MaterialPageRoute(builder: (context) => const MyApp()),
-                     //       (Route<dynamic> route) => false,
-                     // );
-                 //   },
-                 // ),
                 ],
               ),
-              SizedBox(),
-              SizedBox(),
-              Column(
-                  children: [
-                    for(Widget post in questionsManager.getFeed())
-                      Row(children: [post]),
-                  ])
-              ,
-              SizedBox(),
-              SizedBox(),
-              SizedBox(),
+              SizedBox(height: 100,),
+
+              Expanded(
+                  child: SingleChildScrollView(
+                      child: new Column(
+                          children: [
+                            for(Widget post in questionsManager.getFeed())
+                              Row(children: [post]),
+                          ])
+                  )
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

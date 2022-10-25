@@ -84,8 +84,13 @@ class QuestionsManager {
   }
 
   NamesWheel getWheelOfNames(List<String> players){
-    feedManager.addNamesWheelPost("winner player");
-    return NamesWheel(players: players);
+    Random random = new Random();
+    int indexWinner = random.nextInt(players.length); // from 0 to 9 included
+    feedManager.addNamesWheelPost(players[indexWinner]);
+    NamesWheel nm = new NamesWheel(players: players , indexWinner: indexWinner);
+    //nm.createState().
+    //_NamesWheelS
+    return nm;
   }
 
   Widget getMostLikelyTo(List<String> players) {
@@ -95,6 +100,7 @@ class QuestionsManager {
     }
     var question = mostLikelyQuestions[index_mostLikely];
     index_mostLikely++;
+    feedManager.addMostLikelyToPost(question, "winner");
     return Column(
       children: [
         Text(question)
@@ -114,6 +120,7 @@ class QuestionsManager {
     }
     var challenge = challenges[index_challenges];
     index_challenges++;
+    feedManager.addOneVsOnePost(players[player1], players[player2], "winner");
     return Column(
       children: [
         Text("${players[player1]} vs ${players[player2]}", textAlign:TextAlign.center, style: TextStyle(fontSize: 20),),
