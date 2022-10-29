@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: Colors.teal,
+      backgroundColor: Color(0xffb0e3df),
       body: Center(
           child:  Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -58,7 +58,36 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(),
+                  SizedBox(height: 30,),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+
+                    icon: const Icon(Icons.home),
+                    color: Colors.black,
+
+                    onPressed: () {
+
+                    },
+                  ),
+                  Container(color: Colors.black45, height: 20, width: 2,),
+
+                  Opacity(
+                    opacity: 0.3,
+                    child: IconButton(
+
+                      icon: const Icon(Icons.menu),
+                      color: Colors.black,
+
+                      onPressed: () {
+
+                      },
+                    ),
+                  ),
+
                 ],
               ),
               SizedBox(height: 100,),

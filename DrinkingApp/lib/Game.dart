@@ -16,6 +16,7 @@ class Game extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -40,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   _MyHomePageState() : q = QuestionsManager();
 
   Widget question = Text("The game starts here");
+
 
   // StreamController<int> selected = StreamController<int>();
 
@@ -68,27 +70,60 @@ class _MyHomePageState extends State<MyHomePage> {
           // }
         },
         child: Scaffold(
-          backgroundColor: Colors.teal,
+          backgroundColor: Color(0xffb0e3df),
           body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
+                  //Row(
+                  //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //  children: [
+                  //    SizedBox(),
+                  //    IconButton(
+                //     icon: const Icon(Icons.close),
+                  //      color: Colors.white,
+    //      onPressed: () {
+    //        Navigator.pushAndRemoveUntil(
+                  //          context,
+                  //          MaterialPageRoute(
+    //             builder: (context) => const EndGameView()),
+    //             (Route<dynamic> route) => false,
+    //       );
+                //       },
+                  //    ),
+                //   ],
+                  // ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(),
                       IconButton(
-                        icon: const Icon(Icons.close),
-                        color: Colors.white,
+
+                        icon: const Icon(Icons.home),
+                        color: Colors.black,
+
                         onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const EndGameView()),
-                                (Route<dynamic> route) => false,
-                          );
+                          
                         },
                       ),
+                      Container(color: Colors.black45, height: 20, width: 2,),
+
+                      Opacity(
+                          opacity: 0.3,
+                          child: IconButton(
+
+                            icon: const Icon(Icons.menu),
+                            color: Colors.black,
+
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>  GameFeedView(questionsManager: q))
+                              );
+                            },
+                          ),
+                      ),
+
                     ],
                   ),
                   SizedBox(),
@@ -133,25 +168,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   SizedBox(),
                   SizedBox(),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(),
                       Row(
                         children: [
-                          IconButton(
-                            icon: const Icon(Icons.dynamic_feed),
-                            color: Colors.white,
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>  GameFeedView(questionsManager: q))
-                              );
-                            },
-                          ),
+
                           IconButton(
                             icon: const Icon(Icons.navigate_next_outlined),
-                            color: Colors.white,
+                            iconSize: 60,
+                            color: Colors.black,
                             onPressed: () {
                               setState(() {
                                 question = q.getWidgetForQuestion(widget.players);
@@ -160,11 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               });
                             },
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.edit),
-                            color: Colors.white,
-                            onPressed: () {},
-                          ),
+
                         ],
                       )
                     ],
