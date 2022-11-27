@@ -73,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
           backgroundColor: Color(0xffb0e3df),
           body: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   //Row(
                   //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,7 +93,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   //    ),
                 //   ],
                   // ),
-                  Row(
+                  Column(children: [
+                    SizedBox(height: 15),
+                    Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
@@ -102,68 +104,35 @@ class _MyHomePageState extends State<MyHomePage> {
                         color: Colors.black,
 
                         onPressed: () {
-                          
+
                         },
                       ),
                       Container(color: Colors.black45, height: 20, width: 2,),
 
                       Opacity(
-                          opacity: 0.3,
-                          child: IconButton(
+                        opacity: 0.3,
+                        child: IconButton(
 
-                            icon: const Icon(Icons.menu),
-                            color: Colors.black,
+                          icon: const Icon(Icons.menu),
+                          color: Colors.black,
 
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>  GameFeedView(questionsManager: q))
-                              );
-                            },
-                          ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>  GameFeedView(questionsManager: q))
+                            );
+                          },
+                        ),
                       ),
 
                     ],
-                  ),
+                  )]),
                   SizedBox(),
                   SizedBox(),
                   // Text(questionText),
                   question,
-                  // Expanded(
-                  //   child:
-                  //       Container(
-                  //         margin: const EdgeInsets.all(20.0),
-                  //     child: GestureDetector(
-                  //       onTap: () {
-                  //         setState(() {
-                  //           selected.add(
-                  //             Fortune.randomInt(0, players.length),
-                  //           );
-                  //         });
-                  //       },
-                  //       child: Column(
-                  //           children: [
-                  //             Expanded(
-                  //               child: FortuneWheel(
-                  //                 selected: selected.stream,
-                  //                 items: [
-                  //                   for (var playerName in players) FortuneItem(child: Text(playerName)),
-                  //                 ],
-                  //               ),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ),
-                  // ),
-                  // ),
-                  // Column(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: <Widget>[
-                  //     for(var playerName in players ) Text(playerName)
-                  //   ],
-                  // ),
-                  // Text(players.toString()),
+
                   SizedBox(),
                   SizedBox(),
                   SizedBox(),

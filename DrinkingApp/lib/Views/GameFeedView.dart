@@ -61,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   SizedBox(height: 30,),
                 ],
               ),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -90,14 +91,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
                 ],
               ),
-              SizedBox(height: 100,),
+              SizedBox(height: 30,),
 
               Expanded(
                   child: SingleChildScrollView(
                       child: new Column(
                           children: [
                             for(Widget post in questionsManager.getFeed())
-                              Row(children: [post]),
+                              Row(children: [
+                                post]),
                           ])
                   )
               ),

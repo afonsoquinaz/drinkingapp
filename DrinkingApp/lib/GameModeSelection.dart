@@ -8,7 +8,7 @@ class GameModeSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal,
+      backgroundColor: Color(0xffb0e3df),
 
       body: Center(
           child:  Column(

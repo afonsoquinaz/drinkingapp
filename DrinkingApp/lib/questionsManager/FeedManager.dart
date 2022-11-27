@@ -59,7 +59,13 @@ class FeedManager {
       child: Container(
         child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Text(mltLevel + " : " + winner)
+
+            child:  Column(
+              children: [
+                Text(mltLevel),
+                Text("Winner : " + winner )
+              ],),
+
         ),
       ),
       margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
