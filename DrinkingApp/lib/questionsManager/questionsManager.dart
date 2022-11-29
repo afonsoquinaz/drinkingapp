@@ -13,15 +13,17 @@ class QuestionsManager {
   int index_challenges = 0;
   FeedManager feedManager = FeedManager();
 
-  QuestionManager(){
+  QuestionManager() {
     mostLikelyQuestions.shuffle();
     challenges.shuffle();
   }
 
-  List<Widget> getFeed(){
+  List<Widget> getFeed() {
     return feedManager.getFeed();
   }
-  final List<String> mostLikelyQuestions = ["Who is most likely to become a stripper?",
+
+  final List<String> mostLikelyQuestions = [
+    "Who is most likely to become a stripper?",
     "Who is most likely to become engaged?",
     "Who is most likely to spend all their savings?",
     "Who is most likely to be a drama queen?",
@@ -53,48 +55,45 @@ class QuestionsManager {
     "Who is most likely to watch porn?"
   ];
 
-  final List<String> challenges = ["The best to imitate a dog wins.\nThe other players vote."];
+  final List<String> challenges = [
+    "The best to imitate a dog wins.\nThe other players vote."
+  ];
 
-  Widget getWidgetForQuestion(List<String> players){
+  Widget getWidgetForQuestion(List<String> players) {
     var doubleValue = Random().nextDouble();
     if (doubleValue <= 0.1) {
       return getWheelOfNames(players);
-    } else if (doubleValue <= 0.45){
+    } else if (doubleValue <= 0.45) {
       return getNewQuestion(players);
-    } else if (doubleValue <= 0.8){
+    } else if (doubleValue <= 0.8) {
       return getMostLikelyTo(players);
     }
     return get1vs1(players);
   }
 
-  Column getNewQuestion(List<String> players){
-    return
-    Column(
-      children: [
-        Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center),
-        SizedBox(height: 40),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            for(var playerName in players) Text(playerName)
-          ],
-        )
-      ]
-    );
+  Column getNewQuestion(List<String> players) {
+    return Column(children: [
+      Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center),
+      SizedBox(height: 40),
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[for (var playerName in players) Text(playerName)],
+      )
+    ]);
   }
 
-  NamesWheel getWheelOfNames(List<String> players){
+  NamesWheel getWheelOfNames(List<String> players) {
     Random random = new Random();
     int indexWinner = random.nextInt(players.length); // from 0 to 9 included
     feedManager.addNamesWheelPost(players[indexWinner]);
-    NamesWheel nm = new NamesWheel(players: players , indexWinner: indexWinner);
+    NamesWheel nm = new NamesWheel(players: players, indexWinner: indexWinner);
     //nm.createState().
     //_NamesWheelS
     return nm;
   }
 
   Widget getMostLikelyTo(List<String> players) {
-    if (index_mostLikely == mostLikelyQuestions.length){
+    if (index_mostLikely == mostLikelyQuestions.length) {
       mostLikelyQuestions.shuffle();
       index_mostLikely = 0;
     }
@@ -102,34 +101,55 @@ class QuestionsManager {
     index_mostLikely++;
     feedManager.addMostLikelyToPost(question, "winner");
     return Column(
-      children: [
-        Text(question)
-      ],
+      children: [Text(question)],
     );
   }
 
-  Widget get1vs1(List<String> players){
+  Widget get1vs1(List<String> players) {
     int player1 = Random().nextInt(players.length);
     int player2;
     do {
       player2 = Random().nextInt(players.length);
     } while (player2 == player1);
-    if (index_challenges == challenges.length){
+    if (index_challenges == challenges.length) {
       challenges.shuffle();
       index_challenges = 0;
     }
     var challenge = challenges[index_challenges];
-    index_challenges++;
-    feedManager.addOneVsOnePost(players[player1], players[player2], "winner");
+
     return Column(
       children: [
-        Text("${players[player1]} vs ${players[player2]}", textAlign:TextAlign.center, style: TextStyle(fontSize: 20),),
-        const SizedBox( height: 40),
-        Text(challenge, textAlign:TextAlign.center)
+        Text(
+          "${players[player1]} vs ${players[player2]}",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 20),
+        ),
+        const SizedBox(height: 40),
+        Text(challenge, textAlign: TextAlign.center),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            TextButton(
+                onPressed: () {
+                  index_challenges++;
+                  feedManager.addOneVsOnePost(players[player1],
+                      players[player2], '${players[player1]}');
+
+                  print('${players[player1]}');
+                },
+                child: Text('${players[player1]}')),
+            TextButton(
+                onPressed: () {
+                  index_challenges++;
+                  feedManager.addOneVsOnePost(players[player1],
+                      players[player2], '${players[player2]}');
+
+                  print('${players[player2]}');
+                },
+                child: Text('${players[player2]}'))
+          ],
+        )
       ],
     );
   }
-
-
-
 }

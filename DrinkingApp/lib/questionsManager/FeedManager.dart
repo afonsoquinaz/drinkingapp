@@ -45,7 +45,7 @@ class FeedManager {
             child: Column(
               children: [
                 Text(player1 + " VS " + player2),
-                Text("Winner :" + player2),
+                Text("Winner :" + winner),
               ],
             )
         ),
