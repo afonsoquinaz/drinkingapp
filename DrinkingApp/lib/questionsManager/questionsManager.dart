@@ -99,9 +99,16 @@ class QuestionsManager {
     }
     var question = mostLikelyQuestions[index_mostLikely];
     index_mostLikely++;
-    feedManager.addMostLikelyToPost(question, "winner");
+    //feedManager.addMostLikelyToPost(question, "winner");
     return Column(
-      children: [Text(question)],
+      children: [Text(question),
+        for (var i = 0; i < players.length ; i++)
+          TextButton(
+              onPressed: () {
+                feedManager.addMostLikelyToPost(question, players[i]);
+              },
+              child: Text('${players[i]}'))
+      ],
     );
   }
 
@@ -111,10 +118,12 @@ class QuestionsManager {
     do {
       player2 = Random().nextInt(players.length);
     } while (player2 == player1);
-    if (index_challenges == challenges.length) {
+    if (index_challenges >= challenges.length) {
       challenges.shuffle();
       index_challenges = 0;
     }
+    print(index_challenges);
+    print(challenges.length);
     var challenge = challenges[index_challenges];
 
     return Column(
@@ -134,8 +143,9 @@ class QuestionsManager {
                   index_challenges++;
                   feedManager.addOneVsOnePost(players[player1],
                       players[player2], '${players[player1]}');
-
+                  print('oi');
                   print('${players[player1]}');
+                  print('oi');
                 },
                 child: Text('${players[player1]}')),
             TextButton(
