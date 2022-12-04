@@ -1,11 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
+import 'package:camera/camera.dart';
 import 'package:drinkingapp/questionsManager/FeedManager.dart';
+import 'package:drinkingapp/questionsManager/TakePictureScreen.dart';
 import 'package:flutter/services.dart' as rootBundle;
 import 'package:drinkingapp/questionsManager/NamesWheel.dart';
 import 'package:flutter_lorem/flutter_lorem.dart';
 import 'package:flutter/material.dart';
+import 'CameraPage.dart';
 import 'NamesWheel.dart';
 
 class QuestionsManager {
@@ -13,9 +17,11 @@ class QuestionsManager {
   int index_challenges = 0;
   FeedManager feedManager = FeedManager();
 
-  QuestionManager() {
+  QuestionManager()  async {
     mostLikelyQuestions.shuffle();
     challenges.shuffle();
+
+
   }
 
   List<Widget> getFeed() {
@@ -59,7 +65,7 @@ class QuestionsManager {
     "The best to imitate a dog wins.\nThe other players vote."
   ];
 
-  Widget getWidgetForQuestion(List<String> players) {
+  Widget getWidgetForQuestion(List<String> players, context) {
     var doubleValue = Random().nextDouble();
     if (doubleValue <= 0.1) {
       return getWheelOfNames(players);
@@ -69,9 +75,13 @@ class QuestionsManager {
       return getNewQuestion(players);
     } else if (doubleValue <= 0.6) {
       return getMostLikelyTo(players);
-    }
+    }else
     return get1vs1(players);
   }
+
+
+
+
 
   Column getNewQuestion(List<String> players) {
     return Column(children: [
@@ -164,4 +174,6 @@ class QuestionsManager {
       ],
     );
   }
+
+
 }

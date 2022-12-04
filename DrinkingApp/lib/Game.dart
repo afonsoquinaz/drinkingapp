@@ -1,3 +1,5 @@
+import 'package:camera/camera.dart';
+import 'package:drinkingapp/questionsManager/TakePictureScreen.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'dart:async';
@@ -60,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // if (details.delta.dx > sensitivity) {
           debugPrint("swipe ${details.velocity}");
           setState(() {
-            question = q.getWidgetForQuestion(widget.players);
+            question = q.getWidgetForQuestion(widget.players, context);
           });
           // } else if (details.delta.dx < -sensitivity) {
           //   debugPrint("swipe left");
@@ -116,11 +118,37 @@ class _MyHomePageState extends State<MyHomePage> {
                           icon: const Icon(Icons.menu),
                           color: Colors.black,
 
-                          onPressed: () {
+                          onPressed: () async {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>  GameFeedView(questionsManager: q))
+                            );
+
+                          },
+                        ),
+                      ),
+
+                      Opacity(
+                        opacity: 0.3,
+                        child: IconButton(
+
+                          icon: const Icon(Icons.photo_camera),
+                          color: Colors.black,
+
+                          onPressed: () async {
+                            WidgetsFlutterBinding.ensureInitialized();
+
+                            // Obtain a list of the available cameras on the device.
+                            final cameras = await availableCameras();
+
+                            // Get a specific camera from the list of available cameras.
+                            final firstCamera = cameras.first;
+
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>  TakePictureScreen(camera: firstCamera,))
                             );
                           },
                         ),
@@ -149,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             color: Colors.black,
                             onPressed: () {
                               setState(() {
-                                question = q.getWidgetForQuestion(widget.players);
+                                question = q.getWidgetForQuestion(widget.players, context);
                                 // questionText = q.getNewQuestion().toString();
                                 // print(q.getNewQuestion());
                               });

@@ -3,6 +3,7 @@ import 'Game.dart';
 import 'GameModeSelection.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
