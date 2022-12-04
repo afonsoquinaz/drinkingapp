@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 //   ],
                   // ),
                   Column(children: [
-                    SizedBox(height: 15),
+                    SizedBox(height: 25),
                     Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

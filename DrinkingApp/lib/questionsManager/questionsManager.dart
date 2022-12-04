@@ -9,7 +9,7 @@ import 'package:flutter/services.dart' as rootBundle;
 import 'package:drinkingapp/questionsManager/NamesWheel.dart';
 import 'package:flutter_lorem/flutter_lorem.dart';
 import 'package:flutter/material.dart';
-import 'CameraPage.dart';
+
 import 'NamesWheel.dart';
 
 class QuestionsManager {
