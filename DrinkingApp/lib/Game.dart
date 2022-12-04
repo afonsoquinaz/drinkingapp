@@ -10,8 +10,8 @@ import 'Views/GameFeedView.dart';
 
 class Game extends StatelessWidget {
   final List<String> players;
-
-  const Game({Key? key, required this.players}) : super(key: key);
+  final QuestionsManager questionsManager;
+  const Game({Key? key, required this.players, required this.questionsManager}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -22,25 +22,26 @@ class Game extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page', players: players),
+      home: MyHomePage(title: 'Flutter Demo Home Page', players: players, questionsManager: questionsManager),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title, required this.players})
+  const MyHomePage({Key? key, required this.title, required this.players, required this.questionsManager})
       : super(key: key);
   final List<String> players;
   final String title;
+  final QuestionsManager questionsManager;
 
   @override
-  State<StatefulWidget> createState() => _MyHomePageState();
+  State<StatefulWidget> createState() => _MyHomePageState(questionsManager: questionsManager);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  QuestionsManager q;
+  final QuestionsManager questionsManager;
 
-  _MyHomePageState() : q = QuestionsManager();
+  _MyHomePageState({required this.questionsManager});
 
   Widget question = Text("The game starts here");
 
@@ -62,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // if (details.delta.dx > sensitivity) {
           debugPrint("swipe ${details.velocity}");
           setState(() {
-            question = q.getWidgetForQuestion(widget.players, context);
+            question = questionsManager.getWidgetForQuestion(widget.players, context, questionsManager: questionsManager);
           });
           // } else if (details.delta.dx < -sensitivity) {
           //   debugPrint("swipe left");
@@ -122,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>  GameFeedView(questionsManager: q))
+                                    builder: (context) =>  GameFeedView(questionsManager: questionsManager))
                             );
 
                           },
@@ -154,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             color: Colors.black,
                             onPressed: () {
                               setState(() {
-                                question = q.getWidgetForQuestion(widget.players, context);
+                                question = questionsManager.getWidgetForQuestion(widget.players, context, questionsManager: questionsManager);
                                 // questionText = q.getNewQuestion().toString();
                                 // print(q.getNewQuestion());
                               });

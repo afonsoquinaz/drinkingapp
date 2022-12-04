@@ -2,27 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:drinkingapp/Game.dart';
+import 'package:drinkingapp/questionsManager/questionsManager.dart';
 import 'package:flutter/material.dart';
 
-Future<void> getMyCamera() async {
-  // Ensure that plugin services are initialized so that `availableCameras()`
-  // can be called before `runApp()`
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // Obtain a list of the available cameras on the device.
-  final cameras = await availableCameras();
-
-  // Get a specific camera from the list of available cameras.
-  final firstCamera = cameras.first;
-
-
-    TakePictureScreen(
-        // Pass the appropriate camera to the TakePictureScreen widget.
-        camera: firstCamera,
-    );
-
-
-}
 
 // A screen that allows users to take a picture using a given camera.
 class TakePictureScreen extends StatefulWidget {
@@ -30,18 +13,22 @@ class TakePictureScreen extends StatefulWidget {
 
   const TakePictureScreen({
     super.key,
-    required this.camera,
+    required this.camera, required this.questionsManager, required this.players,
   });
-
+  final List<String> players;
   final CameraDescription camera;
-
+  final QuestionsManager questionsManager;
   @override
-  TakePictureScreenState createState() => TakePictureScreenState();
+  TakePictureScreenState createState() => TakePictureScreenState(questionsManager: questionsManager , players: players);
 }
 
 class TakePictureScreenState extends State<TakePictureScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+  final List<String> players;
+  final QuestionsManager questionsManager;
+
+  TakePictureScreenState({required this.questionsManager, required this.players});
 
   @override
   void initState() {
@@ -97,14 +84,16 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
               if (!mounted) return;
 
-              // If the picture was taken, display it on a new screen.
+
+               questionsManager.addPhotoToFeed(image.path);
+              //questionsManager.addPhotoToFeed(image.path);
+
               await Navigator.of(context).push(
+
                 MaterialPageRoute(
-                  builder: (context) => DisplayPictureScreen(
-                    // Pass the automatically generated path to
-                    // the DisplayPictureScreen widget.
-                    imagePath: image.path,
-                  ),
+                  builder: (context) =>
+                    Game(players: players , questionsManager: questionsManager )
+
                 ),
               );
             } catch (e) {

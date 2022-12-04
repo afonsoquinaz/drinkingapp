@@ -65,7 +65,7 @@ class QuestionsManager {
     "The best to imitate a dog wins.\nThe other players vote."
   ];
 
-  Widget getWidgetForQuestion(List<String> players, context) {
+  Widget getWidgetForQuestion(List<String> players, context, {required QuestionsManager questionsManager}) {
     var doubleValue = Random().nextDouble();
     if (doubleValue <= 0.1) {
       return getWheelOfNames(players);
@@ -95,7 +95,7 @@ class QuestionsManager {
              Navigator.push(
                  context,
                  MaterialPageRoute(
-                     builder: (context) =>  TakePictureScreen(camera: firstCamera,))
+                     builder: (context) =>  TakePictureScreen(camera: firstCamera, questionsManager: questionsManager, players: players))
              );
            },
          ),
@@ -150,6 +150,10 @@ class QuestionsManager {
               child: Text('${players[i]}'))
       ],
     );
+  }
+
+  void addPhotoToFeed(String photoPath){
+    feedManager.addPhoto(photoPath);
   }
 
   Widget get1vs1(List<String> players) {

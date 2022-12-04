@@ -1,3 +1,4 @@
+import 'package:drinkingapp/questionsManager/questionsManager.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'Game.dart';
@@ -42,7 +43,7 @@ class GameModeSelection extends StatelessWidget {
 
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) =>  Game(players: players)),
+                    MaterialPageRoute(builder: (context) =>  Game(players: players, questionsManager: QuestionsManager(),)),
                         (Route<dynamic> route) => false,
                   );
 

@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+
 import 'dart:math';
 import 'package:flutter/services.dart' as rootBundle;
 import 'package:drinkingapp/questionsManager/NamesWheel.dart';
@@ -21,6 +23,21 @@ class FeedManager {
 
   void setFeed(List<Widget> newFeed){
     feed = newFeed;
+  }
+
+  void addPhoto(String photoPath){
+    feed.add(Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 400,
+          height: 260,
+          child: Image.file(File(photoPath)),
+        )
+      ],
+    )
+    );
+
   }
 
   addNamesWheelPost(String winner){
