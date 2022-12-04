@@ -129,30 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
 
-                      Opacity(
-                        opacity: 0.3,
-                        child: IconButton(
 
-                          icon: const Icon(Icons.photo_camera),
-                          color: Colors.black,
-
-                          onPressed: () async {
-                            WidgetsFlutterBinding.ensureInitialized();
-
-                            // Obtain a list of the available cameras on the device.
-                            final cameras = await availableCameras();
-
-                            // Get a specific camera from the list of available cameras.
-                            final firstCamera = cameras.first;
-
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>  TakePictureScreen(camera: firstCamera,))
-                            );
-                          },
-                        ),
-                      ),
 
                     ],
                   )]),

@@ -75,7 +75,35 @@ class QuestionsManager {
       return getNewQuestion(players);
     } else if (doubleValue <= 0.6) {
       return getMostLikelyTo(players);
-    }else
+    }else if(doubleValue <= 0.9){
+     return  Column(
+       children: [
+         IconButton(
+
+           icon: const Icon(Icons.photo_camera ),
+           color: Colors.black,
+
+           onPressed: () async {
+             WidgetsFlutterBinding.ensureInitialized();
+
+             // Obtain a list of the available cameras on the device.
+             final cameras = await availableCameras();
+
+             // Get a specific camera from the list of available cameras.
+             final firstCamera = cameras.first;
+
+             Navigator.push(
+                 context,
+                 MaterialPageRoute(
+                     builder: (context) =>  TakePictureScreen(camera: firstCamera,))
+             );
+           },
+         ),
+         Text("IT IS PHOTO TIME!")
+       ],
+     );
+    }
+
     return get1vs1(players);
   }
 
