@@ -27,6 +27,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   late Future<void> _initializeControllerFuture;
   final List<String> players;
   final QuestionsManager questionsManager;
+   int isFlashOn = 0;
 
   TakePictureScreenState({required this.questionsManager, required this.players});
 
@@ -42,6 +43,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       ResolutionPreset.medium,
     );
 
+
+
     // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
   }
@@ -55,57 +58,134 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(children: [
-        FutureBuilder<void>(
-          future: _initializeControllerFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              // If the Future is complete, display the preview.
-              return CameraPreview(_controller);
-            } else {
-              // Otherwise, display a loading indicator.
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-        FloatingActionButton(
-          // Provide an onPressed callback.
-          onPressed: () async {
-            // Take the Picture in a try / catch block. If anything goes wrong,
-            // catch the error.
-            try {
-              // Ensure that the camera is initialized.
-              await _initializeControllerFuture;
+    return Material(
+      type: MaterialType.transparency,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          const SizedBox(height: 10 ,),
+          const Text("DrinkingApp" ,
+            style: TextStyle(
+                fontSize: 20,
+                color: Colors.blueGrey,
+                fontWeight: FontWeight.w200),),
+          const Text("X take a photo with x" ,style: TextStyle(
+              fontSize: 16,
+              color: Colors.blueGrey,
+              fontWeight: FontWeight.w900),),
+          const SizedBox(height: 10 ,),
+          FutureBuilder<void>(
+            future: _initializeControllerFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
 
-              // Attempt to take a picture and get the file `image`
-              // where it was saved.
-              final image = await _controller.takePicture();
+                return CameraPreview(_controller);
+              } else {
+                // Otherwise, display a loading indicator.
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+          SizedBox(height: 10,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
 
-              if (!mounted) return;
+              FloatingActionButton(
+                backgroundColor: Colors.black,
+                // Provide an onPressed callback.
+                onPressed: () async {
+
+                  if(isFlashOn == 0){
+                    isFlashOn = 1;
+                    _controller != null
+                        ? () => onSetFlashModeButtonPressed(FlashMode.always)
+                        : null;
+                  }else if(isFlashOn == 1)
+                  {
+                    print("oi");
+                    isFlashOn = 0;
+                    _controller != null
+                        ? () => onSetFlashModeButtonPressed(FlashMode.off)
+                        : null;
+                  }
+
+                },
+                child: const Icon(Icons.flash_on),
+              ),
+              FloatingActionButton(
+                backgroundColor: Colors.black,
+                // Provide an onPressed callback.
+                onPressed: () async {
+                  // Take the Picture in a try / catch block. If anything goes wrong,
+                  // catch the error.
+                  try {
+                    // Ensure that the camera is initialized.
+                    await _initializeControllerFuture;
+
+                    // Attempt to take a picture and get the file `image`
+                    // where it was saved.
+
+                    final image = await _controller.takePicture();
+
+                    if (!mounted) return;
 
 
-               questionsManager.addPhotoToFeed(image.path);
-              //questionsManager.addPhotoToFeed(image.path);
+                    questionsManager.addPhotoToFeed(image.path);
+                    //questionsManager.addPhotoToFeed(image.path);
 
-              await Navigator.of(context).push(
+                    await Navigator.of(context).push(
 
-                MaterialPageRoute(
-                  builder: (context) =>
-                    Game(players: players , questionsManager: questionsManager )
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Game(players: players , questionsManager: questionsManager )
 
-                ),
-              );
-            } catch (e) {
-              // If an error occurs, log the error to the console.
-              print(e);
-            }
-          },
-          child: const Icon(Icons.camera_alt),
-        ),
-      ],)
+                      ),
+                    );
+                  } catch (e) {
+                    // If an error occurs, log the error to the console.
+                    print(e);
+                  }
+                },
+                child: const Icon(Icons.circle , size: 50,),
+              ),
+
+              FloatingActionButton(
+                backgroundColor: Colors.black,
+                // Provide an onPressed callback.
+                onPressed: () async {
+
+                },
+                child: const Icon(Icons.swap_calls),
+              ),
+            ],
+          ),
+
+        ],),
     );
   }
+
+  void onSetFlashModeButtonPressed(FlashMode mode) {
+    setFlashMode(mode).then((_) {
+      if (mounted) {
+        setState(() {});
+      }
+      //showInSnackBar('Flash mode set to ${mode.toString().split('.').last}');
+    });
+  }
+  Future<void> setFlashMode(FlashMode mode) async {
+    if (_controller == null) {
+      return;
+    }
+
+    try {
+      await _controller!.setFlashMode(mode);
+    } on CameraException catch (e) {
+      //_showCameraException(e);
+      rethrow;
+    }
+  }
+
 }
 
 // A widget that displays the picture taken by the user.
