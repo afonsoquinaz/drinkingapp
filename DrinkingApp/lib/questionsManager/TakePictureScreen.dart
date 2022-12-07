@@ -160,8 +160,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                     print(properties.height!);
                     print(properties.width!);
                     var offset = (properties.width! - width) / 2;
-                    File croppedFile = await FlutterNativeImage.cropImage(
-                        image.path, 0  , 0, 0, 0);
 
                     if (Platform.isAndroid) {
                       // Android-specific code
@@ -169,7 +167,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                        width = properties.height!;
                        offset = (properties.width! - width) / 2;
                       File croppedFile = await FlutterNativeImage.cropImage(
-                          image.path, offset.round()  , 0, width, width);
+                          image.path, offset.round(), 0, width, width);
+                      questionsManager.addPhotoToFeed(croppedFile.path);
 
                     } else if (Platform.isIOS) {
                       print("it is iphone");
@@ -181,10 +180,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                     }
 
 
-
-
-
-                    questionsManager.addPhotoToFeed(croppedFile.path);
                     //questionsManager.addPhotoToFeed(image.path);
 
                     if (!mounted) return;
