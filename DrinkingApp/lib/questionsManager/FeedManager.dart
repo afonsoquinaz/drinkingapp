@@ -9,6 +9,7 @@ import 'package:drinkingapp/questionsManager/NamesWheel.dart';
 import 'package:flutter_lorem/flutter_lorem.dart';
 import 'package:flutter/material.dart';
 import 'NamesWheel.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 
 class FeedManager {
 
@@ -26,10 +27,7 @@ class FeedManager {
     feed = newFeed;
   }
 
-  void addPhoto(String photoPath){
-    var logicalScreenSize = window.physicalSize / window.devicePixelRatio;
-    var logicalWidth = logicalScreenSize.width;
-
+  void addPhoto(String photoPath) {
     feed.add(DisplayPictureScreen(imagePath: photoPath));
     // feed.add(Row(
     //   mainAxisAlignment: MainAxisAlignment.center,
@@ -109,14 +107,7 @@ class DisplayPictureScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(child: Card(
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.width,
-        child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Image.file(File(imagePath))
-      ),
-    )));
+    return Expanded(child: Image.file(File(imagePath), fit: BoxFit.fitWidth)
+    );
   }
 }

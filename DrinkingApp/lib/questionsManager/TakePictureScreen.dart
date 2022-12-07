@@ -5,21 +5,24 @@ import 'package:camera/camera.dart';
 import 'package:drinkingapp/Game.dart';
 import 'package:drinkingapp/questionsManager/questionsManager.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_native_image/flutter_native_image.dart';
 
 // A screen that allows users to take a picture using a given camera.
 class TakePictureScreen extends StatefulWidget {
-
-
   const TakePictureScreen({
     super.key,
-    required this.camera, required this.questionsManager, required this.players,
+    required this.camera,
+    required this.questionsManager,
+    required this.players,
   });
+
   final List<String> players;
   final CameraDescription camera;
   final QuestionsManager questionsManager;
+
   @override
-  TakePictureScreenState createState() => TakePictureScreenState(questionsManager: questionsManager , players: players);
+  TakePictureScreenState createState() => TakePictureScreenState(
+      questionsManager: questionsManager, players: players);
 }
 
 class TakePictureScreenState extends State<TakePictureScreen> {
@@ -27,9 +30,10 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   late Future<void> _initializeControllerFuture;
   final List<String> players;
   final QuestionsManager questionsManager;
-   int isFlashOn = 0;
+  int isFlashOn = 0;
 
-  TakePictureScreenState({required this.questionsManager, required this.players});
+  TakePictureScreenState(
+      {required this.questionsManager, required this.players});
 
   @override
   void initState() {
@@ -42,8 +46,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       // Define the resolution to use.
       ResolutionPreset.medium,
     );
-
-
 
     // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
@@ -58,58 +60,81 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double size = MediaQuery.of(context).size.width;
+
     return Material(
       type: MaterialType.transparency,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          const SizedBox(height: 10 ,),
-          const Text("DrinkingApp" ,
+          const SizedBox(
+            height: 10,
+          ),
+          const Text(
+            "DrinkingApp",
             style: TextStyle(
                 fontSize: 20,
                 color: Colors.blueGrey,
-                fontWeight: FontWeight.w200),),
-          const Text("X take a photo with x" ,style: TextStyle(
-              fontSize: 16,
-              color: Colors.blueGrey,
-              fontWeight: FontWeight.w900),),
-          const SizedBox(height: 10 ,),
-          FutureBuilder<void>(
-            future: _initializeControllerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-
-                return CameraPreview(_controller);
-              } else {
-                // Otherwise, display a loading indicator.
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
+                fontWeight: FontWeight.w200),
           ),
-          SizedBox(height: 10,),
+          const Text(
+            "X take a photo with x",
+            style: TextStyle(
+                fontSize: 16,
+                color: Colors.blueGrey,
+                fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+              width: size,
+              height: size,
+              child: ClipRect(
+                  child: OverflowBox(
+                      alignment: Alignment.center,
+                      child: FittedBox(
+                          fit: BoxFit.cover,
+                          child: SizedBox(
+                              height: 1,
+                              child: FutureBuilder<void>(
+                                future: _initializeControllerFuture,
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.done) {
+                                    return AspectRatio(
+                                        aspectRatio:
+                                            1 / _controller.value.aspectRatio,
+                                        child: CameraPreview(_controller));
+                                  } else {
+                                    // Otherwise, display a loading indicator.
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  }
+                                },
+                              )))))),
+          SizedBox(
+            height: 10,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-
               FloatingActionButton(
                 backgroundColor: Colors.black,
                 // Provide an onPressed callback.
                 onPressed: () async {
-
-                  if(isFlashOn == 0){
+                  if (isFlashOn == 0) {
                     isFlashOn = 1;
                     _controller != null
                         ? () => onSetFlashModeButtonPressed(FlashMode.always)
                         : null;
-                  }else if(isFlashOn == 1)
-                  {
+                  } else if (isFlashOn == 1) {
                     print("oi");
                     isFlashOn = 0;
                     _controller != null
                         ? () => onSetFlashModeButtonPressed(FlashMode.off)
                         : null;
                   }
-
                 },
                 child: const Icon(Icons.flash_on),
               ),
@@ -127,44 +152,48 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                     // where it was saved.
 
                     final image = await _controller.takePicture();
-
                     if (!mounted) return;
 
+                    ImageProperties properties =
+                      await FlutterNativeImage.getImageProperties(image.path);
 
-                    questionsManager.addPhotoToFeed(image.path);
+                    int width = properties.height!;
+                    var offset = (properties.width! - width) / 2;
+
+                    File croppedFile = await FlutterNativeImage.cropImage(
+                          image.path, offset.round(), 0, width, width);
+
+                    questionsManager.addPhotoToFeed(croppedFile.path);
                     //questionsManager.addPhotoToFeed(image.path);
 
-
-
-
+                    if (!mounted) return;
                     await Navigator.of(context).pushAndRemoveUntil(
-
                       MaterialPageRoute(
-                          builder: (context) =>
-                              Game(players: players , questionsManager: questionsManager )
-
-                      ), (Route<dynamic> route) => false,
+                          builder: (context) => Game(
+                              players: players,
+                              questionsManager: questionsManager)),
+                      (Route<dynamic> route) => false,
                     );
                   } catch (e) {
                     // If an error occurs, log the error to the console.
                     print(e);
                   }
                 },
-                child: const Icon(Icons.circle , size: 50,),
+                child: const Icon(
+                  Icons.circle,
+                  size: 50,
+                ),
               ),
-
               FloatingActionButton(
                 backgroundColor: Colors.black,
                 // Provide an onPressed callback.
-                onPressed: () async {
-
-                },
+                onPressed: () async {},
                 child: const Icon(Icons.swap_calls),
               ),
             ],
           ),
-
-        ],),
+        ],
+      ),
     );
   }
 
@@ -176,6 +205,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       //showInSnackBar('Flash mode set to ${mode.toString().split('.').last}');
     });
   }
+
   Future<void> setFlashMode(FlashMode mode) async {
     if (_controller == null) {
       return;
@@ -188,7 +218,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       rethrow;
     }
   }
-
 }
 
 // A widget that displays the picture taken by the user.
