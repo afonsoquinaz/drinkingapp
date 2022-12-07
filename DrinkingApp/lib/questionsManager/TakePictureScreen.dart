@@ -177,7 +177,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                        width = properties.width!;
                        offset = (properties.height! - width) / 2;
                        croppedFile = await FlutterNativeImage.cropImage(
-                           image.path, 0 , offset.round() - 1, width , width );
+                           image.path, 0 , offset.round() , width , width );
                     }
 
 
