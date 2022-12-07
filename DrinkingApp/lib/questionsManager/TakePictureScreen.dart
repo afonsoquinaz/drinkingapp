@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-
+import 'dart:io' show Platform;
 import 'package:camera/camera.dart';
 import 'package:drinkingapp/Game.dart';
 import 'package:drinkingapp/questionsManager/questionsManager.dart';
@@ -73,20 +73,18 @@ class TakePictureScreenState extends State<TakePictureScreen> {
           const Text(
             "DrinkingApp",
             style: TextStyle(
-                fontSize: 20,
+                fontSize: 26,
                 color: Colors.blueGrey,
                 fontWeight: FontWeight.w200),
           ),
           const Text(
             "X take a photo with x",
             style: TextStyle(
-                fontSize: 16,
+                fontSize: 23,
                 color: Colors.blueGrey,
                 fontWeight: FontWeight.w900),
           ),
-          const SizedBox(
-            height: 10,
-          ),
+
           Container(
               width: size,
               height: size,
@@ -158,10 +156,33 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                       await FlutterNativeImage.getImageProperties(image.path);
 
                     int width = properties.height!;
-                    var offset = (properties.width! - width) / 2;
 
+                    print(properties.height!);
+                    print(properties.width!);
+                    var offset = (properties.width! - width) / 2;
                     File croppedFile = await FlutterNativeImage.cropImage(
-                          image.path, offset.round(), 0, width, width);
+                        image.path, 0  , 0, 0, 0);
+
+                    if (Platform.isAndroid) {
+                      // Android-specific code
+                      print("it is ANDROID");
+                       width = properties.height!;
+                       offset = (properties.width! - width) / 2;
+                      File croppedFile = await FlutterNativeImage.cropImage(
+                          image.path, offset.round()  , 0, width, width);
+
+                    } else if (Platform.isIOS) {
+                      print("it is iphone");
+                      // iOS-specific code
+                       width = properties.width!;
+                       offset = (properties.height! - width) / 2;
+                       croppedFile = await FlutterNativeImage.cropImage(
+                           image.path, 0 , offset.round() - 1, width , width );
+                    }
+
+
+
+
 
                     questionsManager.addPhotoToFeed(croppedFile.path);
                     //questionsManager.addPhotoToFeed(image.path);

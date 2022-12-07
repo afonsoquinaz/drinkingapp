@@ -17,6 +17,7 @@ class QuestionsManager {
   int index_challenges = 0;
   FeedManager feedManager = FeedManager();
 
+
   QuestionManager()  async {
     mostLikelyQuestions.shuffle();
     challenges.shuffle();
