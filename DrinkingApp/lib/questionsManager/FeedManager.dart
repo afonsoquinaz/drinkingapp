@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 import 'dart:math';
 import 'package:flutter/services.dart' as rootBundle;
@@ -26,17 +27,25 @@ class FeedManager {
   }
 
   void addPhoto(String photoPath){
-    feed.add(Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: 400,
-          height: 260,
-          child: Image.file(File(photoPath)),
-        )
-      ],
-    )
-    );
+    var logicalScreenSize = window.physicalSize / window.devicePixelRatio;
+    var logicalWidth = logicalScreenSize.width;
+
+    feed.add(DisplayPictureScreen(imagePath: photoPath));
+    // feed.add(Row(
+    //   mainAxisAlignment: MainAxisAlignment.center,
+    //   children: [
+    //     Container(
+    //       height: 300,
+    //       width: 500,
+    //       child: FittedBox(
+    //         fit: BoxFit.fitWidth,
+    //         child: Image.file(File(photoPath)),
+    //       )
+    //
+    //     )
+    //   ],
+    // )
+    // );
 
   }
 
@@ -90,4 +99,24 @@ class FeedManager {
   }
 
 
+}
+
+// A widget that displays the picture taken by the user.
+class DisplayPictureScreen extends StatelessWidget {
+  final String imagePath;
+
+  const DisplayPictureScreen({super.key, required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(child: Card(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.width,
+        child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Image.file(File(imagePath))
+      ),
+    )));
+  }
 }
