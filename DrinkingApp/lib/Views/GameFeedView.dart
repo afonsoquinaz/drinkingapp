@@ -4,9 +4,10 @@ import 'package:drinkingapp/questionsManager/questionsManager.dart';
 import 'package:drinkingapp/Game.dart';
 
 class GameFeedView extends StatelessWidget {
-
-  const GameFeedView( {Key? key ,required this.questionsManager}) : super(key: key);
+  const GameFeedView({Key? key, required this.questionsManager, required this.players})
+      : super(key: key);
   final QuestionsManager questionsManager;
+  final List<String> players;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -15,30 +16,33 @@ class GameFeedView extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home:  MyHomePage(title: 'Flutter Demo Home Page', questionsManager: questionsManager),
+      home: MyHomePage(
+          title: 'Flutter Demo Home Page', questionsManager: questionsManager, players: players,),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title, required this.questionsManager}) : super(key: key);
+  const MyHomePage(
+      {Key? key, required this.title, required this.questionsManager, required this.players})
+      : super(key: key);
 
   final QuestionsManager questionsManager;
   final String title;
+  final List<String> players;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState(questionsManager: questionsManager);
+  State<MyHomePage> createState() =>
+      _MyHomePageState(questionsManager: questionsManager , players: players);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-   _MyHomePageState({Key? key, required this.questionsManager});
+  _MyHomePageState({Key? key, required this.questionsManager , required this.players});
 
   final QuestionsManager questionsManager;
-
-  final playersTextController  = TextEditingController();
+  final List<String> players;
+  final playersTextController = TextEditingController();
   int _counter = 0;
-  String Players = "";
   String questionText = "The game starts here";
   void _incrementCounter() {
     setState(() {
@@ -48,84 +52,74 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Color(0xffb0e3df),
       body: Center(
-          child:  Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(height: 30,),
-                ],
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-
-                    icon: const Icon(Icons.home),
-                    color: Colors.black,
-
-                    onPressed: () {
-
-                    },
-                  ),
-                  Container(color: Colors.black45, height: 20, width: 2,),
-
-                  Opacity(
-                    opacity: 0.3,
-                    child: IconButton(
-
-                      icon: const Icon(Icons.menu),
-                      color: Colors.black,
-
-                      onPressed: () {
-
-                      },
-                    ),
-                  ),
-
-                ],
-              ),
-              SizedBox(height: 30,),
-
-              Expanded(
-                  child: SingleChildScrollView(
-                      child: new Column(
-                          children: [
-                            for(Widget post in questionsManager.getFeed())
-                              Row(children: [
-                                post]),
-                          ])
-                  )
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.play_arrow_outlined),
-                        color: Colors.white,
-                        onPressed: () {
-
-                        },
-                      ),
-
-                    ],
-                  )
-                ],
+              SizedBox(
+                height: 30,
               ),
             ],
-          )
-
-      ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Opacity(
+                  opacity: 0.3,
+                  child: IconButton(
+                    icon: const Icon(Icons.home),
+                    color: Colors.black,
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => Game(players: players, questionsManager: questionsManager)),
+                            (Route<dynamic> route) => false,
+                      );
+                    },
+                  )),
+              Container(
+                color: Colors.black45,
+                height: 20,
+                width: 2,
+              ),
+              IconButton(
+                icon: const Icon(Icons.menu),
+                color: Colors.black,
+                onPressed: () {},
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          Expanded(
+              child: SingleChildScrollView(
+                  child: new Column(children: [
+            for (Widget post in questionsManager.getFeed())
+              Row(children: [post]),
+          ]))),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(),
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.play_arrow_outlined),
+                    color: Colors.white,
+                    onPressed: () {},
+                  ),
+                ],
+              )
+            ],
+          ),
+        ],
+      )),
     );
   }
 }
-

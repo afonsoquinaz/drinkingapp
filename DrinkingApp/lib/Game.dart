@@ -35,16 +35,22 @@ class MyHomePage extends StatefulWidget {
   final QuestionsManager questionsManager;
 
   @override
-  State<StatefulWidget> createState() => _MyHomePageState(questionsManager: questionsManager);
+  State<StatefulWidget> createState() => _MyHomePageState(questionsManager: questionsManager ,players: players);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   final QuestionsManager questionsManager;
+  final List<String> players;
 
-  _MyHomePageState({required this.questionsManager});
+  _MyHomePageState({required this.questionsManager,required this.players});
 
   Widget question = Text("The game starts here");
 
+  @override
+  void initState() {
+
+    question=  questionsManager.getWidgetForQuestion(widget.players, context, questionsManager: questionsManager);
+  }
 
   // StreamController<int> selected = StreamController<int>();
 
@@ -120,10 +126,10 @@ class _MyHomePageState extends State<MyHomePage> {
                           color: Colors.black,
 
                           onPressed: () async {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>  GameFeedView(questionsManager: questionsManager))
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => GameFeedView(questionsManager: questionsManager, players: players ,)),
+                                  (Route<dynamic> route) => false,
                             );
 
                           },

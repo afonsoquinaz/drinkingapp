@@ -134,13 +134,16 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                     questionsManager.addPhotoToFeed(image.path);
                     //questionsManager.addPhotoToFeed(image.path);
 
-                    await Navigator.of(context).push(
+
+
+
+                    await Navigator.of(context).pushAndRemoveUntil(
 
                       MaterialPageRoute(
                           builder: (context) =>
                               Game(players: players , questionsManager: questionsManager )
 
-                      ),
+                      ), (Route<dynamic> route) => false,
                     );
                   } catch (e) {
                     // If an error occurs, log the error to the console.
