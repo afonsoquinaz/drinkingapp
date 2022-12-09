@@ -175,8 +175,9 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                       // iOS-specific code
                        width = properties.width!;
                        offset = (properties.height! - width) / 2;
-                       croppedFile = await FlutterNativeImage.cropImage(
+                       File croppedFile = await FlutterNativeImage.cropImage(
                            image.path, 0 , offset.round() , width , width );
+                      questionsManager.addPhotoToFeed(croppedFile.path);
                     }
 
 
