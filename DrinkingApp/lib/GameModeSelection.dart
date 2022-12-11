@@ -32,7 +32,29 @@ class GameModeSelection extends StatelessWidget {
                   ),
                 ],
               ),
+              Column(
+                children: [
+                  for(var i = 0 ; i < players.length; i++)
+                    Column(
+                      children: [
+                        Container(
+                          width: 200,
+                          height: 50,
+                         // Change this to edit the container color
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(Icons.person),
+                              SizedBox(height: 10),
+                              Text("  " + players[i]), // Change this to the user's name
+                            ],
+                          ),
+                        ),
 
+                      ],
+                    )
+                ],
+              ),
               SizedBox(),
               TextButton(
                 style: TextButton.styleFrom(
