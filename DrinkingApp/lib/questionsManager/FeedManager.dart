@@ -8,6 +8,7 @@ import 'package:flutter/services.dart' as rootBundle;
 import 'package:drinkingapp/questionsManager/NamesWheel.dart';
 import 'package:flutter_lorem/flutter_lorem.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 import 'NamesWheel.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 
@@ -136,7 +137,16 @@ class DisplayPictureScreen extends StatelessWidget {
                 children: [
                   Icon(Icons.favorite_border),
                   SizedBox(width: 5),
-                  Icon(Icons.share_outlined),
+                  IconButton(onPressed: ()  async {
+
+                    await Share.shareFiles([imagePath],
+                        text: "hey hey",
+                        subject: "hey hey subject",
+                    );
+
+
+                    print("oi");
+                  }, icon: Icon(Icons.share_outlined))
 
                 ],
               ),
