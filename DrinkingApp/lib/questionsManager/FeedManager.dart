@@ -137,6 +137,7 @@ class DisplayPictureScreen extends StatelessWidget {
                   Icon(Icons.favorite_border),
                   SizedBox(width: 5),
                   Icon(Icons.share_outlined),
+
                 ],
               ),
               SizedBox(height: 5),
