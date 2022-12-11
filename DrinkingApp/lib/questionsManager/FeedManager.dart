@@ -12,18 +12,17 @@ import 'NamesWheel.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 
 class FeedManager {
-
   late List<Widget> feed;
 
-  FeedManager(){
-     feed = [];
+  FeedManager() {
+    feed = [];
   }
 
-  List<Widget> getFeed(){
+  List<Widget> getFeed() {
     return feed;
   }
 
-  void setFeed(List<Widget> newFeed){
+  void setFeed(List<Widget> newFeed) {
     feed = newFeed;
   }
 
@@ -44,26 +43,22 @@ class FeedManager {
     //   ],
     // )
     // );
-
   }
 
-  addNamesWheelPost(String winner){
+  addNamesWheelPost(String winner) {
     feed.add(Card(
       child: Container(
         child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Text("Spinning Weel winner: " + winner)
-        ),
+            child: Text("Spinning Weel winner: " + winner)),
       ),
       margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
     ));
   }
 
-
-  addOneVsOnePost(String player1 , String player2, String winner){
+  addOneVsOnePost(String player1, String player2, String winner) {
     feed.add(Card(
       child: Container(
-
         child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(
@@ -71,32 +66,25 @@ class FeedManager {
                 Text(player1 + " VS " + player2),
                 Text("Winner :" + winner),
               ],
-            )
-        ),
+            )),
       ),
       margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
     ));
   }
 
-  addMostLikelyToPost(String mltLevel , String winner){
+  addMostLikelyToPost(String mltLevel, String winner) {
     feed.add(Card(
       child: Container(
         child: Padding(
-            padding: const EdgeInsets.all(10.0),
-
-            child:  Column(
-              children: [
-                Text(mltLevel),
-                Text("Winner : " + winner )
-              ],),
-
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [Text(mltLevel), Text("Winner : " + winner)],
+          ),
         ),
       ),
       margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
     ));
   }
-
-
 }
 
 // A widget that displays the picture taken by the user.
@@ -107,7 +95,64 @@ class DisplayPictureScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(child: Image.file(File(imagePath), fit: BoxFit.fitWidth)
-    );
+    return Expanded(
+        child: Card(
+      margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
+      child: Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                Icon(Icons.account_circle),
+                SizedBox(width: 10),
+                Container(
+                    child: Text(
+                  "username",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
+              ]),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: 300,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: FileImage(File(imagePath)),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.circular(0),
+                ),
+              ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  Icon(Icons.favorite_border),
+                  SizedBox(width: 5),
+                  Icon(Icons.share_outlined),
+                ],
+              ),
+              SizedBox(height: 5),
+              Text('x likes'),
+              Row(children: [
+                Text(
+                  "username",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 5,),
+                Text("caption"),
+              ])
+            ],
+          )),
+    ));
   }
 }
