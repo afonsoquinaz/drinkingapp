@@ -14,26 +14,29 @@ class TakePictureScreen extends StatefulWidget {
     required this.camera,
     required this.questionsManager,
     required this.players,
+    required this.player,
   });
 
+  final String player;
   final List<String> players;
   final CameraDescription camera;
   final QuestionsManager questionsManager;
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState(
-      questionsManager: questionsManager, players: players);
+      questionsManager: questionsManager, players: players, player: player);
 }
 
 class TakePictureScreenState extends State<TakePictureScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+  final String player;
   final List<String> players;
   final QuestionsManager questionsManager;
   int isFlashOn = 0;
 
   TakePictureScreenState(
-      {required this.questionsManager, required this.players});
+      {required this.questionsManager, required this.players, required this.player});
 
   @override
   void initState() {
@@ -168,7 +171,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                        offset = (properties.width! - width) / 2;
                       File croppedFile = await FlutterNativeImage.cropImage(
                           image.path, offset.round(), 0, width, width);
-                      questionsManager.addPhotoToFeed(croppedFile.path);
+                      questionsManager.addPhotoToFeed(croppedFile.path, player);
 
                     } else if (Platform.isIOS) {
                       print("it is iphone");
@@ -177,7 +180,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                        offset = (properties.height! - width) / 2;
                        File croppedFile = await FlutterNativeImage.cropImage(
                            image.path, 0 , offset.round() , width , width );
-                      questionsManager.addPhotoToFeed(croppedFile.path);
+                      questionsManager.addPhotoToFeed(croppedFile.path, player);
                     }
 
 

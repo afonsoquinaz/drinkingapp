@@ -17,12 +17,9 @@ class QuestionsManager {
   int index_challenges = 0;
   FeedManager feedManager = FeedManager();
 
-
-  QuestionManager()  async {
+  QuestionManager() async {
     mostLikelyQuestions.shuffle();
     challenges.shuffle();
-
-
   }
 
   List<Widget> getFeed() {
@@ -66,7 +63,7 @@ class QuestionsManager {
     "The best to imitate a dog wins.\nThe other players vote."
   ];
 
-  Widget getWidgetForQuestion(List<String> players, context, {required QuestionsManager questionsManager}) {
+  Widget getWidgetForQuestion(List<String> players, context) {
     var doubleValue = Random().nextDouble();
     if (doubleValue <= 0.1) {
       return getWheelOfNames(players);
@@ -76,41 +73,50 @@ class QuestionsManager {
       return getNewQuestion(players);
     } else if (doubleValue <= 0.6) {
       return getMostLikelyTo(players);
-    }else if(doubleValue <= 0.9){
-     return  Column(
-       children: [
-         IconButton(
-
-           icon: const Icon(Icons.photo_camera ),
-           color: Colors.black,
-
-           onPressed: () async {
-             WidgetsFlutterBinding.ensureInitialized();
-
-             // Obtain a list of the available cameras on the device.
-             final cameras = await availableCameras();
-
-             // Get a specific camera from the list of available cameras.
-             final firstCamera = cameras.first;
-
-             Navigator.push(
-                 context,
-                 MaterialPageRoute(
-                     builder: (context) =>  TakePictureScreen(camera: firstCamera, questionsManager: questionsManager, players: players))
-             );
-           },
-         ),
-         Text("IT IS PHOTO TIME!")
-       ],
-     );
+    } else if (doubleValue <= 0.9) {
+      return getPhotoQuestion(players, context);
     }
 
     return get1vs1(players);
   }
 
+  void addPhotoToFeed(String photoPath, String player) {
+    feedManager.addPhoto(photoPath, player);
+  }
 
+  Column getPhotoQuestion(List<String> players, context) {
+    int player = Random().nextInt(players.length);
 
+    return Column(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.photo_camera),
+          color: Colors.black,
+          onPressed: () async {
+            WidgetsFlutterBinding.ensureInitialized();
 
+            // Obtain a list of the available cameras on the device.
+            final cameras = await availableCameras();
+
+            // Get a specific camera from the list of available cameras.
+            final firstCamera = cameras.first;
+
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TakePictureScreen(
+                        camera: firstCamera,
+                        questionsManager: this,
+                        players: players,
+                        player: players[player])));
+          },
+        ),
+        Text('${players[player]}'),
+        SizedBox(height: 10),
+        Text("IT IS PHOTO TIME!")
+      ],
+    );
+  }
 
   Column getNewQuestion(List<String> players) {
     return Column(children: [
@@ -142,8 +148,9 @@ class QuestionsManager {
     index_mostLikely++;
     //feedManager.addMostLikelyToPost(question, "winner");
     return Column(
-      children: [Text(question),
-        for (var i = 0; i < players.length ; i++)
+      children: [
+        Text(question),
+        for (var i = 0; i < players.length; i++)
           TextButton(
               onPressed: () {
                 feedManager.addMostLikelyToPost(question, players[i]);
@@ -151,10 +158,6 @@ class QuestionsManager {
               child: Text('${players[i]}'))
       ],
     );
-  }
-
-  void addPhotoToFeed(String photoPath){
-    feedManager.addPhoto(photoPath);
   }
 
   Widget get1vs1(List<String> players) {
@@ -207,6 +210,4 @@ class QuestionsManager {
       ],
     );
   }
-
-
 }

@@ -26,8 +26,8 @@ class FeedManager {
     feed = newFeed;
   }
 
-  void addPhoto(String photoPath) {
-    feed.add(DisplayPictureScreen(imagePath: photoPath));
+  void addPhoto(String photoPath, String player) {
+    feed.add(DisplayPictureScreen(imagePath: photoPath, player: player));
     // feed.add(Row(
     //   mainAxisAlignment: MainAxisAlignment.center,
     //   children: [
@@ -90,8 +90,9 @@ class FeedManager {
 // A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
+  final String player;
 
-  const DisplayPictureScreen({super.key, required this.imagePath});
+  const DisplayPictureScreen({super.key, required this.imagePath, required this.player});
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +113,7 @@ class DisplayPictureScreen extends StatelessWidget {
                 SizedBox(width: 10),
                 Container(
                     child: Text(
-                  "username",
+                  player,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -143,7 +144,7 @@ class DisplayPictureScreen extends StatelessWidget {
               Text('x likes'),
               Row(children: [
                 Text(
-                  "username",
+                  player,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),

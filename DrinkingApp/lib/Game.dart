@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
 
-    question=  questionsManager.getWidgetForQuestion(widget.players, context, questionsManager: questionsManager);
+    question=  questionsManager.getWidgetForQuestion(widget.players, context);
   }
 
   // StreamController<int> selected = StreamController<int>();
@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // if (details.delta.dx > sensitivity) {
           debugPrint("swipe ${details.velocity}");
           setState(() {
-            question = questionsManager.getWidgetForQuestion(widget.players, context, questionsManager: questionsManager);
+            question = questionsManager.getWidgetForQuestion(widget.players, context);
           });
           // } else if (details.delta.dx < -sensitivity) {
           //   debugPrint("swipe left");
@@ -161,7 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             color: Colors.black,
                             onPressed: () {
                               setState(() {
-                                question = questionsManager.getWidgetForQuestion(widget.players, context, questionsManager: questionsManager);
+                                question = questionsManager.getWidgetForQuestion(widget.players, context);
                                 // questionText = q.getNewQuestion().toString();
                                 // print(q.getNewQuestion());
                               });
