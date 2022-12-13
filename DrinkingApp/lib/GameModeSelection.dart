@@ -46,7 +46,7 @@ class GameModeSelection extends StatelessWidget {
                             children: [
                               Icon(Icons.person),
                               SizedBox(height: 10),
-                              Text("  " + players[i]), // Change this to the user's name
+                              Text(players[i]), // Change this to the user's name
                             ],
                           ),
                         ),

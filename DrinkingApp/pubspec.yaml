@@ -37,6 +37,7 @@ dependencies:
   flutter_lorem: ^2.0.0
   flutter_fortune_wheel: ^1.2.0
   flutter_native_image: ^0.0.6+1
+  share: ^2.0.4
 
 dev_dependencies:
   flutter_test:
