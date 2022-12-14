@@ -29,32 +29,10 @@ class FeedManager {
 
   void addPhoto(String photoPath, String player) {
     feed.add(DisplayPictureScreen(imagePath: photoPath, player: player));
-    // feed.add(Row(
-    //   mainAxisAlignment: MainAxisAlignment.center,
-    //   children: [
-    //     Container(
-    //       height: 300,
-    //       width: 500,
-    //       child: FittedBox(
-    //         fit: BoxFit.fitWidth,
-    //         child: Image.file(File(photoPath)),
-    //       )
-    //
-    //     )
-    //   ],
-    // )
-    // );
   }
 
   addNamesWheelPost(String winner) {
-    feed.add(Card(
-      child: Container(
-        child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Text("Spinning Weel winner: " + winner)),
-      ),
-      margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
-    ));
+    feed.add(NamesWheelPost(winner: winner));
   }
 
   addOneVsOnePost(String player1, String player2, String winner) {
@@ -74,17 +52,103 @@ class FeedManager {
   }
 
   addMostLikelyToPost(String mltLevel, String winner) {
-    feed.add(Card(
-      child: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            children: [Text(mltLevel), Text("Winner : " + winner)],
-          ),
+    feed.add(MostLikelyToPost(winner: winner, sentence: mltLevel));
+  }
+}
+
+class NamesWheelPost extends StatelessWidget {
+  final String winner;
+
+  const NamesWheelPost({super.key, required this.winner});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Row(children: [
+                Icon(Icons.account_circle),
+                SizedBox(width: 10),
+                Text(
+                  winner,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              ]),
+              IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(),
+                  onPressed: () async {
+                    await Share.share(
+                        "${winner} is playing a drinking game and was selected by the names wheel.\n"
+                        "Discover our drinking game app here: bit.ly/our_link(not-working)\n"
+                        "xoxo",
+                        subject: "Drinking App Moment");
+                    print("oi");
+                  },
+                  icon: Icon(Icons.share_outlined))
+            ]),
+            SizedBox(height: 10),
+            Text('Was selected by the names wheel. So lucky!')
+          ],
         ),
       ),
+    );
+  }
+}
+
+class MostLikelyToPost extends StatelessWidget {
+  final String winner;
+  final String sentence;
+
+  const MostLikelyToPost(
+      {super.key, required this.winner, required this.sentence});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
       margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
-    ));
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Row(children: [
+                Icon(Icons.account_circle),
+                SizedBox(width: 10),
+                Text(
+                  winner,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              ]),
+              IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(),
+                  onPressed: () async {
+                    await Share.share(
+                        "${winner} is playing a drinking game and was voted as the ${sentence.substring(7).replaceAll('?', '.')}\n"
+                        "Discover our drinking game app here: bit.ly/our_link(not-working)\n"
+                        "xoxo",
+                        subject: "Drinking App Moment");
+                    print("oi");
+                  },
+                  icon: Icon(Icons.share_outlined))
+            ]),
+            SizedBox(height: 10),
+            Text('Voted as the ${sentence.substring(7).replaceAll('?', '.')}')
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -93,12 +157,12 @@ class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
   final String player;
 
-  const DisplayPictureScreen({super.key, required this.imagePath, required this.player});
+  const DisplayPictureScreen(
+      {super.key, required this.imagePath, required this.player});
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: Card(
+    return Card(
       margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
       child: Container(
           padding: EdgeInsets.all(10),
@@ -109,16 +173,33 @@ class DisplayPictureScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(children: [
-                Icon(Icons.account_circle),
-                SizedBox(width: 10),
-                Container(
-                    child: Text(
-                  player,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                )),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Row(children: [
+                  Icon(Icons.account_circle),
+                  SizedBox(width: 10),
+                  Text(
+                    player,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                ]),
+                IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    onPressed: () async {
+                      await Share.shareFiles(
+                        [imagePath],
+                        text:
+                            "${player} is playing a drinking game and wanted to share this moment with you!\n"
+                            "Discover our drinking game app here: bit.ly/our_link(not-working)\n"
+                            "xoxo",
+                        subject: "Drinking App Moment",
+                      );
+
+                      print("oi");
+                    },
+                    icon: Icon(Icons.share_outlined))
               ]),
               SizedBox(
                 height: 10,
@@ -134,26 +215,7 @@ class DisplayPictureScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
-              Row(
-                children: [
-                  Icon(Icons.favorite_border),
-                  SizedBox(width: 5),
-                  IconButton(padding: EdgeInsets.zero,
-                      constraints: BoxConstraints(), onPressed: ()  async {
-
-                    await Share.shareFiles([imagePath],
-                        text: "${player} is playing a drinking game and wanted to share this moment with you!\n"
-                            "Discover our drinking game app here: bit.ly/our_link(not-working)\n"
-                            "xoxo",
-                        subject: "Drinking App Moment",
-                    );
-
-
-                    print("oi");
-                  }, icon: Icon(Icons.share_outlined))
-
-                ],
-              ),
+              Icon(Icons.favorite_border),
               SizedBox(height: 5),
               Text('x likes'),
               Row(children: [
@@ -163,11 +225,13 @@ class DisplayPictureScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(width: 5,),
+                SizedBox(
+                  width: 5,
+                ),
                 Text("caption"),
               ])
             ],
           )),
-    ));
+    );
   }
 }

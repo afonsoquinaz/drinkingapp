@@ -101,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: SingleChildScrollView(
                   child: new Column( children: [
             for (Widget post in questionsManager.getFeed())
-              Row(children: [post]),
+              post,
           ]))),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
