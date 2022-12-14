@@ -138,11 +138,14 @@ class DisplayPictureScreen extends StatelessWidget {
                 children: [
                   Icon(Icons.favorite_border),
                   SizedBox(width: 5),
-                  IconButton(onPressed: ()  async {
+                  IconButton(padding: EdgeInsets.zero,
+                      constraints: BoxConstraints(), onPressed: ()  async {
 
                     await Share.shareFiles([imagePath],
-                        text: "hey hey",
-                        subject: "hey hey subject",
+                        text: "${player} is playing a drinking game and wanted to share this moment with you!\n"
+                            "Discover our drinking game app here: bit.ly/our_link(not-working)\n"
+                            "xoxo",
+                        subject: "Drinking App Moment",
                     );
 
 
