@@ -35,24 +35,77 @@ class FeedManager {
     feed.add(NamesWheelPost(winner: winner));
   }
 
-  addOneVsOnePost(String player1, String player2, String winner) {
-    feed.add(Card(
-      child: Container(
-        child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                Text(player1 + " VS " + player2),
-                Text("Winner :" + winner),
-              ],
-            )),
-      ),
-      margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
-    ));
+  addOneVsOnePost(String challenge, String player1, String player2, String winner) {
+    feed.add(OneVsOnePost(challenge: challenge, winner: winner, player1: player1, player2: player2));
   }
 
   addMostLikelyToPost(String mltLevel, String winner) {
     feed.add(MostLikelyToPost(winner: winner, sentence: mltLevel));
+  }
+}
+
+class OneVsOnePost extends StatelessWidget {
+  final String challenge;
+  final String player1;
+  final String player2;
+  final String winner;
+
+  const OneVsOnePost({super.key, required this.challenge, required this.winner, required this.player1, required this.player2});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Row(children: [
+                Icon(Icons.account_circle),
+                SizedBox(width: 3),
+                Text('vs', style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                )),
+                SizedBox(width: 3),
+                Icon(Icons.account_circle),
+                SizedBox(width: 10),
+                Text(
+                  player1,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 5),
+                Text('and', style: TextStyle(fontStyle: FontStyle.italic)),
+                SizedBox(width: 5),
+                Text(
+                  player2,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              ]),
+              IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(),
+                  onPressed: () async {
+                    await Share.share(
+                        "$player1 and $player2 are playing a drinking game and had to face the following challenge: $challenge\n"
+                            "$winner was the best and won.\n"
+                            "Discover our drinking game app here: bit.ly/our_link(not-working)\n"
+                            "xoxo",
+                        subject: "Drinking App Moment");
+                  },
+                  icon: Icon(Icons.share_outlined))
+            ]),
+            SizedBox(height: 10),
+            Text('Challenge: $challenge\n$winner won this challenge!')
+          ],
+        ),
+      ),
+    );
   }
 }
 

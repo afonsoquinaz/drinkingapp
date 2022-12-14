@@ -60,7 +60,7 @@ class QuestionsManager {
   ];
 
   final List<String> challenges = [
-    "The best to imitate a dog wins.\nThe other players vote."
+    "The best to imitate a dog wins."
   ];
 
   Widget getWidgetForQuestion(List<String> players, context) {
@@ -182,29 +182,24 @@ class QuestionsManager {
           style: TextStyle(fontSize: 20),
         ),
         const SizedBox(height: 40),
-        Text(challenge, textAlign: TextAlign.center),
+        Text('$challenge\nThe other players vote.', textAlign: TextAlign.center),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             TextButton(
                 onPressed: () {
                   index_challenges++;
-                  feedManager.addOneVsOnePost(players[player1],
-                      players[player2], '${players[player1]}');
-                  print('oi');
-                  print('${players[player1]}');
-                  print('oi');
+                  feedManager.addOneVsOnePost(challenge, players[player1],
+                      players[player2], players[player1]);
                 },
-                child: Text('${players[player1]}')),
+                child: Text(players[player1])),
             TextButton(
                 onPressed: () {
                   index_challenges++;
-                  feedManager.addOneVsOnePost(players[player1],
-                      players[player2], '${players[player2]}');
-
-                  print('${players[player2]}');
+                  feedManager.addOneVsOnePost(challenge, players[player1],
+                      players[player2], players[player2]);
                 },
-                child: Text('${players[player2]}'))
+                child: Text(players[player2]))
           ],
         )
       ],
