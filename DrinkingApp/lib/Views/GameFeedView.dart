@@ -100,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Expanded(
               child: SingleChildScrollView(
                   child: new Column( children: [
-            for (Widget post in questionsManager.getFeed())
+            for (Widget post in questionsManager.getFeed().reversed)
               post,
           ]))),
           Row(
