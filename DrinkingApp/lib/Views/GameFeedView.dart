@@ -62,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                height: 30,
+                height: 35,
               ),
             ],
           ),
@@ -71,27 +71,20 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               Opacity(
                   opacity: 0.3,
-                  child: IconButton(
-                    icon: const Icon(Icons.home),
-                    color: Colors.black,
-                    onPressed: () {
+                  child: TextButton(onPressed: () {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => Game(players: players, questionsManager: questionsManager)),
                             (Route<dynamic> route) => false,
                       );
-                    },
+                    }, child: Text('HOME', style: TextStyle(color: Colors.black),),
                   )),
               Container(
                 color: Colors.black45,
                 height: 20,
                 width: 2,
               ),
-              IconButton(
-                icon: const Icon(Icons.menu),
-                color: Colors.black,
-                onPressed: () {},
-              ),
+              TextButton(onPressed: () {}, child: Text('FEED', style: TextStyle(color: Colors.black)),),
             ],
           ),
           SizedBox(
