@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:drinkingapp/Question.dart';
 import 'package:drinkingapp/questionsManager/TakePictureScreen.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
@@ -52,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _MyHomePageState({required this.questionsManager, required this.players});
 
-  Widget question = Text("The game starts here");
+  Question question = Question(type: "Game started!", widget: Text("The game starts here"));
 
   @override
   void initState() {
@@ -151,7 +152,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
               ]),
               // Text(questionText),
-              question,
+              SizedBox(),
+              SizedBox(),
+              Text(question.type, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+              SizedBox(),
+              question.widget,
+              SizedBox(),
+              SizedBox(),
+              SizedBox(),
               Container(
                   margin: EdgeInsets.only(bottom: 20),
                   child: Row(

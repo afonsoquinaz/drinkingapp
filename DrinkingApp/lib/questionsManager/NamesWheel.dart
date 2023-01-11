@@ -31,7 +31,8 @@ class _NamesWheelState extends State<NamesWheel> {
       Expanded(
         child:
         Container(
-          margin: const EdgeInsets.all(40.0),
+          //color: Colors.red,
+          //margin: const EdgeInsets.only(40.0),
           child: GestureDetector(
             onTap: () {
               setState(() {
@@ -46,14 +47,16 @@ class _NamesWheelState extends State<NamesWheel> {
             child: Column(
               children: [
                 Expanded(
-                  child: FortuneWheel(
+                  child: Container(margin: const EdgeInsets.symmetric(horizontal: 80.0),
+            child:
+                  FortuneWheel(
                     animateFirst: false,
                     selected: selected.stream,
                     items: [
                       for (var playerName in players) FortuneItem(child: Text(playerName)),
                     ],
                   ),
-                ),
+                )),
               ],
             ),
           ),

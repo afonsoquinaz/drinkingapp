@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:camera/camera.dart';
+import 'package:drinkingapp/Question.dart';
 import 'package:drinkingapp/questionsManager/FeedManager.dart';
 import 'package:drinkingapp/questionsManager/TakePictureScreen.dart';
 import 'package:flutter/services.dart' as rootBundle;
@@ -63,7 +64,7 @@ class QuestionsManager {
     "The best to imitate a dog wins."
   ];
 
-  Widget getWidgetForQuestion(List<String> players, context) {
+  Question getWidgetForQuestion(List<String> players, context) {
     var doubleValue = Random().nextDouble();
     if (doubleValue <= 0.1) {
       return getWheelOfNames(players);
@@ -84,10 +85,10 @@ class QuestionsManager {
     feedManager.addPhoto(photoPath, player);
   }
 
-  Column getPhotoQuestion(List<String> players, context) {
+   getPhotoQuestion(List<String> players, context) {
     int player = Random().nextInt(players.length);
 
-    return Column(
+    return ['Photo Time', Column(
       children: [
         IconButton(
           icon: const Icon(Icons.photo_camera),
@@ -115,31 +116,31 @@ class QuestionsManager {
         SizedBox(height: 10),
         Text("IT IS PHOTO TIME!")
       ],
-    );
+    )];
   }
 
-  Column getNewQuestion(List<String> players) {
-    return Column(children: [
+  Question getNewQuestion(List<String> players) {
+    return Question(type: 'Normal Challenge', widget: Column(children: [
       Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center),
       SizedBox(height: 40),
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[for (var playerName in players) Text(playerName)],
       )
-    ]);
+    ]));
   }
 
-  NamesWheel getWheelOfNames(List<String> players) {
+  Question getWheelOfNames(List<String> players) {
     Random random = new Random();
     int indexWinner = random.nextInt(players.length); // from 0 to 9 included
     feedManager.addNamesWheelPost(players[indexWinner]);
     NamesWheel nm = new NamesWheel(players: players, indexWinner: indexWinner);
     //nm.createState().
     //_NamesWheelS
-    return nm;
+    return Question(type: 'Fortune Wheel', widget: nm);
   }
 
-  Widget getMostLikelyTo(List<String> players) {
+  Question getMostLikelyTo(List<String> players) {
     if (index_mostLikely == mostLikelyQuestions.length) {
       mostLikelyQuestions.shuffle();
       index_mostLikely = 0;
@@ -147,7 +148,7 @@ class QuestionsManager {
     var question = mostLikelyQuestions[index_mostLikely];
     index_mostLikely++;
     //feedManager.addMostLikelyToPost(question, "winner");
-    return Column(
+    return Question(type: 'Most Likely To',  widget: Column(
       children: [
         Text(question),
         for (var i = 0; i < players.length; i++)
@@ -157,10 +158,10 @@ class QuestionsManager {
               },
               child: Text('${players[i]}'))
       ],
-    );
+    ));
   }
 
-  Widget get1vs1(List<String> players) {
+  Question get1vs1(List<String> players) {
     int player1 = Random().nextInt(players.length);
     int player2;
     do {
@@ -174,7 +175,7 @@ class QuestionsManager {
     print(challenges.length);
     var challenge = challenges[index_challenges];
 
-    return Column(
+    return Question(type: '1 vs 1', widget: Column(
       children: [
         Text(
           "${players[player1]} vs ${players[player2]}",
@@ -203,6 +204,6 @@ class QuestionsManager {
           ],
         )
       ],
-    );
+    ));
   }
 }
