@@ -68,7 +68,7 @@ class QuestionsManager {
     var doubleValue = Random().nextDouble();
     if (doubleValue <= 0.1) {
       return getWheelOfNames(players);
-    } else if (doubleValue <= 0.11) {
+    } else if (doubleValue <= 0.2) {
       //This question is the random words question
       // does not do basically nothing so I reduced the odd a lot
       return getNewQuestion(players);

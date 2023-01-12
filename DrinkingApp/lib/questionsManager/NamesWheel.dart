@@ -28,6 +28,9 @@ class _NamesWheelState extends State<NamesWheel> {
   @override
   Widget build(BuildContext context) {
     return
+    Container(
+    height: 250,
+    child:
       Expanded(
         child:
         Container(
@@ -47,7 +50,7 @@ class _NamesWheelState extends State<NamesWheel> {
             child: Column(
               children: [
                 Expanded(
-                  child: Container(margin: const EdgeInsets.symmetric(horizontal: 80.0),
+                  child: Container(
             child:
                   FortuneWheel(
                     animateFirst: false,
@@ -61,6 +64,6 @@ class _NamesWheelState extends State<NamesWheel> {
             ),
           ),
         ),
-      );
+      ));
   }
 }
