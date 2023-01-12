@@ -1,10 +1,11 @@
+import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 
 class NamesWheel extends StatefulWidget {
   const NamesWheel({Key? key, required this.players, required this.indexWinner}) : super(key: key);
-  final List<String> players;
+  final List<UserClass> players;
   final int indexWinner;
 
   @override
@@ -13,7 +14,7 @@ class NamesWheel extends StatefulWidget {
 
 class _NamesWheelState extends State<NamesWheel> {
   _NamesWheelState(this.players, this.indexWinner);
-  final List<String> players;
+  final List<UserClass> players;
   final int indexWinner;
   String winner = "";
   StreamController<int> selected = StreamController<int>();
@@ -41,7 +42,7 @@ class _NamesWheelState extends State<NamesWheel> {
               setState(() {
 
                 debugPrint("Selected Player: ${players[indexWinner]}");
-                winner = players[indexWinner];
+                winner = players[indexWinner].username;
                 selected.add(
                   indexWinner,
                 );
@@ -56,7 +57,7 @@ class _NamesWheelState extends State<NamesWheel> {
                     animateFirst: false,
                     selected: selected.stream,
                     items: [
-                      for (var playerName in players) FortuneItem(child: Text(playerName)),
+                      for (var player in players) FortuneItem(child: Text(player.username)),
                     ],
                   ),
                 )),

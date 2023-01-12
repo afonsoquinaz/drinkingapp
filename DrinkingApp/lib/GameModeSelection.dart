@@ -5,7 +5,7 @@ import 'main.dart';
 import 'Game.dart';
 
 class GameModeSelection extends StatelessWidget {
-  final List<String> players;
+  final List<UserClass> players;
   const GameModeSelection({super.key, required this.players});
 
   @override
@@ -55,8 +55,8 @@ class GameModeSelection extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          PlayerView(username: players[i]),
-                          PlayerView(username: players[i + 1])
+                          PlayerView(player: players[i]),
+                          PlayerView(player: players[i + 1])
                         ],
                       ),
                       SizedBox(
@@ -67,7 +67,7 @@ class GameModeSelection extends StatelessWidget {
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          PlayerView(username: players[players.length - 1]),
+                          PlayerView(player: players[players.length - 1]),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.43,
                           )
@@ -113,9 +113,9 @@ class GameModeSelection extends StatelessWidget {
 }
 
 class PlayerView extends StatelessWidget {
-  final String username;
+  final UserClass player;
 
-  const PlayerView({super.key, required this.username});
+  const PlayerView({super.key, required this.player});
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +141,7 @@ class PlayerView extends StatelessWidget {
                         color: Colors.red,
                       ),
                     ),
-                    Text(username),
+                    Text(player.username, style: TextStyle(fontWeight: FontWeight.normal)),
                   ],
                 ))));
   }

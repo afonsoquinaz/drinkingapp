@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:io' show Platform;
 import 'package:camera/camera.dart';
 import 'package:drinkingapp/Game.dart';
+import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:drinkingapp/questionsManager/questionsManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
@@ -18,7 +19,7 @@ class TakePictureScreen extends StatefulWidget {
   });
 
   final String player;
-  final List<String> players;
+  final List<UserClass> players;
   final CameraDescription camera;
   final QuestionsManager questionsManager;
 
@@ -31,7 +32,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   final String player;
-  final List<String> players;
+  final List<UserClass> players;
   final QuestionsManager questionsManager;
   int isFlashOn = 0;
 

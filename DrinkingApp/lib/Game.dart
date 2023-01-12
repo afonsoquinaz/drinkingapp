@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:drinkingapp/Question.dart';
 import 'package:drinkingapp/questionsManager/TakePictureScreen.dart';
+import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'dart:async';
@@ -10,7 +11,7 @@ import 'Views/EndGameView.dart';
 import 'Views/GameFeedView.dart';
 
 class Game extends StatelessWidget {
-  final List<String> players;
+  final List<UserClass> players;
   final QuestionsManager questionsManager;
   const Game({Key? key, required this.players, required this.questionsManager})
       : super(key: key);
@@ -38,7 +39,7 @@ class MyHomePage extends StatefulWidget {
       required this.players,
       required this.questionsManager})
       : super(key: key);
-  final List<String> players;
+  final List<UserClass> players;
   final String title;
   final QuestionsManager questionsManager;
 
@@ -49,7 +50,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final QuestionsManager questionsManager;
-  final List<String> players;
+  final List<UserClass> players;
 
   _MyHomePageState({required this.questionsManager, required this.players});
 
@@ -57,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    question = questionsManager.getWidgetForQuestion(widget.players, context);
+    question = questionsManager.getWidgetForQuestion(players, context);
   }
 
   // StreamController<int> selected = StreamController<int>();

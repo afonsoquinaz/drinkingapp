@@ -1,3 +1,4 @@
+import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:flutter/material.dart';
 import 'package:drinkingapp/main.dart';
 import 'package:drinkingapp/questionsManager/questionsManager.dart';
@@ -7,7 +8,7 @@ class GameFeedView extends StatelessWidget {
   const GameFeedView({Key? key, required this.questionsManager, required this.players})
       : super(key: key);
   final QuestionsManager questionsManager;
-  final List<String> players;
+  final List<UserClass> players;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class MyHomePage extends StatefulWidget {
 
   final QuestionsManager questionsManager;
   final String title;
-  final List<String> players;
+  final List<UserClass> players;
 
   @override
   State<MyHomePage> createState() =>
@@ -40,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   _MyHomePageState({Key? key, required this.questionsManager , required this.players});
 
   final QuestionsManager questionsManager;
-  final List<String> players;
+  final List<UserClass> players;
   final playersTextController = TextEditingController();
   int _counter = 0;
   String questionText = "The game starts here";

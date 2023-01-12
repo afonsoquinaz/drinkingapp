@@ -4,10 +4,7 @@ class UserClass {
   late String username;
   late String photopath;
 
-  FeedManager(String username, String photopath) {
-      this.username = username;
-      this.photopath = photopath;
-  }
+  UserClass(this.username, this.photopath);
 
   String getUsername(){
     return username;

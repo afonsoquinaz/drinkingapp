@@ -1,3 +1,4 @@
+import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:flutter/material.dart';
 import 'Game.dart';
 import 'GameModeSelection.dart';
@@ -36,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final playersTextController = TextEditingController();
 
   // int _counter = 0;
-  List<String> players = [];
+  List<UserClass> players = [];
 
   // String Players = "";
 
@@ -47,7 +48,8 @@ class _MyHomePageState extends State<MyHomePage> {
   // }
 
   addPlayer() {
-    players.add(playersTextController.text.trim());
+    UserClass newPlayer = UserClass(playersTextController.text.trim(), '');
+    players.add(newPlayer);
     // Players = Players + playersTextController.text + "\n";
     playersTextController.clear();
     // _counter++;
@@ -150,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                   MainAxisSize
                                                                       .min,
                                                               children: [
-                                                                Text(players[i],
+                                                                Text(players[i].username,
                                                                     style: TextStyle(
                                                                         fontSize:
                                                                             16)),

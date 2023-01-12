@@ -6,6 +6,7 @@ import 'package:camera/camera.dart';
 import 'package:drinkingapp/Question.dart';
 import 'package:drinkingapp/questionsManager/FeedManager.dart';
 import 'package:drinkingapp/questionsManager/TakePictureScreen.dart';
+import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:flutter/services.dart' as rootBundle;
 import 'package:drinkingapp/questionsManager/NamesWheel.dart';
 import 'package:flutter_lorem/flutter_lorem.dart';
@@ -64,7 +65,7 @@ class QuestionsManager {
     "The best to imitate a dog wins."
   ];
 
-  Question getWidgetForQuestion(List<String> players, context) {
+  Question getWidgetForQuestion(List<UserClass> players, context) {
     var doubleValue = Random().nextDouble();
     if (doubleValue <= 0.1) {
       return getWheelOfNames(players);
@@ -88,7 +89,7 @@ class QuestionsManager {
     return  Random().nextInt(4) + 1;
   }
 
-   Question getPhotoQuestion(List<String> players, context) {
+   Question getPhotoQuestion(List<UserClass> players, context) {
     int player = Random().nextInt(players.length);
 
     return Question(type: 'Photo Time', widget: Column(
@@ -112,7 +113,7 @@ class QuestionsManager {
                         camera: firstCamera,
                         questionsManager: this,
                         players: players,
-                        player: players[player])));
+                        player: players[player].username)));
           },
         ),
         Text('${players[player]}'),
@@ -122,28 +123,28 @@ class QuestionsManager {
     ), nbrGlasses: getRandomNumberOfGlasses());
   }
 
-  Question getNewQuestion(List<String> players) {
+  Question getNewQuestion(List<UserClass> players) {
     return Question(type: 'Normal Challenge', widget: Column(children: [
       Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center),
       SizedBox(height: 40),
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[for (var playerName in players) Text(playerName)],
+        children: <Widget>[for (var playerName in players) Text(playerName.username)],
       )
     ]), nbrGlasses: getRandomNumberOfGlasses());
   }
 
-  Question getWheelOfNames(List<String> players) {
+  Question getWheelOfNames(List<UserClass> players) {
     Random random = new Random();
     int indexWinner = random.nextInt(players.length); // from 0 to 9 included
-    feedManager.addNamesWheelPost(players[indexWinner]);
+    feedManager.addNamesWheelPost(players[indexWinner].username);
     NamesWheel nm = new NamesWheel(players: players, indexWinner: indexWinner);
     //nm.createState().
     //_NamesWheelS
     return Question(type: 'Fortune Wheel', widget: nm, nbrGlasses: getRandomNumberOfGlasses());
   }
 
-  Question getMostLikelyTo(List<String> players) {
+  Question getMostLikelyTo(List<UserClass> players) {
     if (index_mostLikely == mostLikelyQuestions.length) {
       mostLikelyQuestions.shuffle();
       index_mostLikely = 0;
@@ -159,7 +160,7 @@ class QuestionsManager {
             style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepOrangeAccent),
             onPressed: () {
-              feedManager.addMostLikelyToPost(question, players[i]);
+              feedManager.addMostLikelyToPost(question, players[i].username);
             },
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -174,7 +175,7 @@ class QuestionsManager {
     ), nbrGlasses: getRandomNumberOfGlasses());
   }
 
-  Question get1vs1(List<String> players) {
+  Question get1vs1(List<UserClass> players) {
     int player1 = Random().nextInt(players.length);
     int player2;
     do {
@@ -205,14 +206,14 @@ class QuestionsManager {
                   backgroundColor: Colors.deepOrangeAccent),
               onPressed: () {
                 index_challenges++;
-                feedManager.addOneVsOnePost(challenge, players[player1],
-                    players[player2], players[player1]);
+                feedManager.addOneVsOnePost(challenge, players[player1].username,
+                    players[player2].username, players[player1].username);
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(width: 5),
-                  Text(players[player1]),// <-- Text
+                  Text(players[player1].username),// <-- Text
                 ],
               ),
             ),
@@ -221,14 +222,14 @@ class QuestionsManager {
                   backgroundColor: Colors.deepOrangeAccent),
               onPressed: () {
                 index_challenges++;
-                feedManager.addOneVsOnePost(challenge, players[player1],
-                    players[player2], players[player2]);
+                feedManager.addOneVsOnePost(challenge, players[player1].username,
+                    players[player2].username, players[player2].username);
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(width: 5),
-                  Text(players[player1]),// <-- Text
+                  Text(players[player1].username),// <-- Text
                 ],
               ),
             ),
