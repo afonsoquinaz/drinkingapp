@@ -123,6 +123,14 @@ class PlayerView extends StatelessWidget {
     return Container(
         width: width,
         height: width,
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade400, //New
+              blurRadius: 10.0,
+            )
+          ],
+        ),
         child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
