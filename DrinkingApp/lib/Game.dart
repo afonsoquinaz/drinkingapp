@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _MyHomePageState({required this.questionsManager, required this.players});
 
-  Question question = Question(type: "Game started!", widget: Text("The game starts here"));
+  Question question = Question(type: "Game started!", widget: Text("The game starts here"), nbrGlasses: 1);
 
   @override
   void initState() {
@@ -160,45 +160,61 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(),
               SizedBox(),
               SizedBox(),
-              Container(
-                  margin: EdgeInsets.only(bottom: 20),
-                  child: Row(
+              Column(
+                children: [
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
+                      for(var i = 0; i < question.nbrGlasses ; i++)
+                        Icon(
+                          // <-- Icon
+                          Icons.local_drink_outlined,
+                          size: 38.0,
+                          color: Colors.pinkAccent,
+                        )
+                    ],),
+                  SizedBox(height: 40,),
+                  Container(
+                      margin: EdgeInsets.only(bottom: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.black),
-                            onPressed: () {
-                              setState(() {
-                                question =
-                                    questionsManager.getWidgetForQuestion(
-                                        widget.players, context);
-                                // questionText = q.getNewQuestion().toString();
-                                // print(q.getNewQuestion());
-                              });
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(width: 5),
-                                Text('NEXT'), // <-- Text
-                                SizedBox(
-                                  width: 5,
+                          Row(
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black),
+                                onPressed: () {
+                                  setState(() {
+                                    question =
+                                        questionsManager.getWidgetForQuestion(
+                                            widget.players, context);
+                                    // questionText = q.getNewQuestion().toString();
+                                    // print(q.getNewQuestion());
+                                  });
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(width: 5),
+                                    Text('NEXT'), // <-- Text
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Icon(
+                                      // <-- Icon
+                                      Icons.navigate_next_outlined,
+                                      size: 24.0,
+                                    ),
+                                  ],
                                 ),
-                                Icon(
-                                  // <-- Icon
-                                  Icons.navigate_next_outlined,
-                                  size: 24.0,
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ],
-                      ),
-                    ],
-                  )),
+                      )),
+                ],
+              )
             ],
           )),
         ));

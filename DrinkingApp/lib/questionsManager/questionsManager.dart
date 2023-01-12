@@ -84,6 +84,9 @@ class QuestionsManager {
   void addPhotoToFeed(String photoPath, String player) {
     feedManager.addPhoto(photoPath, player);
   }
+  int getRandomNumberOfGlasses(){
+    return  Random().nextInt(4) + 1;
+  }
 
    Question getPhotoQuestion(List<String> players, context) {
     int player = Random().nextInt(players.length);
@@ -116,7 +119,7 @@ class QuestionsManager {
         SizedBox(height: 10),
         Text("IT IS PHOTO TIME!")
       ],
-    ));
+    ), nbrGlasses: getRandomNumberOfGlasses());
   }
 
   Question getNewQuestion(List<String> players) {
@@ -127,7 +130,7 @@ class QuestionsManager {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[for (var playerName in players) Text(playerName)],
       )
-    ]));
+    ]), nbrGlasses: getRandomNumberOfGlasses());
   }
 
   Question getWheelOfNames(List<String> players) {
@@ -137,7 +140,7 @@ class QuestionsManager {
     NamesWheel nm = new NamesWheel(players: players, indexWinner: indexWinner);
     //nm.createState().
     //_NamesWheelS
-    return Question(type: 'Fortune Wheel', widget: nm);
+    return Question(type: 'Fortune Wheel', widget: nm, nbrGlasses: getRandomNumberOfGlasses());
   }
 
   Question getMostLikelyTo(List<String> players) {
@@ -158,7 +161,7 @@ class QuestionsManager {
               },
               child: Text('${players[i]}'))
       ],
-    ));
+    ), nbrGlasses: getRandomNumberOfGlasses());
   }
 
   Question get1vs1(List<String> players) {
@@ -204,6 +207,6 @@ class QuestionsManager {
           ],
         )
       ],
-    ));
+    ), nbrGlasses: getRandomNumberOfGlasses());
   }
 }
