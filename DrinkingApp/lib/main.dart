@@ -263,7 +263,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     );
                                   }
                                 },
-                                child: const Text("START",
+                                child: const Text("GET READY",
                                     style: TextStyle(fontSize: 18)),
                                 style: ElevatedButton.styleFrom(
                                   //backgroundColor: Colors.black,

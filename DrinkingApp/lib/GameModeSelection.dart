@@ -56,11 +56,9 @@ class GameModeSelection extends StatelessWidget {
                 ],
               ),
               SizedBox(),
-              TextButton(
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.all(16.0),
-                  textStyle: const TextStyle(fontSize: 20),
-                ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black),
                 onPressed: () {
 
                   Navigator.pushAndRemoveUntil(
@@ -70,18 +68,25 @@ class GameModeSelection extends StatelessWidget {
                   );
 
                 },
-                child: const Text('Normal SinglePlayer',style: TextStyle(fontSize: 25, color: Colors.yellow)),
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.all(16.0),
-                  textStyle: const TextStyle(fontSize: 20),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(width: 5),
+                    Text('PLAY'), // <-- Text
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Icon(
+                      // <-- Icon
+                      Icons.navigate_next_outlined,
+                      size: 24.0,
+                    ),
+                  ],
                 ),
-                onPressed: () {},
-                child: const Text('Multiplayer',style: TextStyle(fontSize: 25, color: Colors.yellow)),
               ),
-              SizedBox(),
-              SizedBox(),
+
+
+
 
 
             ],

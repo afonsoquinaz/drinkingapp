@@ -85,10 +85,10 @@ class QuestionsManager {
     feedManager.addPhoto(photoPath, player);
   }
 
-   getPhotoQuestion(List<String> players, context) {
+   Question getPhotoQuestion(List<String> players, context) {
     int player = Random().nextInt(players.length);
 
-    return ['Photo Time', Column(
+    return Question(type: 'Photo Time', widget: Column(
       children: [
         IconButton(
           icon: const Icon(Icons.photo_camera),
@@ -116,7 +116,7 @@ class QuestionsManager {
         SizedBox(height: 10),
         Text("IT IS PHOTO TIME!")
       ],
-    )];
+    ));
   }
 
   Question getNewQuestion(List<String> players) {
