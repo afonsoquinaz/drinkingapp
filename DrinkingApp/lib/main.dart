@@ -197,6 +197,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: Container(
                                   // height: 44,
                                   child: TextField(
+                                    textCapitalization: TextCapitalization.words,
                             controller: playersTextController,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.symmetric(
