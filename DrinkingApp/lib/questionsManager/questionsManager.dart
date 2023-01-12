@@ -155,11 +155,21 @@ class QuestionsManager {
       children: [
         Text(question),
         for (var i = 0; i < players.length; i++)
-          TextButton(
-              onPressed: () {
-                feedManager.addMostLikelyToPost(question, players[i]);
-              },
-              child: Text('${players[i]}'))
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepOrangeAccent),
+            onPressed: () {
+              feedManager.addMostLikelyToPost(question, players[i]);
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(width: 5),
+                Text('${players[i]}'),// <-- Text
+              ],
+            ),
+          ),
+
       ],
     ), nbrGlasses: getRandomNumberOfGlasses());
   }
@@ -190,20 +200,38 @@ class QuestionsManager {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            TextButton(
-                onPressed: () {
-                  index_challenges++;
-                  feedManager.addOneVsOnePost(challenge, players[player1],
-                      players[player2], players[player1]);
-                },
-                child: Text(players[player1])),
-            TextButton(
-                onPressed: () {
-                  index_challenges++;
-                  feedManager.addOneVsOnePost(challenge, players[player1],
-                      players[player2], players[player2]);
-                },
-                child: Text(players[player2]))
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepOrangeAccent),
+              onPressed: () {
+                index_challenges++;
+                feedManager.addOneVsOnePost(challenge, players[player1],
+                    players[player2], players[player1]);
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(width: 5),
+                  Text(players[player1]),// <-- Text
+                ],
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepOrangeAccent),
+              onPressed: () {
+                index_challenges++;
+                feedManager.addOneVsOnePost(challenge, players[player1],
+                    players[player2], players[player2]);
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(width: 5),
+                  Text(players[player1]),// <-- Text
+                ],
+              ),
+            ),
           ],
         )
       ],

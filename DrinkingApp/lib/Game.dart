@@ -162,6 +162,9 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(),
               Column(
                 children: [
+                  Text("The winner drinks " + question.nbrGlasses.toString() + " sips"
+                    , style: TextStyle(color: Colors.black45),),
+                  SizedBox(height: 10,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
