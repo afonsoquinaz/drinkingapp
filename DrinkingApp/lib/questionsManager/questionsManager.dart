@@ -116,7 +116,7 @@ class QuestionsManager {
                         player: players[player].username)));
           },
         ),
-        Text('${players[player]}'),
+        Text('${players[player].username}'),
         SizedBox(height: 10),
         Text("IT IS PHOTO TIME!")
       ],
@@ -129,7 +129,7 @@ class QuestionsManager {
       SizedBox(height: 40),
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[for (var playerName in players) Text(playerName.username)],
+        children: <Widget>[for (var player in players) Text(player.username)],
       )
     ]), nbrGlasses: getRandomNumberOfGlasses());
   }
@@ -166,7 +166,7 @@ class QuestionsManager {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(width: 5),
-                Text('${players[i]}'),// <-- Text
+                Text('${players[i].username}'),// <-- Text
               ],
             ),
           ),
@@ -192,7 +192,7 @@ class QuestionsManager {
     return Question(type: '1 vs 1', widget: Column(
       children: [
         Text(
-          "${players[player1]} vs ${players[player2]}",
+          "${players[player1].username} vs ${players[player2].username}",
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 20),
         ),
@@ -229,7 +229,7 @@ class QuestionsManager {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(width: 5),
-                  Text(players[player1].username),// <-- Text
+                  Text(players[player2].username),// <-- Text
                 ],
               ),
             ),
