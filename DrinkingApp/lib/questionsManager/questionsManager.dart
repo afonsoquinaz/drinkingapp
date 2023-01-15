@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:camera/camera.dart';
+import 'package:drinkingapp/GameModeSelection.dart';
 import 'package:drinkingapp/Question.dart';
 import 'package:drinkingapp/questionsManager/FeedManager.dart';
 import 'package:drinkingapp/questionsManager/TakePictureScreen.dart';
@@ -156,20 +157,8 @@ class QuestionsManager {
       children: [
         Text(question),
         for (var i = 0; i < players.length; i++)
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepOrangeAccent),
-            onPressed: () {
-              feedManager.addMostLikelyToPost(question, players[i].username);
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(width: 5),
-                Text('${players[i].username}'),// <-- Text
-              ],
-            ),
-          ),
+          PlayerButton(player: players[i])
+
 
       ],
     ), nbrGlasses: getRandomNumberOfGlasses());
@@ -237,5 +226,71 @@ class QuestionsManager {
         )
       ],
     ), nbrGlasses: getRandomNumberOfGlasses());
+  }
+}
+
+
+
+
+class PlayerButton extends StatefulWidget { // immutable Widget
+  final UserClass player;
+
+  PlayerButton({required this.player});
+  @override
+  _MyWidgetState createState() => _MyWidgetState( player: player);
+// creating State Object of MyWidget
+}
+
+class _MyWidgetState extends State<PlayerButton> { // State Object
+  @override
+  final UserClass player;
+
+  _MyWidgetState({required this.player});
+
+
+  Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width * 0.33;
+    var buttonColor = Colors.white;
+
+    return GestureDetector(
+        onTap: () {
+          setState(() {
+            buttonColor = Colors.black;
+          });
+          }, // Image tapped
+        child: Container(
+
+            width: width,
+            height: width,
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.shade400, //New
+                  blurRadius: 10.0,
+                )
+              ],
+            ),
+            child: Container(
+                decoration: BoxDecoration(
+                  color: buttonColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Container(
+                    margin: EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: width * 0.55,
+                          height: width * 0.55,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: Colors.red,
+                          ),
+                        ),
+                        Text(player.username, style: TextStyle(fontWeight: FontWeight.normal)),
+                      ],
+                    ))))
+    );
   }
 }
