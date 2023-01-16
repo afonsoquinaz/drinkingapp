@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:drinkingapp/Constants/ColorPalette.dart';
 import 'package:drinkingapp/Question.dart';
 import 'package:drinkingapp/questionsManager/TakePictureScreen.dart';
 import 'package:drinkingapp/questionsManager/UserClass.dart';
@@ -89,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // }
         },
         child: Scaffold(
-          backgroundColor: Color(0xffb0e3df),
+          backgroundColor: Color(0xffb0e3df) ,
           body: Center(
               child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
