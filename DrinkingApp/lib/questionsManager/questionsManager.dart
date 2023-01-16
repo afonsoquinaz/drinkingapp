@@ -157,7 +157,20 @@ class QuestionsManager {
       children: [
         Text(question),
         for (var i = 0; i < players.length; i++)
-          PlayerButton(player: players[i])
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepOrangeAccent),
+            onPressed: () {
+              feedManager.addMostLikelyToPost(question, players[i].username);
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(width: 5),
+                Text('${players[i].username}'),// <-- Text
+              ],
+            ),
+          ),
 
 
       ],
@@ -254,6 +267,7 @@ class _MyWidgetState extends State<PlayerButton> { // State Object
 
     return GestureDetector(
         onTap: () {
+          print("clickou");
           setState(() {
             buttonColor = Colors.black;
           });

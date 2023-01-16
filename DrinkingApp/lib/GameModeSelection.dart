@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:drinkingapp/questionsManager/questionsManager.dart';
 import 'package:flutter/material.dart';
@@ -119,6 +121,8 @@ class PlayerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Random random = new Random();
+    int randomNumber = random.nextInt(4) + 1;
     var width = MediaQuery.of(context).size.width * 0.43;
     return Container(
         width: width,
@@ -145,6 +149,11 @@ class PlayerView extends StatelessWidget {
                       width: width * 0.55,
                       height: width * 0.55,
                       decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(
+                                'images/avatar'+randomNumber.toString()+'.jpeg'),
+                            fit: BoxFit.fill,
+                          ),
                         borderRadius: BorderRadius.circular(100),
                         color: Colors.red,
                       ),
