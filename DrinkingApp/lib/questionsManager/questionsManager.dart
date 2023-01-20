@@ -73,7 +73,7 @@ class QuestionsManager {
       //This question is the random words question
       // does not do basically nothing so I reduced the odd a lot
       return getNewQuestion(players);
-    } else if (doubleValue <= 0.6) {
+    } else if (doubleValue <= 0.8) {
       return getMostLikelyTo(players);
     } else if (doubleValue <= 0.9) {
       return getPhotoQuestion(players, context);
@@ -164,19 +164,19 @@ class QuestionsManager {
     var question = mostLikelyQuestions[index_mostLikely];
     index_mostLikely++;
     //feedManager.addMostLikelyToPost(question, "winner");
-    GroupButton aux = GroupButton(players: players, selected: List<bool>.filled(players.length, false));
+    GroupButton buttons = GroupButton(players: players, selected: List<bool>.filled(players.length, false));
     return Question(
         type: 'Most Likely To',
         widget: Column(
           children: [
             Text(question),
             SizedBox(height: 50),
-            aux,
+            buttons,
           ],
         ),
         complete: () {
           for(int i=0; i<players.length; i++) {
-            if (aux.selected[i]) {
+            if (buttons.selected[i]) {
               feedManager.addMostLikelyToPost(question, players[i]);
             }
           }
@@ -274,7 +274,7 @@ class _GroupButtonState extends State<GroupButton> {
   Widget build(BuildContext context) {
     return Wrap(spacing: 5, children: [
       for (var i = 0; i < widget.players.length; i++)
-        PlayerButton(player: widget.players[i], toggle: widget.toggle)
+        PlayerButton(player: widget.players[i], selected: widget.selected, index: i,)
     ]);
   }
 }
@@ -282,9 +282,10 @@ class _GroupButtonState extends State<GroupButton> {
 class PlayerButton extends StatefulWidget {
   // immutable Widget
   final UserClass player;
-  final Function toggle;
+  final List<bool> selected;
+  final int index;
 
-  PlayerButton({required this.player, required this.toggle});
+  PlayerButton({required this.player, required this.selected, required this.index});
   @override
   _MyWidgetState createState() => _MyWidgetState(player: player);
 // creating State Object of MyWidget
@@ -293,7 +294,6 @@ class PlayerButton extends StatefulWidget {
 class _MyWidgetState extends State<PlayerButton> {
   // State Object
   final UserClass player;
-  bool selected = false;
 
   _MyWidgetState({required this.player});
 
@@ -301,8 +301,7 @@ class _MyWidgetState extends State<PlayerButton> {
     return GestureDetector(
         onTap: () {
           setState(() {
-            selected = !selected;
-            widget.toggle(player);
+            widget.selected[widget.index] = !widget.selected[widget.index];s
           });
         }, // Image tapped
         child: Container(
@@ -310,7 +309,7 @@ class _MyWidgetState extends State<PlayerButton> {
             height: 75,
             child: Container(
                 decoration: BoxDecoration(
-                  color: selected ? Colors.deepOrangeAccent : Colors.white,
+                  color: widget.selected[widget.index] ? Colors.deepOrangeAccent : Colors.white,
                   borderRadius: BorderRadius.circular(0),
                 ),
                 child: Container(
@@ -329,7 +328,7 @@ class _MyWidgetState extends State<PlayerButton> {
                       ),
                     ),
                     Text(player.username,
-                        style: TextStyle(fontWeight: FontWeight.normal, color: selected ? Colors.white : Colors.black)),
+                        style: TextStyle(fontWeight: FontWeight.normal, color: widget.selected[widget.index] ? Colors.white : Colors.black)),
                   ],
                 )))));
   }
