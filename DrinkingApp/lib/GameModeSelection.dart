@@ -248,7 +248,13 @@ class PlayerView extends StatelessWidget {
                                           color: Colors.white.withOpacity(0.9)),
                                       iconSize: 26,
                                       onPressed: () {
-                                        changePhoto(player, getAvatar());
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return Dialog(player: player, changePhoto: changePhoto,);
+                                          },
+                                        );
+                                        //changePhoto(player, getAvatar());
                                       },
                                     ),
                                   )),
@@ -276,4 +282,106 @@ class PlayerView extends StatelessWidget {
                       ]))),
         ]));
   }
+}
+
+class Dialog extends StatefulWidget {
+  final UserClass player;
+  final Function changePhoto;
+  const Dialog({super.key, required this.player, required this.changePhoto});
+
+
+  @override
+  State<StatefulWidget> createState() => _DialogState();
+}
+
+class _DialogState extends State<Dialog> {
+  bool isSelected(String photoPath){
+    return widget.player.photoPath == photoPath;
+  }
+
+  changeAvatar(String photoPath){
+    setState(() {
+      widget.changePhoto(widget.player, photoPath);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width * 0.20;
+
+    return SimpleDialog(title: Text("Choose ${widget.player.username}'s avatar"), children: [
+      SizedBox(height: 20),
+      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        Container(
+          width: width,
+          height: width,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            //border: Border.all(color: Colors.yellow.shade700, width: 3),
+            color: Colors.yellow.shade700,
+          ),
+          child: IconButton(
+            icon: Icon(Icons.camera_alt_rounded,
+                color: Colors.black.withOpacity(0.9)),
+            iconSize: 30,
+            onPressed: () {
+            },
+          ),
+        ),
+        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar1.jpeg', changeAvatar: changeAvatar),
+        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar2.jpeg', changeAvatar: changeAvatar)
+      ]),
+      SizedBox(height: 10),
+      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar3.jpeg', changeAvatar: changeAvatar),
+        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar4.jpeg', changeAvatar: changeAvatar),
+        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar4.jpeg', changeAvatar: changeAvatar)
+      ]),
+      SizedBox(height: 20),
+      TextButton(onPressed: () {
+        Navigator.pop(context);
+      }, child: Text("OK", style: TextStyle(color: Colors.green, fontSize: 18),))
+    ]);
+  }
+}
+
+class AvatarPic extends StatelessWidget {
+  final Function isSelected;
+  final String avatarPath;
+  final Function changeAvatar;
+
+  const AvatarPic({super.key, required this.isSelected, required this.avatarPath, required this.changeAvatar});
+
+  @override
+  Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width * 0.20;
+
+    return GestureDetector(
+      onTap: () {
+        changeAvatar(avatarPath);
+      },
+        child: Container(
+      width: width,
+      height: width,
+      decoration: BoxDecoration(
+        border: Border.all(
+            width: isSelected(avatarPath) ? 5 : 0, color: Colors.green),
+        // boxShadow: isSelected(avatarPath) ? [
+        //   BoxShadow(
+        //       spreadRadius: 5,
+        //       blurRadius: 8,
+        //       color:
+        //       Colors.black.withOpacity(0.2))
+        // ]:[],
+        image: DecorationImage(
+          image: AssetImage(avatarPath),
+          fit: BoxFit.fill,
+        ),
+        shape: BoxShape.circle,
+        //border: Border.all(color: Colors.yellow.shade700, width: 3),
+        color: Colors.yellow.shade700,
+      ),
+    ));
+  }
+
 }
