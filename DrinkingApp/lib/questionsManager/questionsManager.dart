@@ -75,10 +75,9 @@ class QuestionsManager {
       return getNewQuestion(players);
     } else if (doubleValue <= 0.8) {
       return getMostLikelyTo(players);
-    } else if (doubleValue <= 0.9) {
+    } else if (doubleValue <= 0.81) {
       return getPhotoQuestion(players, context);
     }
-
     return get1vs1(players);
   }
 
@@ -197,7 +196,8 @@ class QuestionsManager {
     print(index_challenges);
     print(challenges.length);
     var challenge = challenges[index_challenges];
-
+    UserClass? winner;
+    ToggleButton buttons = ToggleButton(players: [players[player1], players[player2]], changeWinner: (player) {winner=player;});
     return Question(
         type: '1 vs 1',
         widget: Column(
@@ -210,46 +210,45 @@ class QuestionsManager {
             const SizedBox(height: 40),
             Text('$challenge\nThe other players vote.',
                 textAlign: TextAlign.center),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepOrangeAccent),
-                  onPressed: () {
-                    index_challenges++;
-                    feedManager.addOneVsOnePost(challenge, players[player1],
-                        players[player2], players[player1].username);
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(width: 5),
-                      Text(players[player1].username), // <-- Text
-                    ],
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepOrangeAccent),
-                  onPressed: () {
-                    index_challenges++;
-                    feedManager.addOneVsOnePost(challenge, players[player1],
-                        players[player2], players[player2].username);
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(width: 5),
-                      Text(players[player2].username), // <-- Text
-                    ],
-                  ),
-                ),
-              ],
-            )
+            SizedBox(height: 50),
+            buttons
           ],
         ),
+        complete: () {
+          if (winner!=null) {
+              feedManager.addOneVsOnePost(challenge, players[player1], players[player2], winner!.username);
+            }
+          },
         nbrGlasses: getRandomNumberOfGlasses());
+  }
+}
+
+class ToggleButton extends StatefulWidget {
+  final List<UserClass> players;
+  final Function changeWinner;
+
+  ToggleButton({super.key, required this.players, required this.changeWinner});
+
+  @override
+  State<StatefulWidget> createState() => _ToggleButtonState();
+}
+
+class _ToggleButtonState extends State<ToggleButton> {
+  UserClass? selected;
+
+  toggle(UserClass player){
+    setState(() {
+      selected = player;
+      widget.changeWinner(player);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(spacing: 5, runSpacing: 5, alignment: WrapAlignment.center, children: [
+      for (var i = 0; i < widget.players.length; i++)
+        PlayerButton(player: widget.players[i], isSelected: () {return selected == widget.players[i];}, toggleFunc: toggle)
+    ]);
   }
 }
 
@@ -272,36 +271,40 @@ class _GroupButtonState extends State<GroupButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(spacing: 5, children: [
+    return Wrap(spacing: 5, runSpacing: 5, alignment: WrapAlignment.center, children: [
       for (var i = 0; i < widget.players.length; i++)
-        PlayerButton(player: widget.players[i], selected: widget.selected, index: i,)
+        PlayerButton(player: widget.players[i], isSelected: (){ return widget.selected[i]; }, toggleFunc: widget.toggle)
     ]);
+    // return Container(height: 75, child: ListView(scrollDirection: Axis.horizontal, children: [
+    //   for (var i = 0; i < widget.players.length; i++)
+    //     Row(children: [
+    //       PlayerButton(player: widget.players[i], selected: widget.selected, index: i,),
+    //       SizedBox(width: 10)])
+    // ]));
   }
 }
+
 
 class PlayerButton extends StatefulWidget {
   // immutable Widget
   final UserClass player;
-  final List<bool> selected;
-  final int index;
+  final Function isSelected;
+  final Function toggleFunc;
 
-  PlayerButton({required this.player, required this.selected, required this.index});
+  PlayerButton({required this.player, required this.isSelected, required this.toggleFunc});
   @override
-  _MyWidgetState createState() => _MyWidgetState(player: player);
+  _MyWidgetState createState() => _MyWidgetState();
 // creating State Object of MyWidget
 }
 
 class _MyWidgetState extends State<PlayerButton> {
   // State Object
-  final UserClass player;
-
-  _MyWidgetState({required this.player});
 
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
           setState(() {
-            widget.selected[widget.index] = !widget.selected[widget.index];s
+            widget.toggleFunc(widget.player);
           });
         }, // Image tapped
         child: Container(
@@ -309,27 +312,27 @@ class _MyWidgetState extends State<PlayerButton> {
             height: 75,
             child: Container(
                 decoration: BoxDecoration(
-                  color: widget.selected[widget.index] ? Colors.deepOrangeAccent : Colors.white,
-                  borderRadius: BorderRadius.circular(0),
+                  color: widget.isSelected() ? Colors.deepOrangeAccent : Colors.white,
+                  borderRadius: BorderRadius.circular(5),
                 ),
                 child: Container(
                     child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage(player.photoPath),
-                          fit: BoxFit.fill,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: AssetImage(widget.player.photoPath),
+                              fit: BoxFit.fill,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    Text(player.username,
-                        style: TextStyle(fontWeight: FontWeight.normal, color: widget.selected[widget.index] ? Colors.white : Colors.black)),
-                  ],
-                )))));
+                        Text(widget.player.username,
+                            style: TextStyle(fontWeight: widget.isSelected() ? FontWeight.bold : FontWeight.normal, color: widget.isSelected() ? Colors.white : Colors.black)),
+                      ],
+                    )))));
   }
 }
