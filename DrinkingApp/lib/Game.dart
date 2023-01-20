@@ -165,7 +165,6 @@ class _MyHomePageState extends State<MyHomePage> {
               question.widget,
               SizedBox(),
               SizedBox(),
-              SizedBox(),
               Column(
                 children: [
                   Text("The winner drinks " + question.nbrGlasses.toString() + " sips"
