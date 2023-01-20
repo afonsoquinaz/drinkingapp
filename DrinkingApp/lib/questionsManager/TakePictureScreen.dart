@@ -18,7 +18,7 @@ class TakePictureScreen extends StatefulWidget {
     required this.player,
   });
 
-  final String player;
+  final UserClass player;
   final List<UserClass> players;
   final CameraDescription camera;
   final QuestionsManager questionsManager;
@@ -31,7 +31,7 @@ class TakePictureScreen extends StatefulWidget {
 class TakePictureScreenState extends State<TakePictureScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
-  final String player;
+  final UserClass player;
   final List<UserClass> players;
   final QuestionsManager questionsManager;
   int isFlashOn = 0;

@@ -1,16 +1,20 @@
 import 'package:flutter/cupertino.dart';
 
 class UserClass {
-  late String username;
-  late String photopath;
+  String username;
+  String photoPath;
 
-  UserClass(this.username, this.photopath);
+  UserClass(this.username, this.photoPath);
 
   String getUsername(){
     return username;
   }
 
   String getPhotoPath(){
-    return photopath;
+    return photoPath;
+  }
+
+  setPhotoPath(String newPath){
+    photoPath = newPath;
   }
 }

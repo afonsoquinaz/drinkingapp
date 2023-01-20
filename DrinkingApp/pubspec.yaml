@@ -38,6 +38,7 @@ dependencies:
   flutter_fortune_wheel: ^1.2.0
   flutter_native_image: ^0.0.6+1
   share: ^2.0.4
+  group_button: ^5.2.2
 
 dev_dependencies:
   flutter_test:

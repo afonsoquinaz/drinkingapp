@@ -12,6 +12,7 @@ import 'package:flutter/services.dart' as rootBundle;
 import 'package:drinkingapp/questionsManager/NamesWheel.dart';
 import 'package:flutter_lorem/flutter_lorem.dart';
 import 'package:flutter/material.dart';
+import 'package:group_button/group_button.dart';
 
 import 'NamesWheel.dart';
 
@@ -62,9 +63,7 @@ class QuestionsManager {
     "Who is most likely to watch porn?"
   ];
 
-  final List<String> challenges = [
-    "The best to imitate a dog wins."
-  ];
+  final List<String> challenges = ["The best to imitate a dog wins."];
 
   Question getWidgetForQuestion(List<UserClass> players, context) {
     var doubleValue = Random().nextDouble();
@@ -83,66 +82,78 @@ class QuestionsManager {
     return get1vs1(players);
   }
 
-  void addPhotoToFeed(String photoPath, String player) {
+  void addPhotoToFeed(String photoPath, UserClass player) {
     feedManager.addPhoto(photoPath, player);
   }
-  int getRandomNumberOfGlasses(){
-    return  Random().nextInt(4) + 1;
+
+  int getRandomNumberOfGlasses() {
+    return Random().nextInt(4) + 1;
   }
 
-   Question getPhotoQuestion(List<UserClass> players, context) {
+  Question getPhotoQuestion(List<UserClass> players, context) {
     int player = Random().nextInt(players.length);
 
-    return Question(type: 'Photo Time', widget: Column(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.photo_camera),
-          color: Colors.black,
-          onPressed: () async {
-            WidgetsFlutterBinding.ensureInitialized();
+    return Question(
+        type: 'Photo Time',
+        widget: Column(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.photo_camera),
+              color: Colors.black,
+              onPressed: () async {
+                WidgetsFlutterBinding.ensureInitialized();
 
-            // Obtain a list of the available cameras on the device.
-            final cameras = await availableCameras();
+                // Obtain a list of the available cameras on the device.
+                final cameras = await availableCameras();
 
-            // Get a specific camera from the list of available cameras.
-            final firstCamera = cameras.first;
+                // Get a specific camera from the list of available cameras.
+                final firstCamera = cameras.first;
 
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => TakePictureScreen(
-                        camera: firstCamera,
-                        questionsManager: this,
-                        players: players,
-                        player: players[player].username)));
-          },
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TakePictureScreen(
+                            camera: firstCamera,
+                            questionsManager: this,
+                            players: players,
+                            player: players[player])));
+              },
+            ),
+            Text('${players[player].username}'),
+            SizedBox(height: 10),
+            Text("IT IS PHOTO TIME!")
+          ],
         ),
-        Text('${players[player].username}'),
-        SizedBox(height: 10),
-        Text("IT IS PHOTO TIME!")
-      ],
-    ), nbrGlasses: getRandomNumberOfGlasses());
+        nbrGlasses: getRandomNumberOfGlasses());
   }
 
   Question getNewQuestion(List<UserClass> players) {
-    return Question(type: 'Normal Challenge', widget: Column(children: [
-      Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center),
-      SizedBox(height: 40),
-      Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[for (var player in players) Text(player.username)],
-      )
-    ]), nbrGlasses: getRandomNumberOfGlasses());
+    return Question(
+        type: 'Normal Challenge',
+        widget: Column(children: [
+          Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center),
+          SizedBox(height: 40),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              for (var player in players) Text(player.username)
+            ],
+          )
+        ]),
+        nbrGlasses: getRandomNumberOfGlasses());
   }
 
   Question getWheelOfNames(List<UserClass> players) {
     Random random = new Random();
     int indexWinner = random.nextInt(players.length); // from 0 to 9 included
-    feedManager.addNamesWheelPost(players[indexWinner].username);
+    feedManager.addNamesWheelPost(players[indexWinner]);
     NamesWheel nm = new NamesWheel(players: players, indexWinner: indexWinner);
     //nm.createState().
     //_NamesWheelS
-    return Question(type: 'Fortune Wheel', widget: nm, nbrGlasses: getRandomNumberOfGlasses());
+    return Question(
+        type: 'Fortune Wheel',
+        widget: nm,
+        nbrGlasses: getRandomNumberOfGlasses());
   }
 
   Question getMostLikelyTo(List<UserClass> players) {
@@ -153,28 +164,24 @@ class QuestionsManager {
     var question = mostLikelyQuestions[index_mostLikely];
     index_mostLikely++;
     //feedManager.addMostLikelyToPost(question, "winner");
-    return Question(type: 'Most Likely To',  widget: Column(
-      children: [
-        Text(question),
-        for (var i = 0; i < players.length; i++)
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepOrangeAccent),
-            onPressed: () {
-              feedManager.addMostLikelyToPost(question, players[i].username);
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(width: 5),
-                Text('${players[i].username}'),// <-- Text
-              ],
-            ),
-          ),
-
-
-      ],
-    ), nbrGlasses: getRandomNumberOfGlasses());
+    GroupButton aux = GroupButton(players: players, selected: List<bool>.filled(players.length, false));
+    return Question(
+        type: 'Most Likely To',
+        widget: Column(
+          children: [
+            Text(question),
+            SizedBox(height: 50),
+            aux,
+          ],
+        ),
+        complete: () {
+          for(int i=0; i<players.length; i++) {
+            if (aux.selected[i]) {
+              feedManager.addMostLikelyToPost(question, players[i]);
+            }
+          }
+        },
+        nbrGlasses: getRandomNumberOfGlasses());
   }
 
   Question get1vs1(List<UserClass> players) {
@@ -191,120 +198,139 @@ class QuestionsManager {
     print(challenges.length);
     var challenge = challenges[index_challenges];
 
-    return Question(type: '1 vs 1', widget: Column(
-      children: [
-        Text(
-          "${players[player1].username} vs ${players[player2].username}",
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 20),
-        ),
-        const SizedBox(height: 40),
-        Text('$challenge\nThe other players vote.', textAlign: TextAlign.center),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return Question(
+        type: '1 vs 1',
+        widget: Column(
           children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepOrangeAccent),
-              onPressed: () {
-                index_challenges++;
-                feedManager.addOneVsOnePost(challenge, players[player1].username,
-                    players[player2].username, players[player1].username);
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(width: 5),
-                  Text(players[player1].username),// <-- Text
-                ],
-              ),
+            Text(
+              "${players[player1].username} vs ${players[player2].username}",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepOrangeAccent),
-              onPressed: () {
-                index_challenges++;
-                feedManager.addOneVsOnePost(challenge, players[player1].username,
-                    players[player2].username, players[player2].username);
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(width: 5),
-                  Text(players[player2].username),// <-- Text
-                ],
-              ),
-            ),
+            const SizedBox(height: 40),
+            Text('$challenge\nThe other players vote.',
+                textAlign: TextAlign.center),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepOrangeAccent),
+                  onPressed: () {
+                    index_challenges++;
+                    feedManager.addOneVsOnePost(challenge, players[player1],
+                        players[player2], players[player1].username);
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(width: 5),
+                      Text(players[player1].username), // <-- Text
+                    ],
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepOrangeAccent),
+                  onPressed: () {
+                    index_challenges++;
+                    feedManager.addOneVsOnePost(challenge, players[player1],
+                        players[player2], players[player2].username);
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(width: 5),
+                      Text(players[player2].username), // <-- Text
+                    ],
+                  ),
+                ),
+              ],
+            )
           ],
-        )
-      ],
-    ), nbrGlasses: getRandomNumberOfGlasses());
+        ),
+        nbrGlasses: getRandomNumberOfGlasses());
   }
 }
 
+class GroupButton extends StatefulWidget {
+  final List<UserClass> players;
+  final List<bool> selected;
+
+  toggle(UserClass player){
+    selected[players.indexOf(player)] = !selected[players.indexOf(player)];
+  }
+
+  const GroupButton({super.key, required this.players, required this.selected});
 
 
-
-class PlayerButton extends StatefulWidget { // immutable Widget
-  final UserClass player;
-
-  PlayerButton({required this.player});
   @override
-  _MyWidgetState createState() => _MyWidgetState( player: player);
+  State<StatefulWidget> createState() => _GroupButtonState();
+}
+
+class _GroupButtonState extends State<GroupButton> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(spacing: 5, children: [
+      for (var i = 0; i < widget.players.length; i++)
+        PlayerButton(player: widget.players[i], toggle: widget.toggle)
+    ]);
+  }
+}
+
+class PlayerButton extends StatefulWidget {
+  // immutable Widget
+  final UserClass player;
+  final Function toggle;
+
+  PlayerButton({required this.player, required this.toggle});
+  @override
+  _MyWidgetState createState() => _MyWidgetState(player: player);
 // creating State Object of MyWidget
 }
 
-class _MyWidgetState extends State<PlayerButton> { // State Object
-  @override
+class _MyWidgetState extends State<PlayerButton> {
+  // State Object
   final UserClass player;
+  bool selected = false;
 
   _MyWidgetState({required this.player});
 
-
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width * 0.33;
-    var buttonColor = Colors.white;
-
     return GestureDetector(
         onTap: () {
-          print("clickou");
           setState(() {
-            buttonColor = Colors.black;
+            selected = !selected;
+            widget.toggle(player);
           });
-          }, // Image tapped
+        }, // Image tapped
         child: Container(
-
-            width: width,
-            height: width,
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.shade400, //New
-                  blurRadius: 10.0,
-                )
-              ],
-            ),
+            width: 75,
+            height: 75,
             child: Container(
                 decoration: BoxDecoration(
-                  color: buttonColor,
-                  borderRadius: BorderRadius.circular(10),
+                  color: selected ? Colors.deepOrangeAccent : Colors.white,
+                  borderRadius: BorderRadius.circular(0),
                 ),
                 child: Container(
-                    margin: EdgeInsets.all(20),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: width * 0.55,
-                          height: width * 0.55,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: Colors.red,
-                          ),
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: AssetImage(player.photoPath),
+                          fit: BoxFit.fill,
                         ),
-                        Text(player.username, style: TextStyle(fontWeight: FontWeight.normal)),
-                      ],
-                    ))))
-    );
+                      ),
+                    ),
+                    Text(player.username,
+                        style: TextStyle(fontWeight: FontWeight.normal, color: selected ? Colors.white : Colors.black)),
+                  ],
+                )))));
   }
 }

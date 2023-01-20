@@ -35,7 +35,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final playersTextController = TextEditingController();
-
   // int _counter = 0;
   List<UserClass> players = [];
 

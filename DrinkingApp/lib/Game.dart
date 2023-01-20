@@ -78,6 +78,9 @@ class _MyHomePageState extends State<MyHomePage> {
           // int sensitivity = 5;
           // if (details.delta.dx > sensitivity) {
           debugPrint("swipe ${details.velocity}");
+          if (question.complete != null){
+            question.complete!();
+          }
           setState(() {
             question =
                 questionsManager.getWidgetForQuestion(widget.players, context);
@@ -190,6 +193,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.black),
                                 onPressed: () {
+                                  if (question.complete != null){
+                                    question.complete!();
+                                  }
                                   setState(() {
                                     question =
                                         questionsManager.getWidgetForQuestion(

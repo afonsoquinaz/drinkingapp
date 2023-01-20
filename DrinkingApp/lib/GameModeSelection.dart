@@ -6,12 +6,31 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 import 'Game.dart';
 
-class GameModeSelection extends StatelessWidget {
+class GameModeSelection extends StatefulWidget {
   final List<UserClass> players;
+
   const GameModeSelection({super.key, required this.players});
 
   @override
+  State<GameModeSelection> createState() => _GameModeSelectionState();
+}
+
+class _GameModeSelectionState extends State<GameModeSelection> {
+  onPressedAction(int index) {
+    setState(() {
+      widget.players.removeAt(index);
+    });
+  }
+
+  changePlayerPicture(UserClass player, String newPath) {
+    setState(() {
+      player.setPhotoPath(newPath);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    List<UserClass> players = widget.players;
     bool odd = ((players.length % 2) == 0);
 
     return Scaffold(
@@ -57,8 +76,18 @@ class GameModeSelection extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          PlayerView(player: players[i]),
-                          PlayerView(player: players[i + 1])
+                          PlayerView(
+                              player: players[i],
+                              onPressed: () {
+                                onPressedAction(i);
+                              },
+                              changePhoto: changePlayerPicture),
+                          PlayerView(
+                              player: players[i + 1],
+                              onPressed: () {
+                                onPressedAction(i + 1);
+                              },
+                              changePhoto: changePlayerPicture)
                         ],
                       ),
                       SizedBox(
@@ -69,7 +98,12 @@ class GameModeSelection extends StatelessWidget {
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          PlayerView(player: players[players.length - 1]),
+                          PlayerView(
+                              player: players[players.length - 1],
+                              onPressed: () {
+                                onPressedAction(players.length - 1);
+                              },
+                              changePhoto: changePlayerPicture),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.43,
                           )
@@ -108,6 +142,7 @@ class GameModeSelection extends StatelessWidget {
               ],
             ),
           ),
+          SizedBox(height: 20)
         ],
       )),
     );
@@ -116,13 +151,26 @@ class GameModeSelection extends StatelessWidget {
 
 class PlayerView extends StatelessWidget {
   final UserClass player;
+  final Function onPressed;
+  final Function changePhoto;
 
-  const PlayerView({super.key, required this.player});
+  const PlayerView(
+      {super.key,
+      required this.player,
+      required this.onPressed,
+      required this.changePhoto});
+
+  String getAvatar() {
+    Random random = new Random();
+    int randomNumber = random.nextInt(4) + 1;
+    return 'images/avatar' + randomNumber.toString() + '.jpeg';
+  }
 
   @override
   Widget build(BuildContext context) {
-    Random random = new Random();
-    int randomNumber = random.nextInt(4) + 1;
+    if (player.photoPath == '') {
+      player.setPhotoPath(getAvatar());
+    }
     var width = MediaQuery.of(context).size.width * 0.43;
     return Container(
         width: width,
@@ -134,32 +182,98 @@ class PlayerView extends StatelessWidget {
               blurRadius: 10.0,
             )
           ],
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
-        child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
+        child: Stack(children: <Widget>[
+          Container(
+            alignment: Alignment.topRight,
             child: Container(
-                margin: EdgeInsets.all(20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: width * 0.55,
-                      height: width * 0.55,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                                'images/avatar'+randomNumber.toString()+'.jpeg'),
-                            fit: BoxFit.fill,
-                          ),
-                        borderRadius: BorderRadius.circular(100),
-                        color: Colors.red,
-                      ),
-                    ),
-                    Text(player.username, style: TextStyle(fontWeight: FontWeight.normal)),
-                  ],
-                ))));
+                margin: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade800,
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  iconSize: 18,
+                  padding: EdgeInsets.all(2),
+                  constraints: BoxConstraints(),
+                  icon: Icon(Icons.close),
+                  color: Colors.white,
+                  onPressed: () {
+                    onPressed();
+                  },
+                )),
+          ),
+          Center(
+              child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 20),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                            height: width * 0.55,
+                            width: width * 0.55,
+                            child: Stack(children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(player.photoPath),
+                                    fit: BoxFit.fill,
+                                  ),
+                                  shape: BoxShape.circle,
+                                  //border: Border.all(color: Colors.yellow.shade700, width: 3),
+                                  color: Colors.yellow.shade700,
+                                ),
+                              ),
+                              Container(
+                                  height: width * 0.55,
+                                  width: width * 0.55,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 3, color: Colors.white),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            spreadRadius: 2,
+                                            blurRadius: 10,
+                                            color:
+                                                Colors.black.withOpacity(0.1))
+                                      ],
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey.withOpacity(0.5),
+                                    ),
+                                    child: IconButton(
+                                      icon: Icon(Icons.camera_alt_rounded,
+                                          color: Colors.white.withOpacity(0.9)),
+                                      iconSize: 26,
+                                      onPressed: () {
+                                        changePhoto(player, getAvatar());
+                                      },
+                                    ),
+                                  )),
+                              // Positioned(
+                              //     bottom: 0,
+                              //     right: 0,
+                              //     child: GestureDetector(onTap: () {
+                              //       changePhoto(player, getAvatar());
+                              //     }, child: Container(
+                              //       width: 30,
+                              //       height: 30,
+                              //       decoration: BoxDecoration(
+                              //           shape: BoxShape.circle,
+                              //           border: Border.all(
+                              //               width: 2, color: Colors.white),
+                              //           color: Colors.black),
+                              //       child: Icon(Icons.camera_alt_rounded, color: Colors.white, size: 16,),
+                              //     )))
+                            ])),
+                        //SizedBox(height: 5),
+                        Text(
+                          player.username,
+                          style: TextStyle(fontSize: 16),
+                        )
+                      ]))),
+        ]));
   }
 }
