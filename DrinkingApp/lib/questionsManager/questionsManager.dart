@@ -127,19 +127,16 @@ class QuestionsManager {
   }
 
   Question getNewQuestion(List<UserClass> players) {
+    GroupButton buttons = GroupButton(players: players, selected: List<bool>.filled(players.length, false));
     return Question(
         type: 'Normal Challenge',
         widget: Column(children: [
           Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center),
           SizedBox(height: 40),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              for (var player in players) Text(player.username)
-            ],
-          )
+          buttons,
         ]),
-        nbrGlasses: getRandomNumberOfGlasses());
+        nbrGlasses: getRandomNumberOfGlasses(),
+    );
   }
 
   Question getWheelOfNames(List<UserClass> players) {

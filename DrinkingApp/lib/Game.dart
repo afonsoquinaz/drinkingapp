@@ -93,7 +93,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // }
         },
         child: Scaffold(
-          backgroundColor: Color(0xffb0e3df) ,
+          //0xffb0e3df
+          backgroundColor: getColorForGameType(question.type)  ,
           body: Center(
               child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
