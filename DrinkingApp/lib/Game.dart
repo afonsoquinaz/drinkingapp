@@ -160,7 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
               // Text(questionText),
               SizedBox(),
               SizedBox(),
-              Text(question.type, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+              Text(question.type, style: TextStyle(fontSize: 32, fontWeight: FontWeight.w400 , fontFamily: 'Font1'),),
               SizedBox(),
               question.widget,
               SizedBox(),
