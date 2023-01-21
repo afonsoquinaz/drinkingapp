@@ -155,82 +155,83 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                     },
                     child: const Icon(Icons.flash_on , size: 35,),
                   ),
-                  Column(
+                  GestureDetector(
+                    onTap:  () async {
+                      // Take the Picture in a try / catch block. If anything goes wrong,
+                      // catch the error.
+                      try {
+                        // Ensure that the camera is initialized.
+                        await _initializeControllerFuture;
 
-                    children: [
-                      Row(
-                        children: [
-                          FloatingActionButton(
-                            backgroundColor: Colors.black,
-                            // Provide an onPressed callback.
-                            onPressed: () async {
-                              // Take the Picture in a try / catch block. If anything goes wrong,
-                              // catch the error.
-                              try {
-                                // Ensure that the camera is initialized.
-                                await _initializeControllerFuture;
+                        // Attempt to take a picture and get the file `image`
+                        // where it was saved.
 
-                                // Attempt to take a picture and get the file `image`
-                                // where it was saved.
+                        final image = await _controller.takePicture();
+                        if (!mounted) return;
 
-                                final image = await _controller.takePicture();
-                                if (!mounted) return;
+                        ImageProperties properties =
+                        await FlutterNativeImage.getImageProperties(image.path);
 
-                                ImageProperties properties =
-                                await FlutterNativeImage.getImageProperties(image.path);
+                        int width = properties.height!;
 
-                                int width = properties.height!;
+                        print(properties.height!);
+                        print(properties.width!);
+                        var offset = (properties.width! - width) / 2;
 
-                                print(properties.height!);
-                                print(properties.width!);
-                                var offset = (properties.width! - width) / 2;
+                        if (Platform.isAndroid) {
+                          // Android-specific code
+                          print("it is ANDROID");
+                          width = properties.height!;
+                          offset = (properties.width! - width) / 2;
+                          File croppedFile = await FlutterNativeImage.cropImage(
+                              image.path, offset.round(), 0, width, width);
+                          questionsManager.addPhotoToFeed(croppedFile.path, player);
 
-                                if (Platform.isAndroid) {
-                                  // Android-specific code
-                                  print("it is ANDROID");
-                                  width = properties.height!;
-                                  offset = (properties.width! - width) / 2;
-                                  File croppedFile = await FlutterNativeImage.cropImage(
-                                      image.path, offset.round(), 0, width, width);
-                                  questionsManager.addPhotoToFeed(croppedFile.path, player);
-
-                                } else if (Platform.isIOS) {
-                                  print("it is iphone");
-                                  // iOS-specific code
-                                  width = properties.width!;
-                                  offset = (properties.height! - width) / 2;
-                                  File croppedFile = await FlutterNativeImage.cropImage(
-                                      image.path, 0 , offset.round() , width , width );
-                                  questionsManager.addPhotoToFeed(croppedFile.path, player);
-                                }
+                        } else if (Platform.isIOS) {
+                          print("it is iphone");
+                          // iOS-specific code
+                          width = properties.width!;
+                          offset = (properties.height! - width) / 2;
+                          File croppedFile = await FlutterNativeImage.cropImage(
+                              image.path, 0 , offset.round() , width , width );
+                          questionsManager.addPhotoToFeed(croppedFile.path, player);
+                        }
 
 
-                                //questionsManager.addPhotoToFeed(image.path);
+                        //questionsManager.addPhotoToFeed(image.path);
 
-                                if (!mounted) return;
-                                await Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => Game(
-                                          players: players,
-                                          questionsManager: questionsManager)),
-                                      (Route<dynamic> route) => false,
-                                );
-                              } catch (e) {
-                                // If an error occurs, log the error to the console.
-                                print(e);
-                              }
-                            },
-                            child: const Icon(
+                        if (!mounted) return;
+                        await Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => Game(
+                                  players: players,
+                                  questionsManager: questionsManager)),
+                              (Route<dynamic> route) => false,
+                        );
+                      } catch (e) {
+                        // If an error occurs, log the error to the console.
+                        print(e);
+                      }
+                    },
+                    child: Column(
+
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
                               Icons.circle,
                               size: 100,
+                              color: Colors.white,
                             ),
-                          ),
-                          SizedBox(width: 40,)
-                        ],
-                      ),
-                      SizedBox(height: 50,)
-                    ],
+
+                          ],
+                        ),
+                        SizedBox(height: 50,)
+                      ],
+                    ),
                   ),
+
+
 
                   FloatingActionButton(
                     backgroundColor: Colors.black,

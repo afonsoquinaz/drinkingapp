@@ -162,7 +162,7 @@ class PlayerView extends StatelessWidget {
 
   String getAvatar() {
     Random random = new Random();
-    int randomNumber = random.nextInt(4) + 1;
+    int randomNumber = random.nextInt(8) + 1;
     return 'images/avatar' + randomNumber.toString() + '.jpeg';
   }
 
@@ -336,7 +336,13 @@ class _DialogState extends State<Dialog> {
       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
         AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar3.jpeg', changeAvatar: changeAvatar),
         AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar4.jpeg', changeAvatar: changeAvatar),
-        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar4.jpeg', changeAvatar: changeAvatar)
+        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar5.jpeg', changeAvatar: changeAvatar)
+      ]),
+      SizedBox(height: 10,),
+      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar6.jpeg', changeAvatar: changeAvatar),
+        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar7.jpeg', changeAvatar: changeAvatar),
+        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar8.jpeg', changeAvatar: changeAvatar)
       ]),
       SizedBox(height: 20),
       TextButton(onPressed: () {
