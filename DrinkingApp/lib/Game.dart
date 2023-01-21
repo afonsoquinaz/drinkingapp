@@ -62,11 +62,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-      if(questionsManager.getCurrentQuestion().type != "first" && questionsManager.currentQuestion.type != ("Photo Time"))
-        question = questionsManager.getCurrentQuestion();
-      else
-        question = questionsManager.getWidgetForQuestion(players, context);
-
+    if (questionsManager.getCurrentQuestion().type != "first" &&
+        questionsManager.currentQuestion.type != ("Photo Time"))
+      question = questionsManager.getCurrentQuestion();
+    else
+      question = questionsManager.getWidgetForQuestion(players, context);
   }
 
   // StreamController<int> selected = StreamController<int>();
@@ -83,15 +83,16 @@ class _MyHomePageState extends State<MyHomePage> {
         onHorizontalDragEnd: (details) {
           // Note: Sensitivity is integer used when you don't want to mess up vertical drag
           // int sensitivity = 5;
-          // if (details.delta.dx > sensitivity) {
-          debugPrint("swipe ${details.velocity}");
-          if (question.complete != null) {
-            question.complete!();
+          if (details.velocity.pixelsPerSecond.dx < -100) {
+            debugPrint("swipe ${details.velocity.pixelsPerSecond.dx}");
+            if (question.complete != null) {
+              question.complete!();
+            }
+            setState(() {
+              question = questionsManager.getWidgetForQuestion(
+                  widget.players, context);
+            });
           }
-          setState(() {
-            question =
-                questionsManager.getWidgetForQuestion(widget.players, context);
-          });
           // } else if (details.delta.dx < -sensitivity) {
           //   debugPrint("swipe left");
           //   setState(() {
@@ -202,8 +203,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         Container(
                           width: 42,
                           height: 35,
-                          child: Image.asset("images/cocktail.png"),)
-
+                          child: Image.asset("images/cocktail.png"),
+                        )
                     ],
                   ),
                   SizedBox(
@@ -239,7 +240,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                     SizedBox(width: 5),
                                     Text('NEXT',
                                         style: TextStyle(
-
                                             color: (getTextColorForGameType(
                                                         question.type) ==
                                                     Color.fromARGB(
