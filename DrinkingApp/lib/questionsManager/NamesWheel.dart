@@ -30,7 +30,7 @@ class _NamesWheelState extends State<NamesWheel> {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width * 0.7;
+    var width = MediaQuery.of(context).size.width * 0.8;
     return Container(
       //color: Colors.red,
       //margin: const EdgeInsets.only(40.0),

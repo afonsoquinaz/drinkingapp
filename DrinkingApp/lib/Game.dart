@@ -179,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontFamily: 'Font3'),
               ),
               SizedBox(),
-              question.widget,
+              Container(margin: EdgeInsets.all(20), child: question.widget),
               SizedBox(),
               SizedBox(),
               Column(

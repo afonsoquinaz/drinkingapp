@@ -265,9 +265,7 @@ class QuestionsManager {
         players: players, selected: List<bool>.filled(players.length, false));
     return Question(
         type: 'Most Likely To',
-        widget: Container(
-          margin: EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
+        widget: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(question,
@@ -280,7 +278,6 @@ class QuestionsManager {
               buttons,
             ],
           ),
-        ),
         complete: () {
           for (int i = 0; i < players.length; i++) {
             if (buttons.selected[i]) {
