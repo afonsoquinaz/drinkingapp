@@ -31,6 +31,12 @@ class QuestionsManager {
     return feedManager.getFeed();
   }
 
+  final List<String> photoQuestions = [
+    "Take a photo holding the most random Item of the house!",
+    "Take a photo giving a Toast!",
+    "Take a photo as one of you is going to jail!",
+    "Take a photo as two of you are going to have your first professional MMA fight !"
+  ];
   final List<String> mostLikelyQuestions = [
     "Who is most likely to become a stripper?",
     "Who is most likely to become engaged?",
@@ -92,8 +98,8 @@ class QuestionsManager {
 
   }
 
-  void addPhotoToFeed(String photoPath, UserClass player) {
-    feedManager.addPhoto(photoPath, player);
+  void addPhotoToFeed(String photoPath,List<UserClass>  playersInPhoto, String photoQuestionText) {
+    feedManager.addPhoto(photoPath, playersInPhoto, photoQuestionText);
   }
 
   int getRandomNumberOfGlasses() {
@@ -101,13 +107,25 @@ class QuestionsManager {
   }
 
   Question getPhotoQuestion(List<UserClass> players, context) {
+    photoQuestions.shuffle();
+
     int player = Random().nextInt(players.length);
+
+    players.shuffle();
+    int randomNbr = Random().nextInt(players.length - 2 );
+    List<UserClass> playersForPhoto = [];
+    String textForQuestion = "";
+    for(int i = 0 ; i < randomNbr + 2 ; i++){
+      playersForPhoto.add(players[i]);
+      textForQuestion = textForQuestion + players[i].username + ", ";
+    }
 
     return Question(
         type: 'Photo Time',
         widget: Column(
           children: [
-            Text("It Is Photo Time!",
+            Text( textForQuestion +   photoQuestions.first,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
@@ -132,7 +150,8 @@ class QuestionsManager {
                             camera: firstCamera,
                             questionsManager: this,
                             players: players,
-                            player: players[player])));
+                            playersInPhoto: playersForPhoto,
+                            photoQuestionText: photoQuestions.first,)));
               },
               child: Container(
                 width: 100,
@@ -156,18 +175,24 @@ class QuestionsManager {
             SizedBox(
               height: 30,
             ),
-            Container(
-              width: 70,
-              height: 70,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(players[player].photoPath),
-                  fit: BoxFit.fill,
-                ),
-                shape: BoxShape.circle,
-                //border: Border.all(color: Colors.yellow.shade700, width: 3),
-                color: Colors.yellow.shade700,
-              ),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                for(int i = 0; i < playersForPhoto.length ; i++)
+                  Container(
+                    width:50,
+                    height:50,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(playersForPhoto[i].photoPath),
+                        fit: BoxFit.fill,
+                      ),
+                      shape: BoxShape.circle,
+                      //border: Border.all(color: Colors.yellow.shade700, width: 3),
+                      color: Colors.yellow.shade700,
+                    ),
+                  )
+
+              ],
             ),
             SizedBox(height: 10),
             SizedBox(

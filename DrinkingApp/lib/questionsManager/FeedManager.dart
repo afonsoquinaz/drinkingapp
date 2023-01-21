@@ -28,8 +28,8 @@ class FeedManager {
     feed = newFeed;
   }
 
-  void addPhoto(String photoPath, UserClass player) {
-    feed.add(DisplayPictureScreen(imagePath: photoPath, player: player));
+  void addPhoto(String photoPath, List<UserClass> playersInPhoto , String photoQuestionText) {
+    feed.add(DisplayPictureScreen(imagePath: photoPath, playersInPhoto: playersInPhoto, photoQuestionText: photoQuestionText));
   }
 
   addNamesWheelPost(UserClass winner) {
@@ -181,14 +181,16 @@ class MostLikelyToPost extends StatelessWidget {
 // A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
-  final UserClass player;
+  final List<UserClass> playersInPhoto;
+  final String photoQuestionText;
 
   const DisplayPictureScreen(
-      {super.key, required this.imagePath, required this.player});
+      {super.key, required this.imagePath, required this.playersInPhoto, required this.photoQuestionText});
 
   @override
   Widget build(BuildContext context) {
     var widget = Column(children: [
+      Text(photoQuestionText),
       Container(
         height: 300,
         decoration: BoxDecoration(
@@ -204,12 +206,8 @@ class DisplayPictureScreen extends StatelessWidget {
       SizedBox(height: 5),
       Text('x likes'),
       Row(children: [
-        Text(
-          player.username,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        for(int i = 0 ; i < playersInPhoto.length ; i++)
+          Text(playersInPhoto[i].username + ", "),
         SizedBox(
           width: 5,
         ),
@@ -217,9 +215,9 @@ class DisplayPictureScreen extends StatelessWidget {
       ])
     ]);
     return GenericCard(
-        player: player,
+        player: playersInPhoto.first,
         sharedText:
-            "${player.username} is playing a drinking game and wanted to share this moment with you!\n"
+            "${playersInPhoto.first.username} is playing a drinking game and wanted to share this moment with you!\n"
             "Discover our drinking game app here: bit.ly/our_link(not-working)\n"
             "xoxo",
         widget: widget, photoPath: imagePath);

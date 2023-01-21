@@ -12,42 +12,48 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 class TakePictureScreen extends StatefulWidget {
   const TakePictureScreen({
     super.key,
+    required this.photoQuestionText,
     required this.camera,
     required this.questionsManager,
     required this.players,
-    required this.player,
+    required this.playersInPhoto,
   });
 
-  final UserClass player;
+  final String photoQuestionText;
+  final List<UserClass> playersInPhoto;
   final List<UserClass> players;
   final CameraDescription camera;
   final QuestionsManager questionsManager;
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState(
-      questionsManager: questionsManager, players: players, player: player);
+      questionsManager: questionsManager, players: players, playersInPhoto: playersInPhoto, photoQuestionText: photoQuestionText);
 }
 
 class TakePictureScreenState extends State<TakePictureScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
-  final UserClass player;
+  final List<UserClass> playersInPhoto;
   final List<UserClass> players;
   final QuestionsManager questionsManager;
+  final String photoQuestionText;
   int isFlashOn = 0;
 
   TakePictureScreenState(
-      {required this.questionsManager, required this.players, required this.player});
+      {required this.questionsManager, required this.players, required this.playersInPhoto, required this.photoQuestionText});
 
   @override
   void initState() {
     super.initState();
     // To display the current output from the Camera,
     // create a CameraController.
+
+
     _controller = CameraController(
       // Get a specific camera from the list of available cameras.
       widget.camera,
       // Define the resolution to use.
+
       ResolutionPreset.medium,
     );
 
@@ -83,12 +89,15 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                     fontWeight: FontWeight.w200),
               ),
               SizedBox(height: 10,),
-              const Text(
-                "X take a photo with x",
+               Text(
+                photoQuestionText,
+                textAlign: TextAlign.center,
                 style: TextStyle(
+
                     fontSize: 23,
                     color: Colors.white,
-                    fontWeight: FontWeight.w900),
+                    fontWeight: FontWeight.w900
+                    ),
               ),
             ],
           ),
@@ -185,7 +194,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                           offset = (properties.width! - width) / 2;
                           File croppedFile = await FlutterNativeImage.cropImage(
                               image.path, offset.round(), 0, width, width);
-                          questionsManager.addPhotoToFeed(croppedFile.path, player);
+                          questionsManager.addPhotoToFeed(croppedFile.path, playersInPhoto, photoQuestionText);
 
                         } else if (Platform.isIOS) {
                           print("it is iphone");
@@ -194,7 +203,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                           offset = (properties.height! - width) / 2;
                           File croppedFile = await FlutterNativeImage.cropImage(
                               image.path, 0 , offset.round() , width , width );
-                          questionsManager.addPhotoToFeed(croppedFile.path, player);
+                          questionsManager.addPhotoToFeed(croppedFile.path, playersInPhoto, photoQuestionText);
                         }
 
 
