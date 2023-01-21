@@ -75,8 +75,8 @@ class _NamesWheelState extends State<NamesWheel> {
                             color: Colors.black,
                           ),
                           child: Icon(
-                            Icons.no_drinks,
-                            color: Colors.white,
+                            Icons.sports_bar,
+                            color: Colors.yellow.shade700,
                           ), // <-- changing the color of the indicator
                         ),
                         SizedBox(height: width*0.025),

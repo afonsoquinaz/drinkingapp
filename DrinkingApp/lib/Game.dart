@@ -176,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       for(var i = 0; i < question.nbrGlasses ; i++)
                         Icon(
                           // <-- Icon
-                          Icons.local_drink_outlined,
+                          Icons.local_bar,
                           size: 38.0,
                           color: Colors.pinkAccent,
                         )
