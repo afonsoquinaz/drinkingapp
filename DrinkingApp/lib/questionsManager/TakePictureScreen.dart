@@ -89,7 +89,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                       height:50,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(playersInPhoto[i].photoPath),
+                          image: playersInPhoto[i].photoPath.contains('avatar') ? AssetImage(playersInPhoto[i].photoPath) : Image.file(File(playersInPhoto[i].photoPath)).image,
                           fit: BoxFit.fill,
                         ),
                         shape: BoxShape.circle,

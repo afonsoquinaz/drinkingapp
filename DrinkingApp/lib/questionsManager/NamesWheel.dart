@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -107,7 +109,7 @@ class _NamesWheelState extends State<NamesWheel> {
                                     Container(
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
-                                          image: AssetImage(player.photoPath),
+                                          image: player.photoPath.contains('avatar') ? AssetImage(player.photoPath) : Image.file(File(player.photoPath)).image,
                                           fit: BoxFit.fill,
                                         ),
                                         shape: BoxShape.circle,

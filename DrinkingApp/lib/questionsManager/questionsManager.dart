@@ -188,7 +188,7 @@ class QuestionsManager {
                     height:50,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage(playersForPhoto[i].photoPath),
+                        image: playersForPhoto[i].photoPath.contains('avatar') ? AssetImage(playersForPhoto[i].photoPath) : Image.file(File(playersForPhoto[i].photoPath)).image,
                         fit: BoxFit.fill,
                       ),
                       shape: BoxShape.circle,
@@ -376,8 +376,8 @@ class _OneVSOneState extends State<OneVsOne> {
                     height: 100,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage(
-                            widget.players[widget.player1].photoPath),
+                        image: widget.players[widget.player1].photoPath.contains('avatar') ? AssetImage(
+                            widget.players[widget.player1].photoPath) : Image.file(File(widget.players[widget.player1].photoPath)).image,
                         fit: BoxFit.fill,
                       ),
                       border: Border.all(
@@ -427,8 +427,8 @@ class _OneVSOneState extends State<OneVsOne> {
                     height: 100,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage(
-                            widget.players[widget.player2].photoPath),
+                        image: widget.players[widget.player2].photoPath.contains('avatar') ? AssetImage(
+                            widget.players[widget.player2].photoPath) : Image.file(File(widget.players[widget.player2].photoPath)).image,
                         fit: BoxFit.fill,
                       ),
                       border: Border.all(
@@ -563,6 +563,7 @@ class _MyWidgetState extends State<PlayerButton> {
 
   @override
   Widget build(BuildContext context) {
+    bool isFromCamera = widget.player.picsFromCamera.contains(widget.player.photoPath);
     return GestureDetector(
         onTap: () {
           setState(() {
@@ -589,7 +590,7 @@ class _MyWidgetState extends State<PlayerButton> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          image: AssetImage(widget.player.photoPath),
+                          image: isFromCamera ? Image.file(File(widget.player.photoPath)).image : AssetImage(widget.player.photoPath),
                           fit: BoxFit.fill,
                         ),
                       ),

@@ -253,7 +253,7 @@ class GenericCard extends StatelessWidget {
                   height: 24,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage(player.photoPath),
+                      image: player.photoPath.contains('avatar') ? AssetImage(player.photoPath) : Image.file(File(player.photoPath)).image,
                       fit: BoxFit.fill,
                     ),
                     shape: BoxShape.circle,
