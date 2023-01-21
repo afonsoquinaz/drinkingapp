@@ -131,7 +131,7 @@ class QuestionsManager {
     return Question(
         type: 'Normal Challenge',
         widget: Column(children: [
-          Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center , style: TextStyle(fontSize: 23, fontWeight: FontWeight.w100 , fontFamily: 'Font1')),
+          Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center , style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800 , fontFamily: 'Font5')),
           SizedBox(height: 40),
           buttons,
         ]),
@@ -238,7 +238,7 @@ class QuestionsManager {
 
             const SizedBox(height: 40),
             Text('$challenge\nThe other players vote.',
-                textAlign: TextAlign.center ,  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w100 , fontFamily: 'Font1')),
+                textAlign: TextAlign.center ,  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800 , fontFamily: 'Font5')),
             SizedBox(height: 50),
             buttons
           ],
