@@ -131,7 +131,7 @@ class QuestionsManager {
     return Question(
         type: 'Normal Challenge',
         widget: Column(children: [
-          Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center),
+          Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center , style: TextStyle(fontSize: 20, fontWeight: FontWeight.w100 , fontFamily: 'Font1')),
           SizedBox(height: 40),
           buttons,
         ]),
@@ -165,7 +165,7 @@ class QuestionsManager {
         type: 'Most Likely To',
         widget: Column(
           children: [
-            Text(question),
+            Text(question , style: TextStyle(fontSize: 20, fontWeight: FontWeight.w100 , fontFamily: 'Font1')),
             SizedBox(height: 50),
             buttons,
           ],
@@ -206,7 +206,7 @@ class QuestionsManager {
             ),
             const SizedBox(height: 40),
             Text('$challenge\nThe other players vote.',
-                textAlign: TextAlign.center),
+                textAlign: TextAlign.center ,  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w100 , fontFamily: 'Font1')),
             SizedBox(height: 50),
             buttons
           ],
