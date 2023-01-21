@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 class UserClass {
   String username;
   String photoPath;
+  List<String> picsFromCamera=[];
 
   UserClass(this.username, this.photoPath);
 
