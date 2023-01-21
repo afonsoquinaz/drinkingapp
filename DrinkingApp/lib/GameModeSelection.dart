@@ -1,7 +1,9 @@
 import 'dart:math';
-
+import 'dart:io';
+import 'package:camera/camera.dart';
 import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:drinkingapp/questionsManager/questionsManager.dart';
+import 'package:drinkingapp/Views/TakePictureScreenForAvatar.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'Game.dart';
@@ -154,7 +156,7 @@ class PlayerView extends StatelessWidget {
   final Function onPressed;
   final Function changePhoto;
 
-  const PlayerView(
+  PlayerView(
       {super.key,
       required this.player,
       required this.onPressed,
@@ -218,7 +220,7 @@ class PlayerView extends StatelessWidget {
                               Container(
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image: AssetImage(player.photoPath),
+                                    image: player.photoPath.contains('avatar') ? AssetImage(player.photoPath) : Image.file(File(player.photoPath)).image,
                                     fit: BoxFit.fill,
                                   ),
                                   shape: BoxShape.circle,
@@ -252,7 +254,10 @@ class PlayerView extends StatelessWidget {
                                         showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            return Dialog(player: player, changePhoto: changePhoto,);
+                                            return Dialog(
+                                              player: player,
+                                              changePhoto: changePhoto,
+                                            );
                                           },
                                         );
                                         //changePhoto(player, getAvatar());
@@ -290,17 +295,24 @@ class Dialog extends StatefulWidget {
   final Function changePhoto;
   const Dialog({super.key, required this.player, required this.changePhoto});
 
-
   @override
   State<StatefulWidget> createState() => _DialogState();
 }
 
 class _DialogState extends State<Dialog> {
-  bool isSelected(String photoPath){
+
+  bool isSelected(String photoPath) {
     return widget.player.photoPath == photoPath;
   }
 
-  changeAvatar(String photoPath){
+  addPicFromCamera(String photoPath){
+    setState(() {
+      widget.player.picsFromCamera.add(photoPath);
+      changeAvatar(photoPath);
+    });
+  }
+
+  changeAvatar(String photoPath) {
     setState(() {
       widget.changePhoto(widget.player, photoPath);
     });
@@ -310,45 +322,110 @@ class _DialogState extends State<Dialog> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width * 0.20;
 
-    return SimpleDialog(title: Text("Choose ${widget.player.username}'s avatar"), children: [
-      SizedBox(height: 20),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        Container(
-          width: width,
-          height: width,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            //border: Border.all(color: Colors.yellow.shade700, width: 3),
-            color: Colors.yellow.shade700,
+    return SimpleDialog(
+        title: Text("Choose ${widget.player.username}'s avatar"),
+        children: [
+          SizedBox(height: 20),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                Container(
+                  width: width,
+                  height: width,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    //border: Border.all(color: Colors.yellow.shade700, width: 3),
+                    color: Colors.yellow.shade700,
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.camera_alt_rounded,
+                        color: Colors.black.withOpacity(0.9)),
+                    iconSize: 30,
+                    onPressed: () async {
+                      WidgetsFlutterBinding.ensureInitialized();
+
+                      // Obtain a list of the available cameras on the device.
+                      final cameras = await availableCameras();
+
+                      // Get a specific camera from the list of available cameras.
+                      final firstCamera = cameras.first;
+
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  TakePictureScreenForAvatar(camera: firstCamera, player: widget.player, changePhoto: addPicFromCamera)));
+                    },
+                  ),
+                ),
+            AvatarPic(
+                isSelected: isSelected,
+                avatarPath: 'images/avatar2.jpeg',
+                changeAvatar: changeAvatar, isFromCamera: false),
+            AvatarPic(
+                isSelected: isSelected,
+                avatarPath: 'images/avatar3.jpeg',
+                changeAvatar: changeAvatar, isFromCamera: false)
+          ]),
+          SizedBox(height: 10),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            AvatarPic(
+                isSelected: isSelected,
+                avatarPath: 'images/avatar4.jpeg',
+                changeAvatar: changeAvatar, isFromCamera: false),
+            AvatarPic(
+                isSelected: isSelected,
+                avatarPath: 'images/avatar5.jpeg',
+                changeAvatar: changeAvatar, isFromCamera: false),
+            AvatarPic(
+                isSelected: isSelected,
+                avatarPath: 'images/avatar6.jpeg',
+                changeAvatar: changeAvatar, isFromCamera: false)
+          ]),
+          SizedBox(
+            height: 10,
           ),
-          child: IconButton(
-            icon: Icon(Icons.camera_alt_rounded,
-                color: Colors.black.withOpacity(0.9)),
-            iconSize: 30,
-            onPressed: () {
-            },
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            AvatarPic(
+                isSelected: isSelected,
+                avatarPath: 'images/avatar7.jpeg',
+                changeAvatar: changeAvatar, isFromCamera: false),
+            AvatarPic(
+                isSelected: isSelected,
+                avatarPath: 'images/avatar8.jpeg',
+                changeAvatar: changeAvatar, isFromCamera: false),
+            AvatarPic(
+                isSelected: isSelected,
+                avatarPath: 'images/avatar1.jpeg',
+                changeAvatar: changeAvatar, isFromCamera: false),
+          ]),
+          SizedBox(
+            height: 10,
           ),
-        ),
-        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar1.jpeg', changeAvatar: changeAvatar),
-        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar2.jpeg', changeAvatar: changeAvatar)
-      ]),
-      SizedBox(height: 10),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar3.jpeg', changeAvatar: changeAvatar),
-        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar4.jpeg', changeAvatar: changeAvatar),
-        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar5.jpeg', changeAvatar: changeAvatar)
-      ]),
-      SizedBox(height: 10,),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar6.jpeg', changeAvatar: changeAvatar),
-        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar7.jpeg', changeAvatar: changeAvatar),
-        AvatarPic(isSelected: isSelected, avatarPath: 'images/avatar8.jpeg', changeAvatar: changeAvatar)
-      ]),
-      SizedBox(height: 20),
-      TextButton(onPressed: () {
-        Navigator.pop(context);
-      }, child: Text("OK", style: TextStyle(color: Colors.green, fontSize: 18),))
-    ]);
+          for (int i=0; i < widget.player.picsFromCamera.length; i=i+3)
+            Column(children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              AvatarPic(
+                  isSelected: isSelected,
+                  avatarPath: widget.player.picsFromCamera[i],
+                  changeAvatar: changeAvatar, isFromCamera: true),
+              (i+1 < widget.player.picsFromCamera.length ) ? AvatarPic(
+                  isSelected: isSelected,
+                  avatarPath: widget.player.picsFromCamera[i+1],
+                  changeAvatar: changeAvatar, isFromCamera: true):SizedBox(width: width),
+              (i+2 < widget.player.picsFromCamera.length ) ? AvatarPic(
+                  isSelected: isSelected,
+                  avatarPath: widget.player.picsFromCamera[i+2],
+                  changeAvatar: changeAvatar, isFromCamera: true):SizedBox(width: width),
+            ]), SizedBox(height: 10)]),
+          SizedBox(height: 20),
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "OK",
+                style: TextStyle(color: Colors.green, fontSize: 18),
+              ))
+        ]);
   }
 }
 
@@ -356,39 +433,43 @@ class AvatarPic extends StatelessWidget {
   final Function isSelected;
   final String avatarPath;
   final Function changeAvatar;
+  final bool isFromCamera;
 
-  const AvatarPic({super.key, required this.isSelected, required this.avatarPath, required this.changeAvatar});
+  const AvatarPic(
+      {super.key,
+      required this.isSelected,
+      required this.avatarPath,
+      required this.changeAvatar, required this.isFromCamera});
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width * 0.20;
 
     return GestureDetector(
-      onTap: () {
-        changeAvatar(avatarPath);
-      },
+        onTap: () {
+          changeAvatar(avatarPath);
+        },
         child: Container(
-      width: width,
-      height: width,
-      decoration: BoxDecoration(
-        border: Border.all(
-            width: isSelected(avatarPath) ? 5 : 0, color: Colors.green),
-        // boxShadow: isSelected(avatarPath) ? [
-        //   BoxShadow(
-        //       spreadRadius: 5,
-        //       blurRadius: 8,
-        //       color:
-        //       Colors.black.withOpacity(0.2))
-        // ]:[],
-        image: DecorationImage(
-          image: AssetImage(avatarPath),
-          fit: BoxFit.fill,
-        ),
-        shape: BoxShape.circle,
-        //border: Border.all(color: Colors.yellow.shade700, width: 3),
-        color: Colors.yellow.shade700,
-      ),
-    ));
+          width: width,
+          height: width,
+          decoration: BoxDecoration(
+            border: Border.all(
+                width: isSelected(avatarPath) ? 5 : 0, color: Colors.green),
+            // boxShadow: isSelected(avatarPath) ? [
+            //   BoxShadow(
+            //       spreadRadius: 5,
+            //       blurRadius: 8,
+            //       color:
+            //       Colors.black.withOpacity(0.2))
+            // ]:[],
+            image: DecorationImage(
+              image: isFromCamera ? Image.file(File(avatarPath)).image : AssetImage(avatarPath),
+              fit: BoxFit.fill,
+            ),
+            shape: BoxShape.circle,
+            //border: Border.all(color: Colors.yellow.shade700, width: 3),
+            color: Colors.yellow.shade700,
+          ),
+        ));
   }
-
 }
