@@ -71,35 +71,45 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          const SizedBox(
-            height: 10,
-          ),
-          const Text(
-            "DrinkingApp",
-            style: TextStyle(
-                fontSize: 26,
-                color: Colors.blueGrey,
-                fontWeight: FontWeight.w200),
-          ),
-          const Text(
-            "X take a photo with x",
-            style: TextStyle(
-                fontSize: 23,
-                color: Colors.blueGrey,
-                fontWeight: FontWeight.w900),
-          ),
 
+          Column(
+            children: [
+              SizedBox(height: 25,),
+              const Text(
+                "DrinkingApp",
+                style: TextStyle(
+                    fontSize: 26,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w200),
+              ),
+              SizedBox(height: 10,),
+              const Text(
+                "X take a photo with x",
+                style: TextStyle(
+                    fontSize: 23,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900),
+              ),
+            ],
+          ),
+          //SizedBox(width: 100,),
           Container(
+
               width: size,
               height: size,
               child: ClipRect(
+
                   child: OverflowBox(
+
                       alignment: Alignment.center,
                       child: FittedBox(
+
                           fit: BoxFit.cover,
                           child: SizedBox(
+
                               height: 1,
                               child: FutureBuilder<void>(
+
                                 future: _initializeControllerFuture,
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState ==
@@ -118,101 +128,129 @@ class TakePictureScreenState extends State<TakePictureScreen> {
           SizedBox(
             height: 10,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+
+          Column(
             children: [
-              FloatingActionButton(
-                backgroundColor: Colors.black,
-                // Provide an onPressed callback.
-                onPressed: () async {
-                  if (isFlashOn == 0) {
-                    isFlashOn = 1;
-                    _controller != null
-                        ? () => onSetFlashModeButtonPressed(FlashMode.always)
-                        : null;
-                  } else if (isFlashOn == 1) {
-                    print("oi");
-                    isFlashOn = 0;
-                    _controller != null
-                        ? () => onSetFlashModeButtonPressed(FlashMode.off)
-                        : null;
-                  }
-                },
-                child: const Icon(Icons.flash_on),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  SizedBox(),
+                  FloatingActionButton(
+                    backgroundColor: Colors.black,
+                    // Provide an onPressed callback.
+                    onPressed: () async {
+                      if (isFlashOn == 0) {
+                        isFlashOn = 1;
+                        _controller != null
+                            ? () => onSetFlashModeButtonPressed(FlashMode.always)
+                            : null;
+                      } else if (isFlashOn == 1) {
+                        print("oi");
+                        isFlashOn = 0;
+                        _controller != null
+                            ? () => onSetFlashModeButtonPressed(FlashMode.off)
+                            : null;
+                      }
+                    },
+                    child: const Icon(Icons.flash_on , size: 35,),
+                  ),
+                  Column(
+
+                    children: [
+                      Row(
+                        children: [
+                          FloatingActionButton(
+                            backgroundColor: Colors.black,
+                            // Provide an onPressed callback.
+                            onPressed: () async {
+                              // Take the Picture in a try / catch block. If anything goes wrong,
+                              // catch the error.
+                              try {
+                                // Ensure that the camera is initialized.
+                                await _initializeControllerFuture;
+
+                                // Attempt to take a picture and get the file `image`
+                                // where it was saved.
+
+                                final image = await _controller.takePicture();
+                                if (!mounted) return;
+
+                                ImageProperties properties =
+                                await FlutterNativeImage.getImageProperties(image.path);
+
+                                int width = properties.height!;
+
+                                print(properties.height!);
+                                print(properties.width!);
+                                var offset = (properties.width! - width) / 2;
+
+                                if (Platform.isAndroid) {
+                                  // Android-specific code
+                                  print("it is ANDROID");
+                                  width = properties.height!;
+                                  offset = (properties.width! - width) / 2;
+                                  File croppedFile = await FlutterNativeImage.cropImage(
+                                      image.path, offset.round(), 0, width, width);
+                                  questionsManager.addPhotoToFeed(croppedFile.path, player);
+
+                                } else if (Platform.isIOS) {
+                                  print("it is iphone");
+                                  // iOS-specific code
+                                  width = properties.width!;
+                                  offset = (properties.height! - width) / 2;
+                                  File croppedFile = await FlutterNativeImage.cropImage(
+                                      image.path, 0 , offset.round() , width , width );
+                                  questionsManager.addPhotoToFeed(croppedFile.path, player);
+                                }
+
+
+                                //questionsManager.addPhotoToFeed(image.path);
+
+                                if (!mounted) return;
+                                await Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => Game(
+                                          players: players,
+                                          questionsManager: questionsManager)),
+                                      (Route<dynamic> route) => false,
+                                );
+                              } catch (e) {
+                                // If an error occurs, log the error to the console.
+                                print(e);
+                              }
+                            },
+                            child: const Icon(
+                              Icons.circle,
+                              size: 100,
+                            ),
+                          ),
+                          SizedBox(width: 40,)
+                        ],
+                      ),
+                      SizedBox(height: 50,)
+                    ],
+                  ),
+
+                  FloatingActionButton(
+                    backgroundColor: Colors.black,
+                    // Provide an onPressed callback.
+                    onPressed: () async {},
+                    child: const Icon(Icons.refresh ,size: 45,),
+                  ),
+                  SizedBox()
+                ],
               ),
-              FloatingActionButton(
-                backgroundColor: Colors.black,
-                // Provide an onPressed callback.
-                onPressed: () async {
-                  // Take the Picture in a try / catch block. If anything goes wrong,
-                  // catch the error.
-                  try {
-                    // Ensure that the camera is initialized.
-                    await _initializeControllerFuture;
-
-                    // Attempt to take a picture and get the file `image`
-                    // where it was saved.
-
-                    final image = await _controller.takePicture();
-                    if (!mounted) return;
-
-                    ImageProperties properties =
-                      await FlutterNativeImage.getImageProperties(image.path);
-
-                    int width = properties.height!;
-
-                    print(properties.height!);
-                    print(properties.width!);
-                    var offset = (properties.width! - width) / 2;
-
-                    if (Platform.isAndroid) {
-                      // Android-specific code
-                      print("it is ANDROID");
-                       width = properties.height!;
-                       offset = (properties.width! - width) / 2;
-                      File croppedFile = await FlutterNativeImage.cropImage(
-                          image.path, offset.round(), 0, width, width);
-                      questionsManager.addPhotoToFeed(croppedFile.path, player);
-
-                    } else if (Platform.isIOS) {
-                      print("it is iphone");
-                      // iOS-specific code
-                       width = properties.width!;
-                       offset = (properties.height! - width) / 2;
-                       File croppedFile = await FlutterNativeImage.cropImage(
-                           image.path, 0 , offset.round() , width , width );
-                      questionsManager.addPhotoToFeed(croppedFile.path, player);
-                    }
-
-
-                    //questionsManager.addPhotoToFeed(image.path);
-
-                    if (!mounted) return;
-                    await Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                          builder: (context) => Game(
-                              players: players,
-                              questionsManager: questionsManager)),
-                      (Route<dynamic> route) => false,
-                    );
-                  } catch (e) {
-                    // If an error occurs, log the error to the console.
-                    print(e);
-                  }
-                },
-                child: const Icon(
-                  Icons.circle,
-                  size: 50,
-                ),
-              ),
-              FloatingActionButton(
-                backgroundColor: Colors.black,
-                // Provide an onPressed callback.
-                onPressed: () async {},
-                child: const Icon(Icons.swap_calls),
+               Text(
+                "Tap for photo, hold for video",
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white.withOpacity(0.5),
+                    fontWeight: FontWeight.w200),
               ),
             ],
           ),
+          SizedBox()
         ],
       ),
     );

@@ -62,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    question = questionsManager.getWidgetForQuestion(players, context);
+      question = questionsManager.getWidgetForQuestion(players, context);
   }
 
   // StreamController<int> selected = StreamController<int>();

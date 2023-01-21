@@ -97,10 +97,12 @@ class QuestionsManager {
         type: 'Photo Time',
         widget: Column(
           children: [
-            IconButton(
-              icon: const Icon(Icons.photo_camera),
-              color: Colors.black,
-              onPressed: () async {
+            Text("It Is Photo Time!" , style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800 , fontFamily: 'Font5'))
+,
+            SizedBox(height: 30,),
+
+            GestureDetector(
+              onTap:  () async {
                 WidgetsFlutterBinding.ensureInitialized();
 
                 // Obtain a list of the available cameras on the device.
@@ -118,11 +120,50 @@ class QuestionsManager {
                             players: players,
                             player: players[player])));
               },
+              child: Container(
+
+                width: 100,
+                height: 100,
+
+                decoration: BoxDecoration(
+
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(),
+                    Icon(Icons.photo_camera ,size: 25, color:Colors.deepOrangeAccent.shade700 ),
+                    Text("Take Photo"),
+                    SizedBox()
+
+                  ],
+                ),
+
+              ),
             ),
-            Text('${players[player].username}'),
+            SizedBox(height: 30,),
+            Container(
+              width: 70,
+              height: 70,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(players[player].photoPath),
+                  fit: BoxFit.fill,
+                ),
+                shape: BoxShape.circle,
+                //border: Border.all(color: Colors.yellow.shade700, width: 3),
+                color: Colors.yellow.shade700,
+              ),
+            ),
+
+
+
+
             SizedBox(height: 10),
-            Text("IT IS PHOTO TIME!")
-          ],
+            SizedBox(height: 30,),
+           ],
         ),
         nbrGlasses: getRandomNumberOfGlasses());
   }
