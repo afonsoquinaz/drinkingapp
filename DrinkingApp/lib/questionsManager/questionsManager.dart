@@ -199,11 +199,39 @@ class QuestionsManager {
         type: '1 vs 1',
         widget: Column(
           children: [
-            Text(
-              "${players[player1].username} vs ${players[player2].username}",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(players[player1].photoPath),
+                      fit: BoxFit.fill,
+                    ),
+                    shape: BoxShape.circle,
+                    //border: Border.all(color: Colors.yellow.shade700, width: 3),
+                    color: Colors.yellow.shade700,
+                  ),
+                ),
+                Text("VS"),
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(players[player2].photoPath),
+                      fit: BoxFit.fill,
+                    ),
+                    shape: BoxShape.circle,
+                    //border: Border.all(color: Colors.yellow.shade700, width: 3),
+                    color: Colors.yellow.shade700,
+                  ),
+                ),
+              ],
             ),
+
             const SizedBox(height: 40),
             Text('$challenge\nThe other players vote.',
                 textAlign: TextAlign.center ,  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w100 , fontFamily: 'Font1')),

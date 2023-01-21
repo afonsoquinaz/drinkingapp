@@ -226,6 +226,7 @@ class PlayerView extends StatelessWidget {
                                   color: Colors.yellow.shade700,
                                 ),
                               ),
+
                               Container(
                                   height: width * 0.55,
                                   width: width * 0.55,
