@@ -62,7 +62,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-      question = questionsManager.getWidgetForQuestion(players, context);
+      if(questionsManager.currentQuestion != null && questionsManager.currentQuestion.type != ("Photo Time"))
+        question = questionsManager.getCurrentQuestion();
+      else
+        question = questionsManager.getWidgetForQuestion(players, context);
   }
 
   // StreamController<int> selected = StreamController<int>();
