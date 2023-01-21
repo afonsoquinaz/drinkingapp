@@ -67,7 +67,7 @@ class QuestionsManager {
   final List<String> challenges = ["The best to imitate a dog wins."];
   late Question currentQuestion ;
   Question getCurrentQuestion(){
-    return currentQuestion;
+    return currentQuestion = Question(type: "first", widget: Container(), nbrGlasses: 0);
   }
   Question getWidgetForQuestion(List<UserClass> players, context) {
     var doubleValue = Random().nextDouble();
