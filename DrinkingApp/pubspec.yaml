@@ -85,4 +85,14 @@ flutter:
     - family: Font2
       fonts:
         - asset: fonts/Font2.ttf
+    - family: Font3
+      fonts:
+        - asset: fonts/Font3.ttf
+    - family: Font4
+      fonts:
+        - asset: fonts/Font4.otf
+    - family: Font5
+      fonts:
+        - asset: fonts/Font5.ttf
+
 

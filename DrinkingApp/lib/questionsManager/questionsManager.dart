@@ -131,7 +131,7 @@ class QuestionsManager {
     return Question(
         type: 'Normal Challenge',
         widget: Column(children: [
-          Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center , style: TextStyle(fontSize: 20, fontWeight: FontWeight.w100 , fontFamily: 'Font1')),
+          Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center , style: TextStyle(fontSize: 23, fontWeight: FontWeight.w100 , fontFamily: 'Font1')),
           SizedBox(height: 40),
           buttons,
         ]),
@@ -163,13 +163,17 @@ class QuestionsManager {
     GroupButton buttons = GroupButton(players: players, selected: List<bool>.filled(players.length, false));
     return Question(
         type: 'Most Likely To',
-        widget: Column(
+        widget: Container(
+          margin: EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+
           children: [
-            Text(question , style: TextStyle(fontSize: 20, fontWeight: FontWeight.w100 , fontFamily: 'Font1')),
+            Text(question,textAlign: TextAlign.center , style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800 , fontFamily: 'Font5')),
             SizedBox(height: 50),
             buttons,
           ],
-        ),
+        ),),
         complete: () {
           for(int i=0; i<players.length; i++) {
             if (buttons.selected[i]) {

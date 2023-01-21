@@ -169,10 +169,10 @@ class _MyHomePageState extends State<MyHomePage> {
               Text(
                 question.type,
                 style: TextStyle(
-                    fontSize: 32,
+                    fontSize: 36,
                     color: getTextColorForGameType(question.type),
                     fontWeight: FontWeight.w400,
-                    fontFamily: 'Font1'),
+                    fontFamily: 'Font3'),
               ),
               SizedBox(),
               question.widget,
@@ -195,12 +195,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       for (var i = 0; i < question.nbrGlasses; i++)
-                        Icon(
-                          // <-- Icon
-                          Icons.local_bar,
-                          size: 38.0,
-                          color: Colors.pinkAccent,
-                        )
+                        Container(
+                          width: 42,
+                          height: 35,
+                          child: Image.asset("images/cocktail.png"),)
+
                     ],
                   ),
                   SizedBox(
@@ -236,6 +235,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     SizedBox(width: 5),
                                     Text('NEXT',
                                         style: TextStyle(
+
                                             color: (getTextColorForGameType(
                                                         question.type) ==
                                                     Color.fromARGB(

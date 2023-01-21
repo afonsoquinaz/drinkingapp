@@ -1,5 +1,6 @@
 import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:flutter/material.dart';
+import 'Constants/ColorPalette.dart';
 import 'Game.dart';
 import 'GameModeSelection.dart';
 
@@ -105,11 +106,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     Container(
                         // margin: const EdgeInsets.only(left: 20.0, right: 20.0),
                         child: Text(
-                      "WANNA HAVE A MEMORABLE NIGHT?",
+                      "Wanna Have A Memorable Night?",
                       style: TextStyle(
-                          fontSize: 24,
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w700),
+                          fontSize: 36,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Font3'),
                       textAlign: TextAlign.center,
                     )),
                     Container(
@@ -117,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Text(
                           "Add your alcoholic friends",
                           style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 18,
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.w400),
                           textAlign: TextAlign.center,
@@ -235,6 +237,23 @@ class _MyHomePageState extends State<MyHomePage> {
                             },
                             onEditingComplete: () {},
                           ))),
+                              TextButton(
+                                onPressed: () {
+
+                                  setState(() {
+                                    addQuickPlayers();
+                                  });
+                                },
+                                child: const Text(">",
+                                    style: TextStyle(fontSize: 18)),
+                                style: ElevatedButton.styleFrom(
+                                  //backgroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(10), // <-- Radius
+                                  ),
+                                ),
+                              ),
                           const SizedBox(width: 10),
                           ElevatedButton(
                             onPressed: () {
@@ -262,28 +281,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               fontWeight: FontWeight.w400),
                           textAlign: TextAlign.center,
                         )),
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      Expanded(
-                          child: Container(
-                              height: 44,
-                              child: ElevatedButton(
-                                onPressed: () {
 
-                                  setState(() {
-                                    addQuickPlayers();
-                                  });
-                                },
-                                child: const Text("Quick add players",
-                                    style: TextStyle(fontSize: 18)),
-                                style: ElevatedButton.styleFrom(
-                                  //backgroundColor: Colors.black,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(10), // <-- Radius
-                                  ),
-                                ),
-                              )))
-                    ]),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       Expanded(
                           child: Container(
