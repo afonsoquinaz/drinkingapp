@@ -54,6 +54,23 @@ class _MyHomePageState extends State<MyHomePage> {
     // _counter++;
   }
 
+  addQuickPlayers(){
+    UserClass newPlayer = UserClass("Afonso", '');
+    players.add(newPlayer);
+    newPlayer = UserClass("Tiago", '');
+    players.add(newPlayer);
+    newPlayer = UserClass("Francisca", '');
+    players.add(newPlayer);
+    newPlayer = UserClass("Mateus", '');
+    players.add(newPlayer);
+    newPlayer = UserClass("Ana", '');
+    players.add(newPlayer);
+    newPlayer = UserClass("Cristiano7", '');
+    players.add(newPlayer);
+    // Players = Players + playersTextController.text + "\n";
+    playersTextController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -251,6 +268,28 @@ class _MyHomePageState extends State<MyHomePage> {
                               height: 44,
                               child: ElevatedButton(
                                 onPressed: () {
+
+                                  setState(() {
+                                    addQuickPlayers();
+                                  });
+                                },
+                                child: const Text("Quick add players",
+                                    style: TextStyle(fontSize: 18)),
+                                style: ElevatedButton.styleFrom(
+                                  //backgroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(10), // <-- Radius
+                                  ),
+                                ),
+                              )))
+                    ]),
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      Expanded(
+                          child: Container(
+                              height: 44,
+                              child: ElevatedButton(
+                                onPressed: () {
                                   if (playersTextController.text.trim() != '') {
                                     addPlayer();
                                   }
@@ -261,7 +300,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           builder: (context) =>
                                               GameModeSelection(
                                                   players: players)),
-                                      (Route<dynamic> route) => false,
+                                          (Route<dynamic> route) => false,
                                     );
                                   }
                                 },
@@ -271,7 +310,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   //backgroundColor: Colors.black,
                                   shape: RoundedRectangleBorder(
                                     borderRadius:
-                                        BorderRadius.circular(10), // <-- Radius
+                                    BorderRadius.circular(10), // <-- Radius
                                   ),
                                 ),
                               )))
