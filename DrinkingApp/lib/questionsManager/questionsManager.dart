@@ -6,6 +6,7 @@ import 'package:camera/camera.dart';
 import 'package:drinkingapp/Constants/ColorPalette.dart';
 import 'package:drinkingapp/GameModeSelection.dart';
 import 'package:drinkingapp/Question.dart';
+import 'package:drinkingapp/questionsManager/ChallangesWheel.dart';
 import 'package:drinkingapp/questionsManager/FeedManager.dart';
 import 'package:drinkingapp/questionsManager/TakePictureScreen.dart';
 import 'package:drinkingapp/questionsManager/UserClass.dart';
@@ -91,6 +92,10 @@ class QuestionsManager {
     } else if (doubleValue <= 0.8) {
       this.currentQuestion = getPhotoQuestion(players, context);
       return currentQuestion;
+    } else if (doubleValue<= 0.9){
+      this.currentQuestion = getWheelOfChallanges(players);
+      return currentQuestion;
+
     }
     this.currentQuestion = get1vs1(players);
     return currentQuestion;
@@ -103,7 +108,7 @@ class QuestionsManager {
   }
 
   int getRandomNumberOfGlasses() {
-    return Random().nextInt(4) + 1;
+    return Random().nextInt(8) + 1;
   }
 
   Question getPhotoQuestion(List<UserClass> players, context) {
@@ -220,6 +225,19 @@ class QuestionsManager {
       ]),
       nbrGlasses: getRandomNumberOfGlasses(),
     );
+  }
+
+  Question getWheelOfChallanges(List<UserClass> players) {
+    Random random = new Random();
+    int indexWinner = random.nextInt(4); // from 0 to 9 included
+    feedManager.addNamesWheelPost(players[indexWinner]);
+    ChallangesWheel nm = new ChallangesWheel(indexWinner: indexWinner);
+    //nm.createState().
+    //_NamesWheelS
+    return Question(
+        type: 'Challanges Wheel',
+        widget: nm,
+        nbrGlasses: getRandomNumberOfGlasses());
   }
 
   Question getWheelOfNames(List<UserClass> players) {

@@ -80,13 +80,25 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
           Column(
             children: [
-              SizedBox(height: 25,),
-              const Text(
-                "DrinkingApp",
-                style: TextStyle(
-                    fontSize: 26,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w200),
+              SizedBox(height: 35,),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  for(int i = 0; i < playersInPhoto.length ; i++)
+                    Container(
+                      width:50,
+                      height:50,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(playersInPhoto[i].photoPath),
+                          fit: BoxFit.fill,
+                        ),
+                        shape: BoxShape.circle,
+                        //border: Border.all(color: Colors.yellow.shade700, width: 3),
+                        color: Colors.yellow.shade700,
+                      ),
+                    )
+
+                ],
               ),
               SizedBox(height: 10,),
                Text(
