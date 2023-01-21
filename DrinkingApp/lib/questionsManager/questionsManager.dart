@@ -97,12 +97,16 @@ class QuestionsManager {
         type: 'Photo Time',
         widget: Column(
           children: [
-            Text("It Is Photo Time!" , style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800 , fontFamily: 'Font5'))
-,
-            SizedBox(height: 30,),
-
+            Text("It Is Photo Time!",
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Font5')),
+            SizedBox(
+              height: 30,
+            ),
             GestureDetector(
-              onTap:  () async {
+              onTap: () async {
                 WidgetsFlutterBinding.ensureInitialized();
 
                 // Obtain a list of the available cameras on the device.
@@ -121,12 +125,9 @@ class QuestionsManager {
                             player: players[player])));
               },
               child: Container(
-
                 width: 100,
                 height: 100,
-
                 decoration: BoxDecoration(
-
                   color: Colors.grey.shade300,
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
@@ -134,16 +135,17 @@ class QuestionsManager {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     SizedBox(),
-                    Icon(Icons.photo_camera ,size: 25, color:Colors.deepOrangeAccent.shade700 ),
+                    Icon(Icons.photo_camera,
+                        size: 25, color: Colors.deepOrangeAccent.shade700),
                     Text("Take Photo"),
                     SizedBox()
-
                   ],
                 ),
-
               ),
             ),
-            SizedBox(height: 30,),
+            SizedBox(
+              height: 30,
+            ),
             Container(
               width: 70,
               height: 70,
@@ -157,13 +159,11 @@ class QuestionsManager {
                 color: Colors.yellow.shade700,
               ),
             ),
-
-
-
-
             SizedBox(height: 10),
-            SizedBox(height: 30,),
-           ],
+            SizedBox(
+              height: 30,
+            ),
+          ],
         ),
         nbrGlasses: getRandomNumberOfGlasses());
   }
@@ -298,8 +298,13 @@ class _OneVSOneState extends State<OneVsOne> {
 
   changeWinner(player) {
     setState(() {
-      winner = widget.changeWinner(player);
+      if (winner == player) {
+        winner = widget.changeWinner(null);
+      } else {
+        winner = widget.changeWinner(player);
+      }
     });
+    return winner;
   }
 
   @override
@@ -309,39 +314,45 @@ class _OneVSOneState extends State<OneVsOne> {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Stack(
             children: [
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(widget.players[widget.player1].photoPath),
-                    fit: BoxFit.fill,
-                  ),
-                  border: Border.all(
-                      color: (winner == widget.players[widget.player1])
-                          ? Colors.yellow
-                          : Colors.white,
-                      width: 4),
-                  shape: BoxShape.circle,
-                  //border: Border.all(color: Colors.yellow.shade700, width: 3),
-                  color: Colors.yellow.shade700,
-                ),
-              ),
-              winner == widget.players[widget.player1] ? Positioned(
-                  bottom: 0,
-                  left: 0,
+              GestureDetector(
+                  onTap: () {
+                    changeWinner(widget.players[widget.player1]);
+                  },
                   child: Container(
-                    width: 30,
-                    height: 30,
+                    width: 100,
+                    height: 100,
                     decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.yellow),
-                    child: Icon(
-                      Icons.emoji_events_rounded,
-                      color: Colors.black,
-                      size: 16,
+                      image: DecorationImage(
+                        image: AssetImage(
+                            widget.players[widget.player1].photoPath),
+                        fit: BoxFit.fill,
+                      ),
+                      border: Border.all(
+                          color: (winner == widget.players[widget.player1])
+                              ? Colors.yellow
+                              : Colors.white,
+                          width: 4),
+                      shape: BoxShape.circle,
+                      //border: Border.all(color: Colors.yellow.shade700, width: 3),
+                      color: Colors.yellow.shade700,
                     ),
-                  )) : Container(),
+                  )),
+              winner == widget.players[widget.player1]
+                  ? Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: Colors.yellow),
+                        child: Icon(
+                          Icons.emoji_events_rounded,
+                          color: Colors.black,
+                          size: 16,
+                        ),
+                      ))
+                  : Container(),
             ],
           ),
           SizedBox(width: 20),
@@ -354,39 +365,45 @@ class _OneVSOneState extends State<OneVsOne> {
           SizedBox(width: 20),
           Stack(
             children: [
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(widget.players[widget.player2].photoPath),
-                    fit: BoxFit.fill,
-                  ),
-                  border: Border.all(
-                      color: (winner == widget.players[widget.player2])
-                          ? Colors.yellow
-                          : Colors.white,
-                      width: 4),
-                  shape: BoxShape.circle,
-                  //border: Border.all(color: Colors.yellow.shade700, width: 3),
-                  color: Colors.yellow.shade700,
-                ),
-              ),
-              winner == widget.players[widget.player2] ? Positioned(
-                  bottom: 0,
-                  right: 0,
+              GestureDetector(
+                  onTap: () {
+                    changeWinner(widget.players[widget.player2]);
+                  },
                   child: Container(
-                    width: 30,
-                    height: 30,
+                    width: 100,
+                    height: 100,
                     decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.yellow),
-                    child: Icon(
-                      Icons.emoji_events_rounded,
-                      color: Colors.black,
-                      size: 16,
+                      image: DecorationImage(
+                        image: AssetImage(
+                            widget.players[widget.player2].photoPath),
+                        fit: BoxFit.fill,
+                      ),
+                      border: Border.all(
+                          color: (winner == widget.players[widget.player2])
+                              ? Colors.yellow
+                              : Colors.white,
+                          width: 4),
+                      shape: BoxShape.circle,
+                      //border: Border.all(color: Colors.yellow.shade700, width: 3),
+                      color: Colors.yellow.shade700,
                     ),
-                  )) : Container(),
+                  )),
+              winner == widget.players[widget.player2]
+                  ? Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: Colors.yellow),
+                        child: Icon(
+                          Icons.emoji_events_rounded,
+                          color: Colors.black,
+                          size: 16,
+                        ),
+                      ))
+                  : Container(),
             ],
           )
         ]),
@@ -402,36 +419,22 @@ class _OneVSOneState extends State<OneVsOne> {
         ToggleButton(players: [
           widget.players[widget.player1],
           widget.players[widget.player2]
-        ], changeWinner: changeWinner)
+        ], changeWinner: changeWinner, winner: winner)
       ],
     );
   }
 }
 
-class ToggleButton extends StatefulWidget {
+class ToggleButton extends StatelessWidget {
   final List<UserClass> players;
   final Function changeWinner;
+  final UserClass? winner;
 
-  ToggleButton({super.key, required this.players, required this.changeWinner});
-
-  @override
-  State<StatefulWidget> createState() => _ToggleButtonState();
-}
-
-class _ToggleButtonState extends State<ToggleButton> {
-  UserClass? selected;
-
-  toggle(UserClass player) {
-    setState(() {
-      if (selected == player) {
-        selected = null;
-        widget.changeWinner(null);
-      } else {
-        selected = player;
-        widget.changeWinner(player);
-      }
-    });
-  }
+  const ToggleButton(
+      {super.key,
+      required this.players,
+      required this.changeWinner,
+      required this.winner});
 
   @override
   Widget build(BuildContext context) {
@@ -440,18 +443,18 @@ class _ToggleButtonState extends State<ToggleButton> {
         runSpacing: 5,
         alignment: WrapAlignment.center,
         children: [
-          for (var i = 0; i < widget.players.length; i++)
+          for (var i = 0; i < players.length; i++)
             PlayerButton(
-                player: widget.players[i],
+                player: players[i],
                 isSelected: () {
-                  return selected == widget.players[i];
+                  return winner == players[i];
                 },
-                toggleFunc: toggle)
+                toggleFunc: changeWinner)
         ]);
   }
 }
 
-class GroupButton extends StatefulWidget {
+class GroupButton extends StatelessWidget {
   final List<UserClass> players;
   final List<bool> selected;
 
@@ -462,24 +465,19 @@ class GroupButton extends StatefulWidget {
   const GroupButton({super.key, required this.players, required this.selected});
 
   @override
-  State<StatefulWidget> createState() => _GroupButtonState();
-}
-
-class _GroupButtonState extends State<GroupButton> {
-  @override
   Widget build(BuildContext context) {
     return Wrap(
         spacing: 5,
         runSpacing: 5,
         alignment: WrapAlignment.center,
         children: [
-          for (var i = 0; i < widget.players.length; i++)
+          for (var i = 0; i < players.length; i++)
             PlayerButton(
-                player: widget.players[i],
+                player: players[i],
                 isSelected: () {
-                  return widget.selected[i];
+                  return selected[i];
                 },
-                toggleFunc: widget.toggle)
+                toggleFunc: toggle)
         ]);
     // return Container(height: 75, child: ListView(scrollDirection: Axis.horizontal, children: [
     //   for (var i = 0; i < widget.players.length; i++)
@@ -496,10 +494,12 @@ class PlayerButton extends StatefulWidget {
   final Function isSelected;
   final Function toggleFunc;
 
-  PlayerButton(
-      {required this.player,
+  const PlayerButton(
+      {super.key,
+      required this.player,
       required this.isSelected,
       required this.toggleFunc});
+
   @override
   _MyWidgetState createState() => _MyWidgetState();
 // creating State Object of MyWidget
