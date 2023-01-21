@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:camera/camera.dart';
+import 'package:drinkingapp/Constants/ColorPalette.dart';
 import 'package:drinkingapp/GameModeSelection.dart';
 import 'package:drinkingapp/Question.dart';
 import 'package:drinkingapp/questionsManager/FeedManager.dart';
@@ -127,15 +128,21 @@ class QuestionsManager {
   }
 
   Question getNewQuestion(List<UserClass> players) {
-    GroupButton buttons = GroupButton(players: players, selected: List<bool>.filled(players.length, false));
+    GroupButton buttons = GroupButton(
+        players: players, selected: List<bool>.filled(players.length, false));
     return Question(
-        type: 'Normal Challenge',
-        widget: Column(children: [
-          Text(lorem(paragraphs: 1, words: 10), textAlign: TextAlign.center , style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800 , fontFamily: 'Font5')),
-          SizedBox(height: 40),
-          buttons,
-        ]),
-        nbrGlasses: getRandomNumberOfGlasses(),
+      type: 'Normal Challenge',
+      widget: Column(children: [
+        Text(lorem(paragraphs: 1, words: 10),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                fontFamily: 'Font5')),
+        SizedBox(height: 40),
+        buttons,
+      ]),
+      nbrGlasses: getRandomNumberOfGlasses(),
     );
   }
 
@@ -160,22 +167,28 @@ class QuestionsManager {
     var question = mostLikelyQuestions[index_mostLikely];
     index_mostLikely++;
     //feedManager.addMostLikelyToPost(question, "winner");
-    GroupButton buttons = GroupButton(players: players, selected: List<bool>.filled(players.length, false));
+    GroupButton buttons = GroupButton(
+        players: players, selected: List<bool>.filled(players.length, false));
     return Question(
         type: 'Most Likely To',
         widget: Container(
           margin: EdgeInsets.symmetric(horizontal: 20),
           child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-
-          children: [
-            Text(question,textAlign: TextAlign.center , style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800 , fontFamily: 'Font5')),
-            SizedBox(height: 50),
-            buttons,
-          ],
-        ),),
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(question,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: 'Font5')),
+              SizedBox(height: 50),
+              buttons,
+            ],
+          ),
+        ),
         complete: () {
-          for(int i=0; i<players.length; i++) {
+          for (int i = 0; i < players.length; i++) {
             if (buttons.selected[i]) {
               feedManager.addMostLikelyToPost(question, players[i]);
             }
@@ -198,57 +211,159 @@ class QuestionsManager {
     print(challenges.length);
     var challenge = challenges[index_challenges];
     UserClass? winner;
-    ToggleButton buttons = ToggleButton(players: [players[player1], players[player2]], changeWinner: (player) {winner=player;});
+    OneVsOne oneVone = OneVsOne(
+        players: players,
+        challenge: challenge,
+        player1: player1,
+        player2: player2,
+        changeWinner: (newWinner) {
+          winner = newWinner;
+          return winner;
+        });
     return Question(
         type: '1 vs 1',
-        widget: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(players[player1].photoPath),
-                      fit: BoxFit.fill,
-                    ),
-                    shape: BoxShape.circle,
-                    //border: Border.all(color: Colors.yellow.shade700, width: 3),
-                    color: Colors.yellow.shade700,
-                  ),
-                ),
-                Text("VS"),
-                Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(players[player2].photoPath),
-                      fit: BoxFit.fill,
-                    ),
-                    shape: BoxShape.circle,
-                    //border: Border.all(color: Colors.yellow.shade700, width: 3),
-                    color: Colors.yellow.shade700,
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 40),
-            Text('$challenge\nThe other players vote.',
-                textAlign: TextAlign.center ,  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800 , fontFamily: 'Font5')),
-            SizedBox(height: 50),
-            buttons
-          ],
-        ),
+        widget: oneVone,
         complete: () {
-          if (winner!=null) {
-              feedManager.addOneVsOnePost(challenge, players[player1], players[player2], winner!.username);
-            }
-          },
+          if (winner != null) {
+            feedManager.addOneVsOnePost(challenge, players[player1],
+                players[player2], winner!.username);
+          }
+        },
         nbrGlasses: getRandomNumberOfGlasses());
+  }
+}
+
+class OneVsOne extends StatefulWidget {
+  final List<UserClass> players;
+  final String challenge;
+  final int player1;
+  final int player2;
+  final Function changeWinner;
+
+  const OneVsOne(
+      {super.key,
+      required this.players,
+      required this.challenge,
+      required this.player1,
+      required this.player2,
+      required this.changeWinner});
+
+  @override
+  State<StatefulWidget> createState() => _OneVSOneState();
+}
+
+class _OneVSOneState extends State<OneVsOne> {
+  UserClass? winner;
+
+  changeWinner(player) {
+    setState(() {
+      winner = widget.changeWinner(player);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Stack(
+            children: [
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(widget.players[widget.player1].photoPath),
+                    fit: BoxFit.fill,
+                  ),
+                  border: Border.all(
+                      color: (winner == widget.players[widget.player1])
+                          ? Colors.yellow
+                          : Colors.white,
+                      width: 4),
+                  shape: BoxShape.circle,
+                  //border: Border.all(color: Colors.yellow.shade700, width: 3),
+                  color: Colors.yellow.shade700,
+                ),
+              ),
+              winner == widget.players[widget.player1] ? Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.yellow),
+                    child: Icon(
+                      Icons.emoji_events_rounded,
+                      color: Colors.black,
+                      size: 16,
+                    ),
+                  )) : Container(),
+            ],
+          ),
+          SizedBox(width: 20),
+          Text("VS",
+              style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Font3',
+                  fontSize: 28,
+                  color: getTextColorForGameType('1 vs 1'))),
+          SizedBox(width: 20),
+          Stack(
+            children: [
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(widget.players[widget.player2].photoPath),
+                    fit: BoxFit.fill,
+                  ),
+                  border: Border.all(
+                      color: (winner == widget.players[widget.player2])
+                          ? Colors.yellow
+                          : Colors.white,
+                      width: 4),
+                  shape: BoxShape.circle,
+                  //border: Border.all(color: Colors.yellow.shade700, width: 3),
+                  color: Colors.yellow.shade700,
+                ),
+              ),
+              winner == widget.players[widget.player2] ? Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.yellow),
+                    child: Icon(
+                      Icons.emoji_events_rounded,
+                      color: Colors.black,
+                      size: 16,
+                    ),
+                  )) : Container(),
+            ],
+          )
+        ]),
+        const SizedBox(height: 40),
+        Text('${widget.challenge}\nThe other players vote.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                fontFamily: 'Font5',
+                color: getTextColorForGameType('1 vs 1'))),
+        SizedBox(height: 50),
+        ToggleButton(players: [
+          widget.players[widget.player1],
+          widget.players[widget.player2]
+        ], changeWinner: changeWinner)
+      ],
+    );
   }
 }
 
@@ -265,19 +380,33 @@ class ToggleButton extends StatefulWidget {
 class _ToggleButtonState extends State<ToggleButton> {
   UserClass? selected;
 
-  toggle(UserClass player){
+  toggle(UserClass player) {
     setState(() {
-      selected = player;
-      widget.changeWinner(player);
+      if (selected == player) {
+        selected = null;
+        widget.changeWinner(null);
+      } else {
+        selected = player;
+        widget.changeWinner(player);
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(spacing: 5, runSpacing: 5, alignment: WrapAlignment.center, children: [
-      for (var i = 0; i < widget.players.length; i++)
-        PlayerButton(player: widget.players[i], isSelected: () {return selected == widget.players[i];}, toggleFunc: toggle)
-    ]);
+    return Wrap(
+        spacing: 5,
+        runSpacing: 5,
+        alignment: WrapAlignment.center,
+        children: [
+          for (var i = 0; i < widget.players.length; i++)
+            PlayerButton(
+                player: widget.players[i],
+                isSelected: () {
+                  return selected == widget.players[i];
+                },
+                toggleFunc: toggle)
+        ]);
   }
 }
 
@@ -285,25 +414,32 @@ class GroupButton extends StatefulWidget {
   final List<UserClass> players;
   final List<bool> selected;
 
-  toggle(UserClass player){
+  toggle(UserClass player) {
     selected[players.indexOf(player)] = !selected[players.indexOf(player)];
   }
 
   const GroupButton({super.key, required this.players, required this.selected});
-
 
   @override
   State<StatefulWidget> createState() => _GroupButtonState();
 }
 
 class _GroupButtonState extends State<GroupButton> {
-
   @override
   Widget build(BuildContext context) {
-    return Wrap(spacing: 5, runSpacing: 5, alignment: WrapAlignment.center, children: [
-      for (var i = 0; i < widget.players.length; i++)
-        PlayerButton(player: widget.players[i], isSelected: (){ return widget.selected[i]; }, toggleFunc: widget.toggle)
-    ]);
+    return Wrap(
+        spacing: 5,
+        runSpacing: 5,
+        alignment: WrapAlignment.center,
+        children: [
+          for (var i = 0; i < widget.players.length; i++)
+            PlayerButton(
+                player: widget.players[i],
+                isSelected: () {
+                  return widget.selected[i];
+                },
+                toggleFunc: widget.toggle)
+        ]);
     // return Container(height: 75, child: ListView(scrollDirection: Axis.horizontal, children: [
     //   for (var i = 0; i < widget.players.length; i++)
     //     Row(children: [
@@ -313,14 +449,16 @@ class _GroupButtonState extends State<GroupButton> {
   }
 }
 
-
 class PlayerButton extends StatefulWidget {
   // immutable Widget
   final UserClass player;
   final Function isSelected;
   final Function toggleFunc;
 
-  PlayerButton({required this.player, required this.isSelected, required this.toggleFunc});
+  PlayerButton(
+      {required this.player,
+      required this.isSelected,
+      required this.toggleFunc});
   @override
   _MyWidgetState createState() => _MyWidgetState();
 // creating State Object of MyWidget
@@ -341,27 +479,35 @@ class _MyWidgetState extends State<PlayerButton> {
             height: 75,
             child: Container(
                 decoration: BoxDecoration(
-                  color: widget.isSelected() ? Colors.deepOrangeAccent : Colors.white,
+                  color: widget.isSelected()
+                      ? Colors.deepOrangeAccent
+                      : Colors.white,
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Container(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: AssetImage(widget.player.photoPath),
-                              fit: BoxFit.fill,
-                            ),
-                          ),
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: AssetImage(widget.player.photoPath),
+                          fit: BoxFit.fill,
                         ),
-                        Text(widget.player.username,
-                            style: TextStyle(fontWeight: widget.isSelected() ? FontWeight.bold : FontWeight.normal, color: widget.isSelected() ? Colors.white : Colors.black)),
-                      ],
-                    )))));
+                      ),
+                    ),
+                    Text(widget.player.username,
+                        style: TextStyle(
+                            fontWeight: widget.isSelected()
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                            color: widget.isSelected()
+                                ? Colors.white
+                                : Colors.black)),
+                  ],
+                )))));
   }
 }
