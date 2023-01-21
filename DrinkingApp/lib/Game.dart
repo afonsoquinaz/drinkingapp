@@ -55,7 +55,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _MyHomePageState({required this.questionsManager, required this.players});
 
-  Question question = Question(type: "Game started!", widget: Text("The game starts here"), nbrGlasses: 1);
+  Question question = Question(
+      type: "Game started!",
+      widget: Text("The game starts here"),
+      nbrGlasses: 1);
 
   @override
   void initState() {
@@ -78,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // int sensitivity = 5;
           // if (details.delta.dx > sensitivity) {
           debugPrint("swipe ${details.velocity}");
-          if (question.complete != null){
+          if (question.complete != null) {
             question.complete!();
           }
           setState(() {
@@ -94,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         child: Scaffold(
           //0xffb0e3df
-          backgroundColor: getColorForGameType(question.type)  ,
+          backgroundColor: getColorForGameType(question.type),
           body: Center(
               child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -126,11 +129,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       onPressed: () {},
                       child: Text(
                         'HOME',
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(
+                            color: getTextColorForGameType(question.type)),
                       ),
                     ),
                     Container(
-                      color: Colors.black45,
+                      color: getTextColorForGameType(question.type)
+                          .withOpacity(0.8),
                       height: 20,
                       width: 2,
                     ),
@@ -150,7 +155,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         },
                         child: Text(
                           'FEED',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(
+                              color: getTextColorForGameType(question.type)),
                         ),
                       ),
                     ),
@@ -160,28 +166,46 @@ class _MyHomePageState extends State<MyHomePage> {
               // Text(questionText),
               SizedBox(),
               SizedBox(),
-              Text(question.type, style: TextStyle(fontSize: 32, fontWeight: FontWeight.w400 , fontFamily: 'Font1'),),
+              Text(
+                question.type,
+                style: TextStyle(
+                    fontSize: 32,
+                    color: getTextColorForGameType(question.type),
+                    fontWeight: FontWeight.w400,
+                    fontFamily: 'Font1'),
+              ),
               SizedBox(),
               question.widget,
               SizedBox(),
               SizedBox(),
               Column(
                 children: [
-                  Text("The winner drinks " + question.nbrGlasses.toString() + " sips"
-                    , style: TextStyle(color: Colors.black45),),
-                  SizedBox(height: 10,),
+                  Text(
+                    "The winner drinks " +
+                        question.nbrGlasses.toString() +
+                        " sips",
+                    style: TextStyle(
+                        color: getTextColorForGameType(question.type)
+                            .withOpacity(0.7)),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      for(var i = 0; i < question.nbrGlasses ; i++)
+                      for (var i = 0; i < question.nbrGlasses; i++)
                         Icon(
                           // <-- Icon
                           Icons.local_bar,
                           size: 38.0,
                           color: Colors.pinkAccent,
                         )
-                    ],),
-                  SizedBox(height: 40,),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 40,
+                  ),
                   Container(
                       margin: EdgeInsets.only(bottom: 20),
                       child: Row(
@@ -191,9 +215,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: [
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.black),
+                                  backgroundColor:
+                                      getTextColorForGameType(question.type),
+                                ),
                                 onPressed: () {
-                                  if (question.complete != null){
+                                  if (question.complete != null) {
                                     question.complete!();
                                   }
                                   setState(() {
@@ -208,7 +234,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     SizedBox(width: 5),
-                                    Text('NEXT'), // <-- Text
+                                    Text('NEXT',
+                                        style: TextStyle(
+                                            color: (getTextColorForGameType(
+                                                        question.type) ==
+                                                    Color.fromARGB(
+                                                        255, 255, 255, 255))
+                                                ? Color.fromARGB(255, 0, 0, 0)
+                                                : Color.fromARGB(255, 255, 255,
+                                                    255))), // <-- Text
                                     SizedBox(
                                       width: 5,
                                     ),
@@ -216,6 +250,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                       // <-- Icon
                                       Icons.navigate_next_outlined,
                                       size: 24.0,
+                                      color: (getTextColorForGameType(
+                                                  question.type) ==
+                                              Color.fromARGB(
+                                                  255, 255, 255, 255))
+                                          ? Color.fromARGB(255, 0, 0, 0)
+                                          : Color.fromARGB(255, 255, 255, 255),
                                     ),
                                   ],
                                 ),
