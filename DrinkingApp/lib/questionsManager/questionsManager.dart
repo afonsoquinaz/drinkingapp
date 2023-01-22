@@ -456,12 +456,18 @@ class _DrawChallengeState extends State<DrawChallenge> {
         SizedBox(
           height: 30,
         ),
+        Container(width: 300, height: 300, child:
+        Stack(children: [
         Signature(
           controller: widget.controller,
           width: 300,
           height: 300,
           backgroundColor: Color(0xFFEDE9E8),
-        ),
+        ), Positioned(top:0, right:0, child:
+              TextButton(onPressed: () { widget.controller.clear();}, child: Text('CLEAN', style: TextStyle(color: Colors.black),), style: TextButton.styleFrom(
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: EdgeInsets.zero)))])),
+          //IconButton(onPressed: () {widget.controller.clear();}, icon: Icon(Icons.refresh, color: Colors.black),))])),
         SizedBox(
           height: 30,
         ),
