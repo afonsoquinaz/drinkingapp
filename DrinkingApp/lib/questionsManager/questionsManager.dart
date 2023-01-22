@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:ui';
 import 'package:camera/camera.dart';
 import 'package:drinkingapp/Constants/ColorPalette.dart';
 import 'package:drinkingapp/GameModeSelection.dart';
@@ -18,8 +19,6 @@ import 'package:group_button/group_button.dart';
 import 'package:signature/signature.dart';
 
 import 'NamesWheel.dart';
-
-
 
 class QuestionsManager {
   int index_mostLikely = 0;
@@ -82,10 +81,12 @@ class QuestionsManager {
   ];
 
   final List<String> challenges = ["The best to imitate a dog wins."];
-  late Question currentQuestion = Question(type: "first", widget: Container(), nbrGlasses: 0);
-  Question getCurrentQuestion(){
+  late Question currentQuestion =
+      Question(type: "first", widget: Container(), nbrGlasses: 0);
+  Question getCurrentQuestion() {
     return currentQuestion;
   }
+
   Question getWidgetForQuestion(List<UserClass> players, context) {
     var doubleValue = Random().nextDouble();
     if (doubleValue <= 0.2) {
@@ -99,88 +100,48 @@ class QuestionsManager {
     } else if (doubleValue <= 0.6) {
       this.currentQuestion = getMostLikelyTo(players);
       return currentQuestion;
-    } else if(doubleValue <= 0.7){
+    } else if (doubleValue <= 0.7) {
       this.currentQuestion = getSignatureQuestion(players);
       return currentQuestion;
-    }
-      else if (doubleValue <= 0.8) {
+    } else if (doubleValue <= 0.8) {
       this.currentQuestion = getPhotoQuestion(players, context);
       return currentQuestion;
-    } else if (doubleValue<= 0.9){
+    } else if (doubleValue <= 0.9) {
       this.currentQuestion = getWheelOfChallanges(players);
       return currentQuestion;
-
     }
     this.currentQuestion = get1vs1(players);
     return currentQuestion;
-
-
   }
 
-  void addPhotoToFeed(String photoPath,List<UserClass>  playersInPhoto, String photoQuestionText) {
+  void addPhotoToFeed(String photoPath, List<UserClass> playersInPhoto,
+      String photoQuestionText) {
     feedManager.addPhoto(photoPath, playersInPhoto, photoQuestionText);
   }
 
   int getRandomNumberOfGlasses() {
     return Random().nextInt(8) + 1;
   }
-  Question getSignatureQuestion(List<UserClass> players){
+
+  Question getSignatureQuestion(List<UserClass> players) {
     pictureChallange.shuffle();
     int player = Random().nextInt(players.length);
 
     final SignatureController _controller = SignatureController(
       penStrokeWidth: 5,
       penColor: Colors.red,
-      exportBackgroundColor: Colors.blue,
+      exportBackgroundColor: Color(0xFFEDE9E8),
     );
 
-    return  Question(
+    return Question(
         type: 'Draw Challenge',
-        widget: Column(
-          children: [
-            Text( pictureChallange.first,
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    fontFamily: 'Font5')),
-            SizedBox(
-              height: 30,
-            ),
-           Signature(
-              controller: _controller,
-              width: 300,
-              height: 300,
-              backgroundColor: Colors.lightBlueAccent,
-            ),
-
-
-            Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                  Container(
-                    width:50,
-                    height:50,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: players[player].photoPath.contains('avatar') ? AssetImage(players[player].photoPath) : Image.file(File(players[player].photoPath)).image,
-                        fit: BoxFit.fill,
-                      ),
-                      shape: BoxShape.circle,
-                      //border: Border.all(color: Colors.yellow.shade700, width: 3),
-                      color: Colors.yellow.shade700,
-                    ),
-                  )
-
-              ],
-            ),
-            SizedBox(height: 10),
-            SizedBox(
-              height: 30,
-            ),
-          ],
-        ),
+        widget: DrawChallenge(
+            controller: _controller,
+            players: players,
+            player: player,
+            challenge: pictureChallange.first),
         nbrGlasses: getRandomNumberOfGlasses());
   }
-
 
   Question getPhotoQuestion(List<UserClass> players, context) {
     photoQuestions.shuffle();
@@ -188,10 +149,10 @@ class QuestionsManager {
     int player = Random().nextInt(players.length);
 
     players.shuffle();
-    int randomNbr = Random().nextInt(players.length - 2 );
+    int randomNbr = Random().nextInt(players.length - 2);
     List<UserClass> playersForPhoto = [];
     String textForQuestion = "";
-    for(int i = 0 ; i < randomNbr + 2 ; i++){
+    for (int i = 0; i < randomNbr + 2; i++) {
       playersForPhoto.add(players[i]);
       textForQuestion = textForQuestion + players[i].username + ", ";
     }
@@ -200,7 +161,7 @@ class QuestionsManager {
         type: 'Photo Time',
         widget: Column(
           children: [
-            Text( textForQuestion +   photoQuestions.first,
+            Text(textForQuestion + photoQuestions.first,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 22,
@@ -220,11 +181,12 @@ class QuestionsManager {
                     context,
                     MaterialPageRoute(
                         builder: (context) => TakePictureScreen(
-                            cameras: cameras,
-                            questionsManager: this,
-                            players: players,
-                            playersInPhoto: playersForPhoto,
-                            photoQuestionText: photoQuestions.first,)));
+                              cameras: cameras,
+                              questionsManager: this,
+                              players: players,
+                              playersInPhoto: playersForPhoto,
+                              photoQuestionText: photoQuestions.first,
+                            )));
               },
               child: Container(
                 width: 100,
@@ -248,15 +210,19 @@ class QuestionsManager {
             SizedBox(
               height: 30,
             ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                for(int i = 0; i < playersForPhoto.length ; i++)
+                for (int i = 0; i < playersForPhoto.length; i++)
                   Container(
-                    width:50,
-                    height:50,
+                    width: 50,
+                    height: 50,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: playersForPhoto[i].photoPath.contains('avatar') ? AssetImage(playersForPhoto[i].photoPath) : Image.file(File(playersForPhoto[i].photoPath)).image,
+                        image: playersForPhoto[i].photoPath.contains('avatar')
+                            ? AssetImage(playersForPhoto[i].photoPath)
+                            : Image.file(File(playersForPhoto[i].photoPath))
+                                .image,
                         fit: BoxFit.fill,
                       ),
                       shape: BoxShape.circle,
@@ -264,7 +230,6 @@ class QuestionsManager {
                       color: Colors.yellow.shade700,
                     ),
                   )
-
               ],
             ),
             SizedBox(height: 10),
@@ -334,18 +299,18 @@ class QuestionsManager {
     return Question(
         type: 'Most Likely To',
         widget: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(question,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                      fontFamily: 'Font5')),
-              SizedBox(height: 50),
-              buttons,
-            ],
-          ),
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(question,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Font5')),
+            SizedBox(height: 50),
+            buttons,
+          ],
+        ),
         complete: () {
           for (int i = 0; i < players.length; i++) {
             if (buttons.selected[i]) {
@@ -389,6 +354,119 @@ class QuestionsManager {
           }
         },
         nbrGlasses: getRandomNumberOfGlasses());
+  }
+}
+
+class DrawChallenge extends StatefulWidget {
+  final SignatureController controller;
+  final List<UserClass> players;
+  final int player;
+  final String challenge;
+
+  const DrawChallenge(
+      {super.key,
+      required this.controller,
+      required this.players,
+      required this.player,
+      required this.challenge});
+
+  @override
+  State<StatefulWidget> createState() => _DrawChallengeState();
+}
+
+class _DrawChallengeState extends State<DrawChallenge> {
+  bool isBlurred = true;
+
+  toggleBlur() {
+    setState(() {
+      isBlurred = !isBlurred;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image:
+                      widget.players[widget.player].photoPath.contains('avatar')
+                          ? AssetImage(widget.players[widget.player].photoPath)
+                          : Image.file(
+                                  File(widget.players[widget.player].photoPath))
+                              .image,
+                  fit: BoxFit.fill,
+                ),
+                shape: BoxShape.circle,
+                //border: Border.all(color: Colors.yellow.shade700, width: 3),
+                color: Colors.yellow.shade700,
+              ),
+            )
+          ],
+        ),
+        SizedBox(height: 20),
+        Row(mainAxisSize: MainAxisSize.min, children: [
+          Row(mainAxisSize: MainAxisSize.min, children: [
+            Text(widget.players[widget.player].username,
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Font5')),
+            isBlurred
+                ? ImageFiltered(
+                    imageFilter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                    child: Container(
+                        child: Text(" ${widget.challenge.toLowerCase()}",
+                            style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                fontFamily: 'Font5'))),
+                  )
+                : Text(" ${widget.challenge.toLowerCase()}",
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Font5'))
+          ]),
+          SizedBox(width: 10),
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black
+            ),
+              child:
+          IconButton(
+              padding: EdgeInsets.all(5),
+              constraints: BoxConstraints(),
+              onPressed: () {
+                toggleBlur();
+              },
+              iconSize: 20,
+              color: Colors.white,
+              icon: isBlurred
+                  ? Icon(Icons.visibility)
+                  : Icon(Icons.visibility_off))),
+        ]),
+        SizedBox(
+          height: 30,
+        ),
+        Signature(
+          controller: widget.controller,
+          width: 300,
+          height: 300,
+          backgroundColor: Color(0xFFEDE9E8),
+        ),
+        SizedBox(
+          height: 30,
+        ),
+      ],
+    );
   }
 }
 
@@ -441,8 +519,13 @@ class _OneVSOneState extends State<OneVsOne> {
                     height: 100,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: widget.players[widget.player1].photoPath.contains('avatar') ? AssetImage(
-                            widget.players[widget.player1].photoPath) : Image.file(File(widget.players[widget.player1].photoPath)).image,
+                        image: widget.players[widget.player1].photoPath
+                                .contains('avatar')
+                            ? AssetImage(
+                                widget.players[widget.player1].photoPath)
+                            : Image.file(File(
+                                    widget.players[widget.player1].photoPath))
+                                .image,
                         fit: BoxFit.fill,
                       ),
                       border: Border.all(
@@ -492,8 +575,13 @@ class _OneVSOneState extends State<OneVsOne> {
                     height: 100,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: widget.players[widget.player2].photoPath.contains('avatar') ? AssetImage(
-                            widget.players[widget.player2].photoPath) : Image.file(File(widget.players[widget.player2].photoPath)).image,
+                        image: widget.players[widget.player2].photoPath
+                                .contains('avatar')
+                            ? AssetImage(
+                                widget.players[widget.player2].photoPath)
+                            : Image.file(File(
+                                    widget.players[widget.player2].photoPath))
+                                .image,
                         fit: BoxFit.fill,
                       ),
                       border: Border.all(
@@ -628,7 +716,8 @@ class _MyWidgetState extends State<PlayerButton> {
 
   @override
   Widget build(BuildContext context) {
-    bool isFromCamera = widget.player.picsFromCamera.contains(widget.player.photoPath);
+    bool isFromCamera =
+        widget.player.picsFromCamera.contains(widget.player.photoPath);
     return GestureDetector(
         onTap: () {
           setState(() {
@@ -655,7 +744,9 @@ class _MyWidgetState extends State<PlayerButton> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          image: isFromCamera ? Image.file(File(widget.player.photoPath)).image : AssetImage(widget.player.photoPath),
+                          image: isFromCamera
+                              ? Image.file(File(widget.player.photoPath)).image
+                              : AssetImage(widget.player.photoPath),
                           fit: BoxFit.fill,
                         ),
                       ),
