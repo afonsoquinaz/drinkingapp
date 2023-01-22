@@ -207,10 +207,16 @@ class DisplayDraw extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var widget = Column(children: [
-      Text(photoQuestionText),
+    var widget = Container(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(
+          "Was asked to ${photoQuestionText.toLowerCase().replaceAll('!', '')}..."),
+      SizedBox(height: 10),
+      Center( child:
       Container(
-        height: 300,
+        height: draw.height,
+        width: draw.width,
+        margin: EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
           image: DecorationImage(
             image: draw.image,
@@ -218,12 +224,15 @@ class DisplayDraw extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(0),
         ),
-      ),
+      )),
       SizedBox(height: 10),
-      Icon(Icons.favorite_border),
-      SizedBox(height: 5),
-      Text('x likes'),
       Row(children: [
+        Icon(Icons.favorite_border),
+        SizedBox(width: 5),
+        Text('x likes')
+      ]),
+      SizedBox(height: 5),
+      Row(mainAxisSize: MainAxisSize.min, children: [
         for (int i = 0; i < playersInPhoto.length; i++)
           Text(playersInPhoto[i].username + ", "),
         SizedBox(
@@ -231,7 +240,7 @@ class DisplayDraw extends StatelessWidget {
         ),
         Text("caption"),
       ])
-    ]);
+    ]));
     return GenericCard(
         player: playersInPhoto.first,
         sharedText:
@@ -269,9 +278,12 @@ class DisplayPictureScreen extends StatelessWidget {
         ),
       ),
       SizedBox(height: 10),
-      Icon(Icons.favorite_border),
+      Row(children: [
+        Icon(Icons.favorite_border),
+        SizedBox(width: 5),
+        Text('x likes')
+      ]),
       SizedBox(height: 5),
-      Text('x likes'),
       Row(children: [
         for (int i = 0; i < playersInPhoto.length; i++)
           Text(playersInPhoto[i].username + ", "),
@@ -310,54 +322,53 @@ class GenericCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Row(children: [
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: player.photoPath.contains('avatar')
-                          ? AssetImage(player.photoPath)
-                          : Image.file(File(player.photoPath)).image,
-                      fit: BoxFit.fill,
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Row(children: [
+                  Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: player.photoPath.contains('avatar')
+                            ? AssetImage(player.photoPath)
+                            : Image.file(File(player.photoPath)).image,
+                        fit: BoxFit.fill,
+                      ),
+                      shape: BoxShape.circle,
+                      //border: Border.all(color: Colors.yellow.shade700, width: 3),
+                      color: Colors.yellow.shade700,
                     ),
-                    shape: BoxShape.circle,
-                    //border: Border.all(color: Colors.yellow.shade700, width: 3),
-                    color: Colors.yellow.shade700,
                   ),
-                ),
-                SizedBox(width: 10),
-                Text(
-                  player.username,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                )
+                  SizedBox(width: 10),
+                  Text(
+                    player.username,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                ]),
+                IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    onPressed: () async {
+                      if (photoPath != null) {
+                        await Share.shareFiles([photoPath!],
+                            text: sharedText, subject: "Drinking App Moment");
+                      } else {
+                        await Share.share(sharedText,
+                            subject: "Drinking App Moment");
+                      }
+                    },
+                    icon: Icon(Icons.share_outlined))
               ]),
-              IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(),
-                  onPressed: () async {
-                    if (photoPath != null) {
-                      await Share.shareFiles([photoPath!],
-                          text: sharedText, subject: "Drinking App Moment");
-                    } else {
-                      await Share.share(sharedText,
-                          subject: "Drinking App Moment");
-                    }
-                  },
-                  icon: Icon(Icons.share_outlined))
-            ]),
-            SizedBox(height: 10),
-            widget
-          ],
-        ),
-      ),
+              SizedBox(height: 10),
+              widget
+            ],
+          )),
     );
   }
 }

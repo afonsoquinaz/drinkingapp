@@ -145,13 +145,14 @@ class QuestionsManager {
             var _controller = SignatureController(
                 penStrokeWidth: 3,
                 penColor: Colors.red,
-                exportBackgroundColor: Color(0xFFF5F5F5),
+                exportBackgroundColor: Color(0xFFFFFFFF),
+                points: controller.points
             );
 
             final img = await _controller.toPngBytes();
 
             if (img != null) {
-              feedManager.addDraw(Image.memory(img!), [players[player]], pictureChallange.first);
+              feedManager.addDraw(Image.memory(img, width: controller.defaultWidth!.toDouble(), height: controller.defaultHeight!.toDouble(),), [players[player]], pictureChallange.first);
             }
           }
         },
