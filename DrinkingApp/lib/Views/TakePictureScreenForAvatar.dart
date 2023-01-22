@@ -10,40 +10,57 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 
 // A screen that allows users to take a picture using a given camera.
 class TakePictureScreenForAvatar extends StatefulWidget {
-  const TakePictureScreenForAvatar({
-    super.key,
-    required this.camera,
-    required this.player,
-    required this.changePhoto
-  });
+  const TakePictureScreenForAvatar(
+      {super.key,
+      required this.cameras,
+      required this.player,
+      required this.changePhoto});
 
-  final CameraDescription camera;
+  final List<CameraDescription> cameras;
   final UserClass player;
   final Function changePhoto;
 
   @override
-  TakePictureScreenForAvatarState createState() => TakePictureScreenForAvatarState();
+  TakePictureScreenForAvatarState createState() =>
+      TakePictureScreenForAvatarState();
 }
 
-class TakePictureScreenForAvatarState extends State<TakePictureScreenForAvatar> {
+class TakePictureScreenForAvatarState
+    extends State<TakePictureScreenForAvatar> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
-  int isFlashOn = 0;
+  bool isFlashOn = false;
+  late int selectedCamera;
 
-  @override
-  void initState() {
-    super.initState();
-    // To display the current output from the Camera,
-    // create a CameraController.
+  initializeCamera(int cameraIndex) async {
+    if (cameraIndex == 1) {
+      isFlashOn = false;
+    }
     _controller = CameraController(
       // Get a specific camera from the list of available cameras.
-      widget.camera,
+      widget.cameras[cameraIndex],
       // Define the resolution to use.
       ResolutionPreset.medium,
     );
 
     // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
+  }
+
+  toggleFlash() async {
+    if (isFlashOn) {
+      _controller.setFlashMode(FlashMode.off);
+    } else {
+      _controller.setFlashMode(FlashMode.always);
+    }
+    isFlashOn = !isFlashOn;
+  }
+
+  @override
+  void initState() {
+    selectedCamera = widget.cameras.length > 1 ? 1 : 0;
+    initializeCamera(selectedCamera);
+    super.initState();
   }
 
   @override
@@ -57,15 +74,16 @@ class TakePictureScreenForAvatarState extends State<TakePictureScreenForAvatar> 
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
 
-    return Material(
-      type: MaterialType.transparency,
-      child: Column(
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-
           Column(
             children: [
-              SizedBox(height: 50,),
+              SizedBox(
+                height: 50,
+              ),
               const Text(
                 "DrinkingApp",
                 style: TextStyle(
@@ -73,9 +91,11 @@ class TakePictureScreenForAvatarState extends State<TakePictureScreenForAvatar> 
                     color: Colors.white,
                     fontWeight: FontWeight.w200),
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               const Text(
-                "Take a picture for your avatar",
+                "Create your own avatar",
                 style: TextStyle(
                     fontSize: 23,
                     color: Colors.white,
@@ -85,29 +105,23 @@ class TakePictureScreenForAvatarState extends State<TakePictureScreenForAvatar> 
           ),
           //SizedBox(width: 100,),
           Container(
-
               width: size,
               height: size,
               child: ClipOval(
-
                   child: OverflowBox(
-
                       alignment: Alignment.center,
                       child: FittedBox(
-
                           fit: BoxFit.cover,
                           child: SizedBox(
-
                               height: 1,
                               child: FutureBuilder<void>(
-
                                 future: _initializeControllerFuture,
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState ==
                                       ConnectionState.done) {
                                     return AspectRatio(
                                         aspectRatio:
-                                        1 / _controller.value.aspectRatio,
+                                            1 / _controller.value.aspectRatio,
                                         child: CameraPreview(_controller));
                                   } else {
                                     // Otherwise, display a loading indicator.
@@ -120,7 +134,6 @@ class TakePictureScreenForAvatarState extends State<TakePictureScreenForAvatar> 
             height: 10,
           ),
 
-
           Column(
             children: [
               Row(
@@ -131,24 +144,31 @@ class TakePictureScreenForAvatarState extends State<TakePictureScreenForAvatar> 
                     heroTag: null,
                     backgroundColor: Colors.black,
                     // Provide an onPressed callback.
-                    onPressed: () async {
-                      if (isFlashOn == 0) {
-                        isFlashOn = 1;
-                        _controller != null
-                            ? () => onSetFlashModeButtonPressed(FlashMode.always)
-                            : null;
-                      } else if (isFlashOn == 1) {
-                        print("oi");
-                        isFlashOn = 0;
-                        _controller != null
-                            ? () => onSetFlashModeButtonPressed(FlashMode.off)
-                            : null;
+                    onPressed: () {
+                      if (selectedCamera == 0) {
+                        setState(() {
+                          toggleFlash();
+                        });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content:
+                              Text("Can't turn flash on while on selfie mode"),
+                          duration: const Duration(seconds: 2),
+                        ));
                       }
                     },
-                    child: const Icon(Icons.flash_on , size: 35,),
+                    child: isFlashOn
+                        ? const Icon(Icons.flash_on, size: 35)
+                        : Icon(
+                            Icons.flash_off,
+                            size: 35,
+                            color: selectedCamera == 0
+                                ? Colors.white
+                                : Colors.grey.shade500,
+                          ),
                   ),
                   GestureDetector(
-                    onTap:  () async {
+                    onTap: () async {
                       // Take the Picture in a try / catch block. If anything goes wrong,
                       // catch the error.
                       try {
@@ -162,7 +182,8 @@ class TakePictureScreenForAvatarState extends State<TakePictureScreenForAvatar> 
                         if (!mounted) return;
 
                         ImageProperties properties =
-                        await FlutterNativeImage.getImageProperties(image.path);
+                            await FlutterNativeImage.getImageProperties(
+                                image.path);
 
                         int width = properties.height!;
 
@@ -179,16 +200,14 @@ class TakePictureScreenForAvatarState extends State<TakePictureScreenForAvatar> 
                           offset = (properties.width! - width) / 2;
                           croppedFile = await FlutterNativeImage.cropImage(
                               image.path, offset.round(), 0, width, width);
-
                         } else if (Platform.isIOS) {
                           print("it is iphone");
                           // iOS-specific code
                           width = properties.width!;
                           offset = (properties.height! - width) / 2;
                           croppedFile = await FlutterNativeImage.cropImage(
-                              image.path, 0 , offset.round() , width , width );
+                              image.path, 0, offset.round(), width, width);
                         }
-
 
                         //questionsManager.addPhotoToFeed(image.path);
 
@@ -210,7 +229,6 @@ class TakePictureScreenForAvatarState extends State<TakePictureScreenForAvatar> 
                       }
                     },
                     child: Column(
-
                       children: [
                         Row(
                           children: [
@@ -219,27 +237,41 @@ class TakePictureScreenForAvatarState extends State<TakePictureScreenForAvatar> 
                               size: 100,
                               color: Colors.white,
                             ),
-
                           ],
                         ),
-                        SizedBox(height: 50,)
+                        SizedBox(
+                          height: 50,
+                        )
                       ],
                     ),
                   ),
-
-
-
                   FloatingActionButton(
                     backgroundColor: Colors.black,
                     // Provide an onPressed callback.
-                    onPressed: () async {},
-                    child: const Icon(Icons.refresh ,size: 45,),
+                    onPressed: () {
+                      if (widget.cameras.length > 1) {
+                        setState(() {
+                          selectedCamera =
+                              selectedCamera == 0 ? 1 : 0; //Switch camera
+                          initializeCamera(selectedCamera);
+                        });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('No secondary camera found'),
+                          duration: const Duration(seconds: 2),
+                        ));
+                      }
+                    },
+                    child: const Icon(
+                      Icons.flip_camera_ios,
+                      size: 45,
+                    ),
                   ),
                   SizedBox()
                 ],
               ),
               Text(
-                "Tap for photo, hold for video",
+                "Tap for photo",
                 style: TextStyle(
                     fontSize: 18,
                     color: Colors.white.withOpacity(0.5),
@@ -282,50 +314,70 @@ class DisplayPictureScreen extends StatelessWidget {
   final UserClass player;
   final Function changePhoto;
 
-  const DisplayPictureScreen({super.key, required this.imagePath, required this.player, required this.changePhoto});
+  const DisplayPictureScreen(
+      {super.key,
+      required this.imagePath,
+      required this.player,
+      required this.changePhoto});
 
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Material(
         type: MaterialType.transparency,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Column(
-              children: [
-                SizedBox(height: 50,),
-                const Text(
-                  "DrinkingApp",
-                  style: TextStyle(
-                      fontSize: 26,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w200),
-                ),
-                SizedBox(height: 10,),
-                const Text(
-                  "Preview your avatar picture",
-                  style: TextStyle(
-                      fontSize: 23,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900),
-                ),
-              ],
-            ),
-            Container(
-        width: size,
-          height: size,
-          decoration: BoxDecoration(shape: BoxShape.circle,
-              image: DecorationImage(
-                image: Image.file(File(imagePath)).image,
-                fit: BoxFit.fill,
-              )
+        child:
+            Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+          Column(
+            children: [
+              SizedBox(
+                height: 50,
+              ),
+              const Text(
+                "DrinkingApp",
+                style: TextStyle(
+                    fontSize: 26,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w200),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              const Text(
+                "Preview your avatar picture",
+                style: TextStyle(
+                    fontSize: 23,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900),
+              ),
+            ],
           ),
-    ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              TextButton(onPressed: () {changePhoto(imagePath); Navigator.pop(context); Navigator.pop(context);}, child: Text("ACCEPT")),
-              TextButton(onPressed: () {Navigator.pop(context);}, child: Text("RETAKE")),
-            ],)
-          ]));
+          Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  image: Image.file(File(imagePath)).image,
+                  fit: BoxFit.fill,
+                )),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                  onPressed: () {
+                    changePhoto(imagePath);
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  child: Text("ACCEPT")),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("RETAKE")),
+            ],
+          )
+        ]));
   }
 }

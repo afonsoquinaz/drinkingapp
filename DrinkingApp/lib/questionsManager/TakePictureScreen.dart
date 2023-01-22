@@ -13,7 +13,7 @@ class TakePictureScreen extends StatefulWidget {
   const TakePictureScreen({
     super.key,
     required this.photoQuestionText,
-    required this.camera,
+    required this.cameras,
     required this.questionsManager,
     required this.players,
     required this.playersInPhoto,
@@ -22,12 +22,15 @@ class TakePictureScreen extends StatefulWidget {
   final String photoQuestionText;
   final List<UserClass> playersInPhoto;
   final List<UserClass> players;
-  final CameraDescription camera;
+  final List<CameraDescription> cameras;
   final QuestionsManager questionsManager;
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState(
-      questionsManager: questionsManager, players: players, playersInPhoto: playersInPhoto, photoQuestionText: photoQuestionText);
+      questionsManager: questionsManager,
+      players: players,
+      playersInPhoto: playersInPhoto,
+      photoQuestionText: photoQuestionText);
 }
 
 class TakePictureScreenState extends State<TakePictureScreen> {
@@ -37,28 +40,43 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   final List<UserClass> players;
   final QuestionsManager questionsManager;
   final String photoQuestionText;
-  int isFlashOn = 0;
+  int selectedCamera = 0;
+  bool isFlashOn = false;
 
   TakePictureScreenState(
-      {required this.questionsManager, required this.players, required this.playersInPhoto, required this.photoQuestionText});
+      {required this.questionsManager,
+      required this.players,
+      required this.playersInPhoto,
+      required this.photoQuestionText});
 
-  @override
-  void initState() {
-    super.initState();
-    // To display the current output from the Camera,
-    // create a CameraController.
-
-
+  initializeCamera(int cameraIndex) async {
+    if (cameraIndex == 1) {
+      isFlashOn = false;
+    }
     _controller = CameraController(
       // Get a specific camera from the list of available cameras.
-      widget.camera,
+      widget.cameras[cameraIndex],
       // Define the resolution to use.
-
       ResolutionPreset.medium,
     );
 
     // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
+  }
+
+  toggleFlash() async {
+    if (isFlashOn) {
+      _controller.setFlashMode(FlashMode.off);
+    } else {
+      _controller.setFlashMode(FlashMode.always);
+    }
+    isFlashOn = !isFlashOn;
+  }
+
+  @override
+  void initState() {
+    initializeCamera(selectedCamera);
+    super.initState();
   }
 
   @override
@@ -72,24 +90,29 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
 
-    return Material(
-      type: MaterialType.transparency,
-      child: Column(
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-
           Column(
             children: [
-              SizedBox(height: 35,),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+              SizedBox(
+                height: 35,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  for(int i = 0; i < playersInPhoto.length ; i++)
+                  for (int i = 0; i < playersInPhoto.length; i++)
                     Container(
-                      width:50,
-                      height:50,
+                      width: 50,
+                      height: 50,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: playersInPhoto[i].photoPath.contains('avatar') ? AssetImage(playersInPhoto[i].photoPath) : Image.file(File(playersInPhoto[i].photoPath)).image,
+                          image: playersInPhoto[i].photoPath.contains('avatar')
+                              ? AssetImage(playersInPhoto[i].photoPath)
+                              : Image.file(File(playersInPhoto[i].photoPath))
+                                  .image,
                           fit: BoxFit.fill,
                         ),
                         shape: BoxShape.circle,
@@ -97,40 +120,33 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                         color: Colors.yellow.shade700,
                       ),
                     )
-
                 ],
               ),
-              SizedBox(height: 10,),
-               Text(
+              SizedBox(
+                height: 10,
+              ),
+              Text(
                 photoQuestionText,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-
                     fontSize: 23,
                     color: Colors.white,
-                    fontWeight: FontWeight.w900
-                    ),
+                    fontWeight: FontWeight.w900),
               ),
             ],
           ),
           //SizedBox(width: 100,),
           Container(
-
               width: size,
               height: size,
               child: ClipRect(
-
                   child: OverflowBox(
-
                       alignment: Alignment.center,
                       child: FittedBox(
-
                           fit: BoxFit.cover,
                           child: SizedBox(
-
                               height: 1,
                               child: FutureBuilder<void>(
-
                                 future: _initializeControllerFuture,
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState ==
@@ -150,7 +166,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             height: 10,
           ),
 
-
           Column(
             children: [
               Row(
@@ -160,24 +175,23 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                   FloatingActionButton(
                     backgroundColor: Colors.black,
                     // Provide an onPressed callback.
-                    onPressed: () async {
-                      if (isFlashOn == 0) {
-                        isFlashOn = 1;
-                        _controller != null
-                            ? () => onSetFlashModeButtonPressed(FlashMode.always)
-                            : null;
-                      } else if (isFlashOn == 1) {
-                        print("oi");
-                        isFlashOn = 0;
-                        _controller != null
-                            ? () => onSetFlashModeButtonPressed(FlashMode.off)
-                            : null;
+                    onPressed: () {
+                      if (selectedCamera == 0) {
+                        setState(() {
+                          toggleFlash();
+                        });
+                      }
+                      else{
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("Can't turn flash on while on selfie mode"),
+                          duration: const Duration(seconds: 2),
+                        ));
                       }
                     },
-                    child: const Icon(Icons.flash_on , size: 35,),
+                    child: isFlashOn ? const Icon(Icons.flash_on, size: 35) : Icon(Icons.flash_off, size: 35, color: selectedCamera==0 ? Colors.white : Colors.grey.shade500,),
                   ),
                   GestureDetector(
-                    onTap:  () async {
+                    onTap: () async {
                       // Take the Picture in a try / catch block. If anything goes wrong,
                       // catch the error.
                       try {
@@ -191,7 +205,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                         if (!mounted) return;
 
                         ImageProperties properties =
-                        await FlutterNativeImage.getImageProperties(image.path);
+                            await FlutterNativeImage.getImageProperties(
+                                image.path);
 
                         int width = properties.height!;
 
@@ -206,18 +221,18 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                           offset = (properties.width! - width) / 2;
                           File croppedFile = await FlutterNativeImage.cropImage(
                               image.path, offset.round(), 0, width, width);
-                          questionsManager.addPhotoToFeed(croppedFile.path, playersInPhoto, photoQuestionText);
-
+                          questionsManager.addPhotoToFeed(croppedFile.path,
+                              playersInPhoto, photoQuestionText);
                         } else if (Platform.isIOS) {
                           print("it is iphone");
                           // iOS-specific code
                           width = properties.width!;
                           offset = (properties.height! - width) / 2;
                           File croppedFile = await FlutterNativeImage.cropImage(
-                              image.path, 0 , offset.round() , width , width );
-                          questionsManager.addPhotoToFeed(croppedFile.path, playersInPhoto, photoQuestionText);
+                              image.path, 0, offset.round(), width, width);
+                          questionsManager.addPhotoToFeed(croppedFile.path,
+                              playersInPhoto, photoQuestionText);
                         }
-
 
                         //questionsManager.addPhotoToFeed(image.path);
 
@@ -227,7 +242,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                               builder: (context) => Game(
                                   players: players,
                                   questionsManager: questionsManager)),
-                              (Route<dynamic> route) => false,
+                          (Route<dynamic> route) => false,
                         );
                       } catch (e) {
                         // If an error occurs, log the error to the console.
@@ -235,7 +250,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                       }
                     },
                     child: Column(
-
                       children: [
                         Row(
                           children: [
@@ -244,27 +258,41 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                               size: 100,
                               color: Colors.white,
                             ),
-
                           ],
                         ),
-                        SizedBox(height: 50,)
+                        SizedBox(
+                          height: 50,
+                        )
                       ],
                     ),
                   ),
-
-
-
                   FloatingActionButton(
                     backgroundColor: Colors.black,
                     // Provide an onPressed callback.
-                    onPressed: () async {},
-                    child: const Icon(Icons.refresh ,size: 45,),
+                    onPressed: () {
+                      if (widget.cameras.length > 1) {
+                        setState(() {
+                          selectedCamera =
+                              selectedCamera == 0 ? 1 : 0; //Switch camera
+                          initializeCamera(selectedCamera);
+                        });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('No secondary camera found'),
+                          duration: const Duration(seconds: 2),
+                        ));
+                      }
+                    },
+                    child: const Icon(
+                      Icons.flip_camera_ios,
+                      size: 45,
+                    ),
                   ),
                   SizedBox()
                 ],
               ),
-               Text(
-                "Tap for photo, hold for video",
+              Text(
+                "Tap for photo",
                 style: TextStyle(
                     fontSize: 18,
                     color: Colors.white.withOpacity(0.5),

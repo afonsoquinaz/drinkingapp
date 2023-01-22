@@ -145,14 +145,11 @@ class QuestionsManager {
                 // Obtain a list of the available cameras on the device.
                 final cameras = await availableCameras();
 
-                // Get a specific camera from the list of available cameras.
-                final firstCamera = cameras.first;
-
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => TakePictureScreen(
-                            camera: firstCamera,
+                            cameras: cameras,
                             questionsManager: this,
                             players: players,
                             playersInPhoto: playersForPhoto,

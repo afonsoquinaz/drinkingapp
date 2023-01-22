@@ -344,16 +344,12 @@ class _DialogState extends State<Dialog> {
 
                       // Obtain a list of the available cameras on the device.
                       final cameras = await availableCameras();
-                      print(cameras.length);
-
-                      // Get a specific camera from the list of available cameras.
-                      final firstCamera = cameras.last;
 
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  TakePictureScreenForAvatar(camera: firstCamera, player: widget.player, changePhoto: addPicFromCamera)));
+                                  TakePictureScreenForAvatar(cameras: cameras, player: widget.player, changePhoto: addPicFromCamera)));
                     },
                   ),
                 ),
