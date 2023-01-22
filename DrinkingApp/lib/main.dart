@@ -292,13 +292,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                     addPlayer();
                                   }
                                   if (players.length > 1) {
-                                    Navigator.pushAndRemoveUntil(
+                                    Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               GameModeSelection(
                                                   players: players)),
-                                          (Route<dynamic> route) => false,
                                     );
                                   }
                                 },
