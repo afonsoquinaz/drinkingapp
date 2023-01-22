@@ -369,6 +369,7 @@ class DisplayPictureScreen extends StatelessWidget {
                     changePhoto(imagePath);
                     Navigator.pop(context);
                     Navigator.pop(context);
+                    Navigator.pop(context);
                   },
                   child: Text("ACCEPT")),
               TextButton(

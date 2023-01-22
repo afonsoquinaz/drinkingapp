@@ -28,8 +28,20 @@ class FeedManager {
     feed = newFeed;
   }
 
-  void addPhoto(String photoPath, List<UserClass> playersInPhoto , String photoQuestionText) {
-    feed.add(DisplayPictureScreen(imagePath: photoPath, playersInPhoto: playersInPhoto, photoQuestionText: photoQuestionText));
+  void addPhoto(String photoPath, List<UserClass> playersInPhoto,
+      String photoQuestionText) {
+    feed.add(DisplayPictureScreen(
+        imagePath: photoPath,
+        playersInPhoto: playersInPhoto,
+        photoQuestionText: photoQuestionText));
+  }
+
+  void addDraw(
+      Image draw, List<UserClass> playersInPhoto, String photoQuestionText) {
+    feed.add(DisplayDraw(
+        draw: draw,
+        playersInPhoto: playersInPhoto,
+        photoQuestionText: photoQuestionText));
   }
 
   addNamesWheelPost(UserClass winner) {
@@ -171,10 +183,62 @@ class MostLikelyToPost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GenericCard(player: winner, sharedText: "${winner.username} is playing a drinking game and was voted as the ${sentence.substring(7).replaceAll('?', '.')}\n"
-        "Discover our drinking game app here: bit.ly/our_link(not-working)\n"
-        "xoxo", widget: Text('Voted as the ${sentence.substring(7).replaceAll('?', '.')}'));
+    return GenericCard(
+        player: winner,
+        sharedText:
+            "${winner.username} is playing a drinking game and was voted as the ${sentence.substring(7).replaceAll('?', '.')}\n"
+            "Discover our drinking game app here: bit.ly/our_link(not-working)\n"
+            "xoxo",
+        widget:
+            Text('Voted as the ${sentence.substring(7).replaceAll('?', '.')}'));
+  }
+}
 
+class DisplayDraw extends StatelessWidget {
+  final Image draw;
+  final List<UserClass> playersInPhoto;
+  final String photoQuestionText;
+
+  const DisplayDraw(
+      {super.key,
+      required this.draw,
+      required this.playersInPhoto,
+      required this.photoQuestionText});
+
+  @override
+  Widget build(BuildContext context) {
+    var widget = Column(children: [
+      Text(photoQuestionText),
+      Container(
+        height: 300,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: draw.image,
+            fit: BoxFit.cover,
+          ),
+          borderRadius: BorderRadius.circular(0),
+        ),
+      ),
+      SizedBox(height: 10),
+      Icon(Icons.favorite_border),
+      SizedBox(height: 5),
+      Text('x likes'),
+      Row(children: [
+        for (int i = 0; i < playersInPhoto.length; i++)
+          Text(playersInPhoto[i].username + ", "),
+        SizedBox(
+          width: 5,
+        ),
+        Text("caption"),
+      ])
+    ]);
+    return GenericCard(
+        player: playersInPhoto.first,
+        sharedText:
+            "${playersInPhoto.first.username} is playing a drinking game and wanted to share this moment with you!\n"
+            "Discover our drinking game app here: bit.ly/our_link(not-working)\n"
+            "xoxo",
+        widget: widget);
   }
 }
 
@@ -185,7 +249,10 @@ class DisplayPictureScreen extends StatelessWidget {
   final String photoQuestionText;
 
   const DisplayPictureScreen(
-      {super.key, required this.imagePath, required this.playersInPhoto, required this.photoQuestionText});
+      {super.key,
+      required this.imagePath,
+      required this.playersInPhoto,
+      required this.photoQuestionText});
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +273,7 @@ class DisplayPictureScreen extends StatelessWidget {
       SizedBox(height: 5),
       Text('x likes'),
       Row(children: [
-        for(int i = 0 ; i < playersInPhoto.length ; i++)
+        for (int i = 0; i < playersInPhoto.length; i++)
           Text(playersInPhoto[i].username + ", "),
         SizedBox(
           width: 5,
@@ -220,7 +287,8 @@ class DisplayPictureScreen extends StatelessWidget {
             "${playersInPhoto.first.username} is playing a drinking game and wanted to share this moment with you!\n"
             "Discover our drinking game app here: bit.ly/our_link(not-working)\n"
             "xoxo",
-        widget: widget, photoPath: imagePath);
+        widget: widget,
+        photoPath: imagePath);
   }
 }
 
@@ -253,7 +321,9 @@ class GenericCard extends StatelessWidget {
                   height: 24,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: player.photoPath.contains('avatar') ? AssetImage(player.photoPath) : Image.file(File(player.photoPath)).image,
+                      image: player.photoPath.contains('avatar')
+                          ? AssetImage(player.photoPath)
+                          : Image.file(File(player.photoPath)).image,
                       fit: BoxFit.fill,
                     ),
                     shape: BoxShape.circle,

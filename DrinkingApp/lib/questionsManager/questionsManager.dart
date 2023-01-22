@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:camera/camera.dart';
 import 'package:drinkingapp/Constants/ColorPalette.dart';
@@ -127,19 +128,33 @@ class QuestionsManager {
     pictureChallange.shuffle();
     int player = Random().nextInt(players.length);
 
-    final SignatureController _controller = SignatureController(
-      penStrokeWidth: 5,
+    var controller = SignatureController(
+      penStrokeWidth: 3,
       penColor: Colors.red,
-      exportBackgroundColor: Color(0xFFF5F5F5),
     );
 
     return Question(
         type: 'Draw Challenge',
         widget: DrawChallenge(
-            controller: _controller,
+            controller: controller,
             players: players,
             player: player,
             challenge: pictureChallange.first),
+        complete: () async {
+          if (controller.isNotEmpty) {
+            var _controller = SignatureController(
+                penStrokeWidth: 3,
+                penColor: Colors.red,
+                exportBackgroundColor: Color(0xFFF5F5F5),
+            );
+
+            final img = await _controller.toPngBytes();
+
+            if (img != null) {
+              feedManager.addDraw(Image.memory(img!), [players[player]], pictureChallange.first);
+            }
+          }
+        },
         nbrGlasses: getRandomNumberOfGlasses());
   }
 
