@@ -130,7 +130,7 @@ class QuestionsManager {
     final SignatureController _controller = SignatureController(
       penStrokeWidth: 5,
       penColor: Colors.red,
-      exportBackgroundColor: Color(0xFFEDE9E8),
+      exportBackgroundColor: Color(0xFFF5F5F5),
     );
 
     return Question(
@@ -462,7 +462,7 @@ class _DrawChallengeState extends State<DrawChallenge> {
           controller: widget.controller,
           width: 300,
           height: 300,
-          backgroundColor: Color(0xFFEDE9E8),
+          backgroundColor: Color(0xFFF5F5F5),
         ), Positioned(top:0, right:0, child:
               TextButton(onPressed: () { widget.controller.clear();}, child: Text('CLEAN', style: TextStyle(color: Colors.black),), style: TextButton.styleFrom(
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
