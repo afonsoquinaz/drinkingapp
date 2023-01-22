@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // _counter++;
   }
 
-  addQuickPlayers(){
+  addQuickPlayers() {
     UserClass newPlayer = UserClass("Afonso", '');
     players.add(newPlayer);
     newPlayer = UserClass("Tiago", '');
@@ -170,7 +170,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                   MainAxisSize
                                                                       .min,
                                                               children: [
-                                                                Text(players[i].username,
+                                                                Text(
+                                                                    players[i]
+                                                                        .username,
                                                                     style: TextStyle(
                                                                         fontSize:
                                                                             16)),
@@ -207,70 +209,84 @@ class _MyHomePageState extends State<MyHomePage> {
                           ],
                         )),
                     IntrinsicHeight(
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                          Expanded(
-                              child: Container(
-                                  // height: 44,
-                                  child: TextField(
-                                    textCapitalization: TextCapitalization.words,
-                            controller: playersTextController,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 10),
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(color: Colors.black)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(color: Colors.black)),
-                              hintText: 'Add a new player',
-                            ),
-                            onSubmitted: (value) {
-                              if (playersTextController.text.trim() != '') {
-                                setState(() => addPlayer());
-                              }
-                            },
-                            onEditingComplete: () {},
-                          ))),
-                              TextButton(
-                                onPressed: () {
-
-                                  setState(() {
-                                    addQuickPlayers();
-                                  });
-                                },
-                                child: const Text(">",
-                                    style: TextStyle(fontSize: 18)),
-                                style: ElevatedButton.styleFrom(
-                                  //backgroundColor: Colors.black,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(10), // <-- Radius
-                                  ),
+                        child: Container(
+                            decoration: BoxDecoration(
+                                //borderRadius: BorderRadius.circular(10),
                                 ),
-                              ),
-                          const SizedBox(width: 10),
-                          ElevatedButton(
-                            onPressed: () {
-                              if (playersTextController.text.trim() != '') {
-                                setState(() => addPlayer());
-                              }
-                            },
-                            child: const Icon(Icons.add),
-                            style: ElevatedButton.styleFrom(
-                              //backgroundColor: Colors.black,
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(10), // <-- Radius
-                              ),
-                            ),
-                          ),
-                        ])),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                      child: Container(
+                                          child: TextField(
+                                    textCapitalization:
+                                        TextCapitalization.words,
+                                    controller: playersTextController,
+                                    decoration: InputDecoration(
+                                      suffixIcon: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.blue,
+                                              ),
+                                              child: IconButton(
+                                                  icon: Icon(
+                                                    Icons.account_circle,
+                                                    color: Colors.white,
+                                                  ),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      addQuickPlayers();
+                                                    });
+                                                  }),
+                                            ),
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                  color: Colors.black,
+                                                  borderRadius:
+                                                      BorderRadius.horizontal(
+                                                          right:
+                                                              Radius.circular(
+                                                                  10))),
+                                              child: new IconButton(
+                                                icon: new Icon(
+                                                  Icons.add,
+                                                  color: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  if (playersTextController.text
+                                                          .trim() !=
+                                                      '') {
+                                                    setState(() => addPlayer());
+                                                  }
+                                                },
+                                              ),
+                                            )
+                                          ]),
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 0, horizontal: 10),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          width: 0,
+                                          style: BorderStyle.none,
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      hintText: 'Add a new player',
+                                    ),
+                                    onSubmitted: (value) {
+                                      if (playersTextController.text.trim() !=
+                                          '') {
+                                        setState(() => addPlayer());
+                                      }
+                                    },
+                                    onEditingComplete: () {},
+                                  )))
+                                ]))),
                     Container(
                         margin: const EdgeInsets.only(top: 120.0, bottom: 10.0),
                         child: Text(
@@ -281,7 +297,6 @@ class _MyHomePageState extends State<MyHomePage> {
                               fontWeight: FontWeight.w400),
                           textAlign: TextAlign.center,
                         )),
-
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       Expanded(
                           child: Container(
@@ -307,7 +322,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   //backgroundColor: Colors.black,
                                   shape: RoundedRectangleBorder(
                                     borderRadius:
-                                    BorderRadius.circular(10), // <-- Radius
+                                        BorderRadius.circular(10), // <-- Radius
                                   ),
                                 ),
                               )))
