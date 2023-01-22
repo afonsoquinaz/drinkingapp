@@ -39,6 +39,7 @@ dependencies:
   flutter_native_image: ^0.0.6+1
   share: ^2.0.4
   group_button: ^5.2.2
+  signature: ^5.3.0
 
 dev_dependencies:
   flutter_test:

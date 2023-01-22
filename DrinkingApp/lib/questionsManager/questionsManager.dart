@@ -15,8 +15,11 @@ import 'package:drinkingapp/questionsManager/NamesWheel.dart';
 import 'package:flutter_lorem/flutter_lorem.dart';
 import 'package:flutter/material.dart';
 import 'package:group_button/group_button.dart';
+import 'package:signature/signature.dart';
 
 import 'NamesWheel.dart';
+
+
 
 class QuestionsManager {
   int index_mostLikely = 0;
@@ -31,6 +34,13 @@ class QuestionsManager {
   List<Widget> getFeed() {
     return feedManager.getFeed();
   }
+
+  final List<String> pictureChallange = [
+    "Draw a duck!",
+    "Draw a boat!",
+    "Draw a table!",
+    "Draw a shoe!"
+  ];
 
   final List<String> photoQuestions = [
     "Take a photo holding the most random Item of the house!",
@@ -89,7 +99,11 @@ class QuestionsManager {
     } else if (doubleValue <= 0.6) {
       this.currentQuestion = getMostLikelyTo(players);
       return currentQuestion;
-    } else if (doubleValue <= 0.8) {
+    } else if(doubleValue <= 0.7){
+      this.currentQuestion = getSignatureQuestion(players);
+      return currentQuestion;
+    }
+      else if (doubleValue <= 0.8) {
       this.currentQuestion = getPhotoQuestion(players, context);
       return currentQuestion;
     } else if (doubleValue<= 0.9){
@@ -110,6 +124,63 @@ class QuestionsManager {
   int getRandomNumberOfGlasses() {
     return Random().nextInt(8) + 1;
   }
+  Question getSignatureQuestion(List<UserClass> players){
+    pictureChallange.shuffle();
+    int player = Random().nextInt(players.length);
+
+    final SignatureController _controller = SignatureController(
+      penStrokeWidth: 5,
+      penColor: Colors.red,
+      exportBackgroundColor: Colors.blue,
+    );
+
+    return  Question(
+        type: 'Draw Challenge',
+        widget: Column(
+          children: [
+            Text( pictureChallange.first,
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Font5')),
+            SizedBox(
+              height: 30,
+            ),
+           Signature(
+              controller: _controller,
+              width: 300,
+              height: 300,
+              backgroundColor: Colors.lightBlueAccent,
+            ),
+
+
+            Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                  Container(
+                    width:50,
+                    height:50,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: players[player].photoPath.contains('avatar') ? AssetImage(players[player].photoPath) : Image.file(File(players[player].photoPath)).image,
+                        fit: BoxFit.fill,
+                      ),
+                      shape: BoxShape.circle,
+                      //border: Border.all(color: Colors.yellow.shade700, width: 3),
+                      color: Colors.yellow.shade700,
+                    ),
+                  )
+
+              ],
+            ),
+            SizedBox(height: 10),
+            SizedBox(
+              height: 30,
+            ),
+          ],
+        ),
+        nbrGlasses: getRandomNumberOfGlasses());
+  }
+
 
   Question getPhotoQuestion(List<UserClass> players, context) {
     photoQuestions.shuffle();
