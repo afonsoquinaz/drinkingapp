@@ -36,14 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final QuestionsManager questionsManager;
   final List<UserClass> players;
-  final playersTextController = TextEditingController();
-  int _counter = 0;
-  String questionText = "The game starts here";
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   opacity: 0.3,
                   child: TextButton(onPressed: () {
                       Navigator.pop(context);
-                    }, child: Text('HOME', style: TextStyle(color: Colors.black),),
+                    }, child: Text('GAME', style: TextStyle(color: Colors.black),),
                   )),
               Container(
                 color: Colors.black45,

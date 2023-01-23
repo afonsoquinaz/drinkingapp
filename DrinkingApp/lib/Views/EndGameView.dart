@@ -9,13 +9,7 @@ class EndGameView extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+    return  MyHomePage(title: 'Flutter Demo Home Page');
   }
 }
 
@@ -29,15 +23,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final playersTextController  = TextEditingController();
-  int _counter = 0;
-  String Players = "";
-  String questionText = "The game starts here";
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,38 +32,71 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
     return Scaffold(
-      backgroundColor: Colors.teal,
+      backgroundColor: Color(0xffb0e3df),
 
       body: Center(
           child:  Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              SizedBox(),
+              SizedBox(),
+              SizedBox(),
+              Text(
+                "Game\nOver",
+                style: TextStyle(
+                    fontSize: 90,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontFamily: 'Font3'),
+                textAlign: TextAlign.center,
+              ),
+              Text("Hope to see you soon!",
+                  style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: 'Font5')),
+              SizedBox(),
+              SizedBox(),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    color: Colors.white,
-                    onPressed: () {
-
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => const MyApp()),
-                            (Route<dynamic> route) => false,
-                      );
-                    },
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                        ),
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => const MyApp()),
+                                (Route<dynamic> route) => false,
+                          );
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(width: 5),
+                            Text('HOMEPAGE',
+                                style: TextStyle(
+                                    color: Colors.white)), // <-- Text
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              // <-- Icon
+                              Icons.navigate_next_outlined,
+                              size: 24.0,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
               SizedBox(),
-              SizedBox(),
-              Text("THE GAME ENDS HERE"),
-              Text("GOOD BYE"),
-              SizedBox(),
-              SizedBox(),
-              SizedBox(),
-
             ],
           )
 

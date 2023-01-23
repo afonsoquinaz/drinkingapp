@@ -304,7 +304,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   if (playersTextController.text.trim() != '') {
-                                    addPlayer();
+                                    setState(() {
+                                      addPlayer();
+                                    });
                                   }
                                   if (players.length > 1) {
                                     Navigator.push(
@@ -314,6 +316,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                               GameModeSelection(
                                                   players: players)),
                                     );
+                                  }else{
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content: Text('To start the game, you need to add at least 2 players'),
+                                      duration: const Duration(seconds: 2),
+                                    ));
                                   }
                                 },
                                 child: const Text("GET READY",

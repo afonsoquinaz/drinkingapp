@@ -4,6 +4,7 @@ import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 import 'package:drinkingapp/questionsManager/questionsManager.dart';
+import 'Views/EndGameView.dart';
 import 'Views/GameFeedView.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 
@@ -81,56 +82,14 @@ class _GameScreenState extends State<GameScreen> {
         return Scaffold(
             backgroundColor: getColorForGameType(_swipeItems[index].content[1]),
             body: Column(children: [
+              TopBar(
+                  players: players,
+                  questionsManager: questionsManager,
+                  questionType: _swipeItems[index].content[1]),
               _swipeItems[index].content[0],
-              Container(
-                  margin: EdgeInsets.only(bottom: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: getTextColorForGameType(
-                                  _swipeItems[index].content[1]),
-                            ),
-                            onPressed: () {
-                              _matchEngine!.currentItem?.nope();
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(width: 5),
-                                Text('NEXT',
-                                    style: TextStyle(
-                                        color: (getTextColorForGameType(
-                                                    _swipeItems[index]
-                                                        .content[1]) ==
-                                                Color.fromARGB(
-                                                    255, 255, 255, 255))
-                                            ? Color.fromARGB(255, 0, 0, 0)
-                                            : Color.fromARGB(255, 255, 255,
-                                                255))), // <-- Text
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Icon(
-                                  // <-- Icon
-                                  Icons.navigate_next_outlined,
-                                  size: 24.0,
-                                  color: (getTextColorForGameType(
-                                              _swipeItems[index].content[1]) ==
-                                          Color.fromARGB(255, 255, 255, 255))
-                                      ? Color.fromARGB(255, 0, 0, 0)
-                                      : Color.fromARGB(255, 255, 255, 255),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ))
+              BottomBar(
+                  matchEngine: _matchEngine!,
+                  questionType: _swipeItems[index].content[1])
             ]));
       },
       onStackFinished: () {
@@ -147,6 +106,106 @@ class _GameScreenState extends State<GameScreen> {
       upSwipeAllowed: false,
       fillSpace: true,
     );
+  }
+}
+
+class TopBar extends StatelessWidget {
+  final List<UserClass> players;
+  final QuestionsManager questionsManager;
+  final String questionType;
+
+  const TopBar(
+      {super.key,
+      required this.players,
+      required this.questionsManager,
+      required this.questionType});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      const SizedBox(height: 35),
+      Stack(children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () {},
+              child: Text(
+                'GAME',
+                style: TextStyle(color: getTextColorForGameType(questionType)),
+              ),
+            ),
+            Container(
+              color: getTextColorForGameType(questionType).withOpacity(0.8),
+              height: 20,
+              width: 2,
+            ),
+            Opacity(
+              opacity: 0.3,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => GameFeedView(
+                              questionsManager: questionsManager,
+                              players: players,
+                            )),
+                  );
+                },
+                child: Text(
+                  'FEED',
+                  style:
+                      TextStyle(color: getTextColorForGameType(questionType)),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.close),
+              color: getTextColorForGameType(questionType),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text("Quit game"),
+                    content:
+                        const Text("Are you sure you want to leave the game? We'll miss you :("),
+                    actions: <Widget>[
+                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushAndRemoveUntil(
+                              ctx,
+                              MaterialPageRoute(
+                                  builder: (context) => const EndGameView()),
+                              (Route<dynamic> route) => false,
+                            );
+                          },
+                          child: const Text("YES",
+                              style: TextStyle(color: Colors.red)),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          },
+                          child: const Text("NO",
+                              style: TextStyle(color: Colors.green)),
+                        ),
+                      ])
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        )
+      ]),
+    ]);
   }
 }
 
@@ -176,70 +235,11 @@ class Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(child: Center(
-        child: Column(
+    return Expanded(
+        child: Center(
+            child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        //Row(
-        //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //  children: [
-        //    SizedBox(),
-        //    IconButton(
-        //     icon: const Icon(Icons.close),
-        //      color: Colors.white,
-        //      onPressed: () {
-        //        Navigator.pushAndRemoveUntil(
-        //          context,
-        //          MaterialPageRoute(
-        //             builder: (context) => const EndGameView()),
-        //             (Route<dynamic> route) => false,
-        //       );
-        //       },
-        //    ),
-        //   ],
-        // ),
-        Column(children: [
-          SizedBox(height: 35),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: () {},
-                child: Text(
-                  'HOME',
-                  style:
-                      TextStyle(color: getTextColorForGameType(question.type)),
-                ),
-              ),
-              Container(
-                color: getTextColorForGameType(question.type).withOpacity(0.8),
-                height: 20,
-                width: 2,
-              ),
-              Opacity(
-                opacity: 0.3,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => GameFeedView(
-                                questionsManager: questionsManager,
-                                players: players,
-                              )),
-                    );
-                  },
-                  child: Text(
-                    'FEED',
-                    style: TextStyle(
-                        color: getTextColorForGameType(question.type)),
-                  ),
-                ),
-              ),
-            ],
-          )
-        ]),
-        // Text(questionText),
         SizedBox(),
         SizedBox(),
         Text(
@@ -283,5 +283,61 @@ class Content extends StatelessWidget {
         )
       ],
     )));
+  }
+}
+
+class BottomBar extends StatelessWidget {
+  final MatchEngine matchEngine;
+  final String questionType;
+
+  const BottomBar(
+      {super.key, required this.matchEngine, required this.questionType});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        margin: EdgeInsets.only(bottom: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: getTextColorForGameType(questionType),
+                  ),
+                  onPressed: () {
+                    matchEngine.currentItem?.nope();
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(width: 5),
+                      Text('NEXT',
+                          style: TextStyle(
+                              color: (getTextColorForGameType(questionType) ==
+                                      Color.fromARGB(255, 255, 255, 255))
+                                  ? Color.fromARGB(255, 0, 0, 0)
+                                  : Color.fromARGB(
+                                      255, 255, 255, 255))), // <-- Text
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Icon(
+                        // <-- Icon
+                        Icons.navigate_next_outlined,
+                        size: 24.0,
+                        color: (getTextColorForGameType(questionType) ==
+                                Color.fromARGB(255, 255, 255, 255))
+                            ? Color.fromARGB(255, 0, 0, 0)
+                            : Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ));
   }
 }
