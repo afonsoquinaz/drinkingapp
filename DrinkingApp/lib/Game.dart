@@ -138,7 +138,7 @@ class _GameScreenState extends State<GameScreen> {
         // ));
       },
       itemChanged: (SwipeItem item, int index) {
-        if (index % 19 == 0){
+        if (index % 18 == 0){
           setState(() {
             addQuestions();
           });
