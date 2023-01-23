@@ -472,6 +472,7 @@ class _DrawChallengeState extends State<DrawChallenge> {
         SizedBox(
           height: 30,
         ),
+        GestureDetector(onHorizontalDragUpdate: (details) {}, child:
         Container(width: 300, height: 300, child:
         Stack(children: [
         Signature(
@@ -482,7 +483,7 @@ class _DrawChallengeState extends State<DrawChallenge> {
         ), Positioned(top:0, right:0, child:
               TextButton(onPressed: () { widget.controller.clear();}, child: Text('CLEAN', style: TextStyle(color: Colors.black),), style: TextButton.styleFrom(
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: EdgeInsets.zero)))])),
+                  padding: EdgeInsets.zero)))]))),
           //IconButton(onPressed: () {widget.controller.clear();}, icon: Icon(Icons.refresh, color: Colors.black),))])),
         SizedBox(
           height: 30,
