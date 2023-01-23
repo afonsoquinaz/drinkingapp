@@ -172,9 +172,9 @@ class TopBar extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: const Text("Quit game"),
+                    title: const Text("Finish game"),
                     content:
-                        const Text("Are you sure you want to leave the game? We'll miss you :("),
+                        const Text("Are you sure you want to finish the game? We'll miss you :("),
                     actions: <Widget>[
                       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                         TextButton(
