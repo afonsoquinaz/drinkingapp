@@ -278,27 +278,27 @@ class QuestionsManager {
 
   Question getWheelOfChallanges(List<UserClass> players) {
     Random random = new Random();
-    int indexWinner = random.nextInt(4); // from 0 to 9 included
-    feedManager.addNamesWheelPost(players[indexWinner]);
+    int indexWinner = random.nextInt(pictureChallange.length); // from 0 to 9 included
     ChallangesWheel nm = new ChallangesWheel(indexWinner: indexWinner);
     //nm.createState().
     //_NamesWheelS
     return Question(
         type: 'Challanges Wheel',
         widget: nm,
+        complete: () {feedManager.addChallengeWheelPost(nm.challanges[indexWinner]);},
         nbrGlasses: getRandomNumberOfGlasses());
   }
 
   Question getWheelOfNames(List<UserClass> players) {
     Random random = new Random();
     int indexWinner = random.nextInt(players.length); // from 0 to 9 included
-    feedManager.addNamesWheelPost(players[indexWinner]);
     NamesWheel nm = new NamesWheel(players: players, indexWinner: indexWinner);
     //nm.createState().
     //_NamesWheelS
     return Question(
         type: 'Fortune Wheel',
         widget: nm,
+        complete: () {feedManager.addNamesWheelPost(players[indexWinner]);},
         nbrGlasses: getRandomNumberOfGlasses());
   }
 

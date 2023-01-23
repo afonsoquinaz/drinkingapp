@@ -3,11 +3,18 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 
+
 class ChallangesWheel extends StatefulWidget {
-  const ChallangesWheel({Key? key, required this.indexWinner})
+  ChallangesWheel({Key? key, required this.indexWinner})
       : super(key: key);
 
   final int indexWinner;
+  final List<String> challanges = [
+    "All Drink",
+    "Girls Drink",
+    "Boys Drink",
+    "Gods Drink"
+  ];
 
   @override
   _ChallangesWheelState createState() => _ChallangesWheelState( indexWinner);
@@ -15,13 +22,6 @@ class ChallangesWheel extends StatefulWidget {
 
 class _ChallangesWheelState extends State<ChallangesWheel> {
   _ChallangesWheelState( this.indexWinner);
-
-  List<String> challanges = [
-    "All Drink",
-    "Girls Drink",
-    "Boys Drink",
-    "Gods Drink"
-  ];
 
   final int indexWinner;
   String winner = "";
@@ -42,7 +42,7 @@ class _ChallangesWheelState extends State<ChallangesWheel> {
         child: GestureDetector(
           onTap: () {
             setState(() {
-               winner = challanges[indexWinner];
+               winner = widget.challanges[indexWinner];
               selected.add(
                 indexWinner,
               );
@@ -92,7 +92,7 @@ class _ChallangesWheelState extends State<ChallangesWheel> {
                   animateFirst: false,
                   selected: selected.stream,
                   items: [
-                    for (var challange in challanges)
+                    for (var challange in widget.challanges)
                       FortuneItem(
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -109,14 +109,14 @@ class _ChallangesWheelState extends State<ChallangesWheel> {
 
                             ]),
                         style: FortuneItemStyle(
-                            color: (challanges.indexOf(challange) % 2 == 0)
+                            color: (widget.challanges.indexOf(challange) % 2 == 0)
                                 ? Colors.blue
                                 : Colors
                                 .white, // <-- custom circle slice fill color
                             // <-- custom circle slice stroke color
                             borderWidth: 0.5,
                             textStyle: TextStyle(
-                              color: (challanges.indexOf(challange) % 2 == 0)
+                              color: (widget.challanges.indexOf(challange) % 2 == 0)
                                   ? Colors.white
                                   : Colors.black,
                             ) // <-- custom circle slice stroke width

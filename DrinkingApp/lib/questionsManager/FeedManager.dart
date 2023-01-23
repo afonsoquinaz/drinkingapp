@@ -48,6 +48,10 @@ class FeedManager {
     feed.add(NamesWheelPost(winner: winner));
   }
 
+  addChallengeWheelPost(String challenge) {
+    feed.add(ChallengesWheelPost(challenge: challenge));
+  }
+
   addOneVsOnePost(
       String challenge, UserClass player1, UserClass player2, String winner) {
     feed.add(OneVsOnePost(
@@ -154,6 +158,22 @@ class OneVsOnePost extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class ChallengesWheelPost extends StatelessWidget {
+  final String challenge;
+
+  const ChallengesWheelPost({super.key, required this.challenge});
+
+  @override
+  Widget build(BuildContext context) {
+    return GenericCard(
+        sharedText:
+        "Hi! I'm playing a drinking game and the whole group got this challenge: $challenge\n"
+            "Discover the drinking game app here: bit.ly/our_link(not-working)\n"
+            "xoxo",
+        widget: Text('The group got the following challenge: ${challenge.toLowerCase()}'));
   }
 }
 
@@ -305,14 +325,13 @@ class DisplayPictureScreen extends StatelessWidget {
 }
 
 class GenericCard extends StatelessWidget {
-  final UserClass player;
+  final UserClass? player;
   final String sharedText;
   final Widget widget;
   final String? photoPath;
 
   const GenericCard(
-      {super.key,
-      required this.player,
+      {super.key, this.player,
       required this.sharedText,
       required this.widget,
       this.photoPath});
@@ -332,12 +351,12 @@ class GenericCard extends StatelessWidget {
                     width: 24,
                     height: 24,
                     decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: player.photoPath.contains('avatar')
-                            ? AssetImage(player.photoPath)
-                            : Image.file(File(player.photoPath)).image,
+                      image: player != null ? DecorationImage(
+                        image: player!.photoPath.contains('avatar')
+                            ? AssetImage(player!.photoPath)
+                            : Image.file(File(player!.photoPath)).image,
                         fit: BoxFit.fill,
-                      ),
+                      ):null,
                       shape: BoxShape.circle,
                       //border: Border.all(color: Colors.yellow.shade700, width: 3),
                       color: Colors.yellow.shade700,
@@ -345,7 +364,7 @@ class GenericCard extends StatelessWidget {
                   ),
                   SizedBox(width: 10),
                   Text(
-                    player.username,
+                    player != null ? player!.username : "Group",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),

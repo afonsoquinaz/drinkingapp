@@ -12,14 +12,8 @@ class GameFeedView extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(
-          title: 'Flutter Demo Home Page', questionsManager: questionsManager, players: players,),
-    );
+    return MyHomePage(
+          title: 'Flutter Demo Home Page', questionsManager: questionsManager, players: players);
   }
 }
 
@@ -73,11 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Opacity(
                   opacity: 0.3,
                   child: TextButton(onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => Game(players: players, questionsManager: questionsManager)),
-                            (Route<dynamic> route) => false,
-                      );
+                      Navigator.pop(context);
                     }, child: Text('HOME', style: TextStyle(color: Colors.black),),
                   )),
               Container(
