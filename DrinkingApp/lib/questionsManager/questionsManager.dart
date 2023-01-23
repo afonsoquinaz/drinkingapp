@@ -146,13 +146,19 @@ class QuestionsManager {
                 penStrokeWidth: 3,
                 penColor: Colors.red,
                 exportBackgroundColor: Color(0xFFFFFFFF),
-                points: controller.points
-            );
+                points: controller.points);
 
             final img = await _controller.toPngBytes();
 
             if (img != null) {
-              feedManager.addDraw(Image.memory(img, width: controller.defaultWidth!.toDouble(), height: controller.defaultHeight!.toDouble(),), [players[player]], pictureChallange.first);
+              feedManager.addDraw(
+                  Image.memory(
+                    img,
+                    width: controller.defaultWidth!.toDouble(),
+                    height: controller.defaultHeight!.toDouble(),
+                  ),
+                  [players[player]],
+                  pictureChallange.first);
             }
           }
         },
@@ -278,14 +284,17 @@ class QuestionsManager {
 
   Question getWheelOfChallanges(List<UserClass> players) {
     Random random = new Random();
-    int indexWinner = random.nextInt(pictureChallange.length); // from 0 to 9 included
+    int indexWinner =
+        random.nextInt(pictureChallange.length); // from 0 to 9 included
     ChallangesWheel nm = new ChallangesWheel(indexWinner: indexWinner);
     //nm.createState().
     //_NamesWheelS
     return Question(
         type: 'Challanges Wheel',
         widget: nm,
-        complete: () {feedManager.addChallengeWheelPost(nm.challanges[indexWinner]);},
+        complete: () {
+          feedManager.addChallengeWheelPost(nm.challanges[indexWinner]);
+        },
         nbrGlasses: getRandomNumberOfGlasses());
   }
 
@@ -298,7 +307,9 @@ class QuestionsManager {
     return Question(
         type: 'Fortune Wheel',
         widget: nm,
-        complete: () {feedManager.addNamesWheelPost(players[indexWinner]);},
+        complete: () {
+          feedManager.addNamesWheelPost(players[indexWinner]);
+        },
         nbrGlasses: getRandomNumberOfGlasses());
   }
 
@@ -392,6 +403,7 @@ class DrawChallenge extends StatefulWidget {
 
 class _DrawChallengeState extends State<DrawChallenge> {
   bool isBlurred = true;
+  Timer? timer;
 
   toggleBlur() {
     setState(() {
@@ -452,39 +464,66 @@ class _DrawChallengeState extends State<DrawChallenge> {
           ]),
           SizedBox(width: 10),
           Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.black
-            ),
-              child:
-          IconButton(
-              padding: EdgeInsets.all(5),
-              constraints: BoxConstraints(),
-              onPressed: () {
-                toggleBlur();
-              },
-              iconSize: 20,
-              color: Colors.white,
-              icon: isBlurred
-                  ? Icon(Icons.visibility)
-                  : Icon(Icons.visibility_off))),
+              decoration:
+                  BoxDecoration(shape: BoxShape.circle, color: Colors.black),
+              child: IconButton(
+                  padding: EdgeInsets.all(5),
+                  constraints: BoxConstraints(),
+                  onPressed: () {
+                    if (timer != null && timer!.isActive) {
+                      setState(() {
+                        timer!.cancel();
+                        timer = null;
+                      });
+                    }
+                    if (isBlurred) {
+                      setState(() {
+                        timer = Timer(Duration(seconds: 2), () {
+                          if (!isBlurred) {
+                            toggleBlur();
+                          }
+                        });
+                      });
+                    }
+                    toggleBlur();
+                  },
+                  iconSize: 20,
+                  color: Colors.white,
+                  icon: isBlurred
+                      ? Icon(Icons.visibility)
+                      : Icon(Icons.visibility_off))),
         ]),
         SizedBox(
           height: 30,
         ),
-        GestureDetector(onHorizontalDragUpdate: (details) {}, child:
-        Container(width: 300, height: 300, child:
-        Stack(children: [
-        Signature(
-          controller: widget.controller,
-          width: 300,
-          height: 300,
-          backgroundColor: Color(0xFFF5F5F5),
-        ), Positioned(top:0, right:0, child:
-              TextButton(onPressed: () { widget.controller.clear();}, child: Text('CLEAN', style: TextStyle(color: Colors.black),), style: TextButton.styleFrom(
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: EdgeInsets.zero)))]))),
-          //IconButton(onPressed: () {widget.controller.clear();}, icon: Icon(Icons.refresh, color: Colors.black),))])),
+        GestureDetector(
+            onHorizontalDragUpdate: (details) {},
+            child: Container(
+                width: 300,
+                height: 300,
+                child: Stack(children: [
+                  Signature(
+                    controller: widget.controller,
+                    width: 300,
+                    height: 300,
+                    backgroundColor: Color(0xFFF5F5F5),
+                  ),
+                  Positioned(
+                      top: 0,
+                      right: 0,
+                      child: TextButton(
+                          onPressed: () {
+                            widget.controller.clear();
+                          },
+                          child: Text(
+                            'CLEAN',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          style: TextButton.styleFrom(
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              padding: EdgeInsets.zero)))
+                ]))),
+        //IconButton(onPressed: () {widget.controller.clear();}, icon: Icon(Icons.refresh, color: Colors.black),))])),
         SizedBox(
           height: 30,
         ),

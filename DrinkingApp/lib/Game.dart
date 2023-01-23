@@ -81,7 +81,41 @@ class _GameScreenState extends State<GameScreen> {
       itemBuilder: (BuildContext context, int index) {
         return Scaffold(
             backgroundColor: getColorForGameType(_swipeItems[index].content[1]),
-            body: Column(children: [
+            body: WillPopScope( onWillPop: () async {
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text("Finish game"),
+                  content:
+                  const Text("Are you sure you want to finish the game? We'll miss you :("),
+                  actions: <Widget>[
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                            ctx,
+                            MaterialPageRoute(
+                                builder: (context) => const EndGameView()),
+                                (Route<dynamic> route) => false,
+                          );
+                        },
+                        child: const Text("YES",
+                            style: TextStyle(color: Colors.red)),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                        },
+                        child: const Text("NO",
+                            style: TextStyle(color: Colors.green)),
+                      ),
+                    ])
+                  ],
+                ),
+              );
+              return false;
+            },
+            child: Column(children: [
               TopBar(
                   players: players,
                   questionsManager: questionsManager,
@@ -90,7 +124,7 @@ class _GameScreenState extends State<GameScreen> {
               BottomBar(
                   matchEngine: _matchEngine!,
                   questionType: _swipeItems[index].content[1])
-            ]));
+            ])));
       },
       onStackFinished: () {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
