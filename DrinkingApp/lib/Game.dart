@@ -47,11 +47,10 @@ class _GameScreenState extends State<GameScreen> {
 
   _GameScreenState({required this.questionsManager, required this.players});
 
-  @override
-  void initState() {
-    for (int i = 0; i < 50; i++) {
+  void addQuestions(){
+    for (int i = 0; i < 20; i++) {
       var question = questionsManager.getWidgetForQuestion(players, context);
-      SwipeItem si = SwipeItem(
+      _swipeItems.add(SwipeItem(
           content: [
             Content(
                 question: question,
@@ -66,10 +65,13 @@ class _GameScreenState extends State<GameScreen> {
           },
           onSlideUpdate: (SlideRegion? region) async {
             //print("Region $region");
-          });
-      _swipeItems.add(si);
+          }));
     }
+  }
 
+  @override
+  void initState() {
+    addQuestions();
     _matchEngine = MatchEngine(swipeItems: _swipeItems);
     super.initState();
   }
@@ -127,12 +129,20 @@ class _GameScreenState extends State<GameScreen> {
             ])));
       },
       onStackFinished: () {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Stack Finished"),
-          duration: Duration(milliseconds: 500),
-        ));
+        // setState(() {
+        //   addQuestions();
+        // });
+        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        //   content: Text("Stack Finished"),
+        //   duration: Duration(milliseconds: 500),
+        // ));
       },
       itemChanged: (SwipeItem item, int index) {
+        if (index % 19 == 0){
+          setState(() {
+            addQuestions();
+          });
+        }
         //print("item: ${item.content.text}, index: $index");
       },
       leftSwipeAllowed: true,
