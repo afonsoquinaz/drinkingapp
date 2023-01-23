@@ -10,6 +10,7 @@ import 'package:drinkingapp/GameModeSelection.dart';
 import 'package:drinkingapp/Question.dart';
 import 'package:drinkingapp/questionsManager/ChallangesWheel.dart';
 import 'package:drinkingapp/questionsManager/FeedManager.dart';
+import 'package:drinkingapp/questionsManager/RouletteWheel.dart';
 import 'package:drinkingapp/questionsManager/TakePictureScreen.dart';
 import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:flutter/services.dart' as rootBundle;
@@ -98,7 +99,12 @@ class QuestionsManager {
       // does not do basically nothing so I reduced the odd a lot
       this.currentQuestion = getNewQuestion(players);
       return currentQuestion;
-    } else if (doubleValue <= 0.6) {
+    } else if(doubleValue<= 0.5){
+      this.currentQuestion = getRouletteQuestion();
+      return currentQuestion;
+    }
+
+      else if (doubleValue <= 0.6) {
       this.currentQuestion = getMostLikelyTo(players);
       return currentQuestion;
     } else if (doubleValue <= 0.7) {
@@ -123,6 +129,8 @@ class QuestionsManager {
   int getRandomNumberOfGlasses() {
     return Random().nextInt(8) + 1;
   }
+
+
 
   Question getSignatureQuestion(List<UserClass> players) {
     pictureChallange.shuffle();
@@ -311,6 +319,22 @@ class QuestionsManager {
           feedManager.addNamesWheelPost(players[indexWinner]);
         },
         nbrGlasses: getRandomNumberOfGlasses());
+  }
+
+  Question getRouletteQuestion(){
+    Random random = new Random();
+    int indexWinner = random.nextInt(36);
+    RouletteWheel nm = new RouletteWheel(indexWinner: indexWinner);
+    //nm.createState().
+    //_NamesWheelS
+    return Question(
+        type: 'Roulette Wheel',
+        widget: nm,
+        complete: () {
+
+        },
+        nbrGlasses: getRandomNumberOfGlasses());
+
   }
 
   Question getMostLikelyTo(List<UserClass> players) {

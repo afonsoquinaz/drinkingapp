@@ -7,6 +7,7 @@ import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:drinkingapp/questionsManager/questionsManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:image_watermark/image_watermark.dart';
 
 // A screen that allows users to take a picture using a given camera.
 class TakePictureScreen extends StatefulWidget {
@@ -221,6 +222,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                           offset = (properties.width! - width) / 2;
                           File croppedFile = await FlutterNativeImage.cropImage(
                               image.path, offset.round(), 0, width, width);
+                          
                           questionsManager.addPhotoToFeed(croppedFile.path,
                               playersInPhoto, photoQuestionText);
                         } else if (Platform.isIOS) {
