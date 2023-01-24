@@ -39,17 +39,18 @@ class GameScreen extends StatefulWidget {
       _GameScreenState(questionsManager: questionsManager, players: players);
 }
 
-class _GameScreenState extends State<GameScreen> {
+class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
   final QuestionsManager questionsManager;
   final List<UserClass> players;
   List<SwipeItem> _swipeItems = <SwipeItem>[];
   MatchEngine? _matchEngine;
+  bool isBackground = false;
 
   _GameScreenState({required this.questionsManager, required this.players});
 
   void addQuestions(){
     for (int i = 0; i < 20; i++) {
-      var question = questionsManager.getWidgetForQuestion(players, context);
+      var question = questionsManager.getWidgetForQuestion(players, context, () => _matchEngine, () => isBackground);
       _swipeItems.add(SwipeItem(
           content: [
             Content(
@@ -71,9 +72,27 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     addQuestions();
     _matchEngine = MatchEngine(swipeItems: _swipeItems);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state){
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.inactive || state == AppLifecycleState.detached) return;
+
+    setState(() {
+      isBackground = state == AppLifecycleState.paused;
+    });
   }
 
   @override

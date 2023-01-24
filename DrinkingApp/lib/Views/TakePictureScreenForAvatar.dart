@@ -32,6 +32,20 @@ class TakePictureScreenForAvatarState
   bool isFlashOn = false;
   late int selectedCamera;
 
+  @override
+  void initState() {
+    selectedCamera = widget.cameras.length > 1 ? 1 : 0;
+    initializeCamera(selectedCamera);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Dispose of the controller when the widget is disposed.
+    _controller.dispose();
+    super.dispose();
+  }
+
   initializeCamera(int cameraIndex) async {
     if (cameraIndex == 1) {
       isFlashOn = false;
@@ -54,20 +68,6 @@ class TakePictureScreenForAvatarState
       _controller.setFlashMode(FlashMode.always);
     }
     isFlashOn = !isFlashOn;
-  }
-
-  @override
-  void initState() {
-    selectedCamera = widget.cameras.length > 1 ? 1 : 0;
-    initializeCamera(selectedCamera);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    // Dispose of the controller when the widget is disposed.
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
