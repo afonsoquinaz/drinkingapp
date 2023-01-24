@@ -222,7 +222,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                           offset = (properties.width! - width) / 2;
                           File croppedFile = await FlutterNativeImage.cropImage(
                               image.path, offset.round(), 0, width, width);
-                          
+
                           questionsManager.addPhotoToFeed(croppedFile.path,
                               playersInPhoto, photoQuestionText);
                         } else if (Platform.isIOS) {
