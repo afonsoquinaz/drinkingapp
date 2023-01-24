@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:io' show Platform;
 import 'package:camera/camera.dart';
 import 'package:drinkingapp/Game.dart';
+import 'package:drinkingapp/Views/CountdownTimer.dart';
 import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:drinkingapp/questionsManager/questionsManager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 
 // A screen that allows users to take a picture using a given camera.
@@ -17,6 +18,7 @@ class TakePictureScreen extends StatefulWidget {
     required this.questionsManager,
     required this.players,
     required this.playersInPhoto,
+    required this.onAcceptPic,
   });
 
   final String photoQuestionText;
@@ -24,6 +26,7 @@ class TakePictureScreen extends StatefulWidget {
   final List<UserClass> players;
   final List<CameraDescription> cameras;
   final QuestionsManager questionsManager;
+  final void Function() onAcceptPic;
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState(
@@ -40,8 +43,11 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   final List<UserClass> players;
   final QuestionsManager questionsManager;
   final String photoQuestionText;
+  Timer? countdownTimer;
+  Duration myDuration = Duration(minutes: 1, seconds: 30);
   int selectedCamera = 0;
   bool isFlashOn = false;
+  String? picPath;
 
   TakePictureScreenState(
       {required this.questionsManager,
@@ -49,10 +55,26 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       required this.playersInPhoto,
       required this.photoQuestionText});
 
+  @override
+  void initState() {
+    initializeCamera(selectedCamera);
+    startTimer();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Dispose of the controller when the widget is disposed.
+    _controller.dispose();
+    countdownTimer?.cancel();
+    super.dispose();
+  }
+
   initializeCamera(int cameraIndex) async {
     if (cameraIndex == 1) {
       isFlashOn = false;
     }
+
     _controller = CameraController(
       // Get a specific camera from the list of available cameras.
       widget.cameras[cameraIndex],
@@ -62,6 +84,14 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
     // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
+
+    await _initializeControllerFuture;
+
+    if (isFlashOn) {
+      _controller.setFlashMode(FlashMode.always);
+    } else {
+      _controller.setFlashMode(FlashMode.off);
+    }
   }
 
   toggleFlash() async {
@@ -73,23 +103,28 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     isFlashOn = !isFlashOn;
   }
 
-  @override
-  void initState() {
-    initializeCamera(selectedCamera);
-    super.initState();
+  void startTimer() {
+    countdownTimer =
+        Timer.periodic(Duration(seconds: 1), (_) => setCountDown());
   }
 
-  @override
-  void dispose() {
-    // Dispose of the controller when the widget is disposed.
-    _controller.dispose();
-    super.dispose();
+  void setCountDown() {
+    final reduceSecondsBy = 1;
+    setState(() {
+      final seconds = myDuration.inSeconds - reduceSecondsBy;
+      if (seconds < 0) {
+        Navigator.popUntil(context, ModalRoute.withName('PicQuestion'));
+        Navigator.pop(context);
+        countdownTimer!.cancel();
+      } else {
+        myDuration = Duration(seconds: seconds);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
-
     return Scaffold(
       backgroundColor: Colors.black,
       body: Column(
@@ -100,6 +135,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
               SizedBox(
                 height: 35,
               ),
+              CountdownTimer(myDuration: myDuration),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -136,170 +172,218 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             ],
           ),
           //SizedBox(width: 100,),
-          Container(
-              width: size,
-              height: size,
-              child: ClipRect(
-                  child: OverflowBox(
-                      alignment: Alignment.center,
-                      child: FittedBox(
-                          fit: BoxFit.cover,
-                          child: SizedBox(
-                              height: 1,
-                              child: FutureBuilder<void>(
-                                future: _initializeControllerFuture,
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.done) {
-                                    return AspectRatio(
-                                        aspectRatio:
-                                            1 / _controller.value.aspectRatio,
-                                        child: CameraPreview(_controller));
-                                  } else {
-                                    // Otherwise, display a loading indicator.
-                                    return const Center(
-                                        child: CircularProgressIndicator());
-                                  }
-                                },
-                              )))))),
+          picPath != null
+              ? Container(
+                  width: size,
+                  height: size,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                      image: DecorationImage(
+                    image: Image.file(File(picPath!)).image,
+                    fit: BoxFit.fill,
+                  )),
+                )
+              : Container(
+                  width: size,
+                  height: size,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: OverflowBox(
+                          alignment: Alignment.center,
+                          child: FittedBox(
+                              fit: BoxFit.cover,
+                              child: SizedBox(
+                                  height: 1,
+                                  child: FutureBuilder<void>(
+                                    future: _initializeControllerFuture,
+                                    builder: (context, snapshot) {
+
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        return AspectRatio(
+                                            aspectRatio: 1 /
+                                                _controller.value.aspectRatio,
+                                            child: CameraPreview(_controller));
+                                      } else {
+                                        // Otherwise, display a loading indicator.
+                                        return const Center(
+                                            child: CircularProgressIndicator());
+                                      }
+                                    },
+                                  )))))),
           SizedBox(
             height: 10,
           ),
-
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(),
-                  FloatingActionButton(
-                    backgroundColor: Colors.black,
-                    // Provide an onPressed callback.
-                    onPressed: () {
-                      if (selectedCamera == 0) {
-                        setState(() {
-                          toggleFlash();
-                        });
-                      }
-                      else{
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text("Can't turn flash on while on selfie mode"),
-                          duration: const Duration(seconds: 2),
-                        ));
-                      }
-                    },
-                    child: isFlashOn ? const Icon(Icons.flash_on, size: 35) : Icon(Icons.flash_off, size: 35, color: selectedCamera==0 ? Colors.white : Colors.grey.shade500,),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      // Take the Picture in a try / catch block. If anything goes wrong,
-                      // catch the error.
-                      try {
-                        // Ensure that the camera is initialized.
-                        await _initializeControllerFuture;
-
-                        // Attempt to take a picture and get the file `image`
-                        // where it was saved.
-
-                        final image = await _controller.takePicture();
-                        if (!mounted) return;
-
-                        ImageProperties properties =
-                            await FlutterNativeImage.getImageProperties(
-                                image.path);
-
-                        int width = properties.height!;
-
-                        print(properties.height!);
-                        print(properties.width!);
-                        var offset = (properties.width! - width) / 2;
-
-                        if (Platform.isAndroid) {
-                          // Android-specific code
-                          print("it is ANDROID");
-                          width = properties.height!;
-                          offset = (properties.width! - width) / 2;
-                          File croppedFile = await FlutterNativeImage.cropImage(
-                              image.path, offset.round(), 0, width, width);
-                          questionsManager.addPhotoToFeed(croppedFile.path,
-                              playersInPhoto, photoQuestionText);
-                        } else if (Platform.isIOS) {
-                          print("it is iphone");
-                          // iOS-specific code
-                          width = properties.width!;
-                          offset = (properties.height! - width) / 2;
-                          File croppedFile = await FlutterNativeImage.cropImage(
-                              image.path, 0, offset.round(), width, width);
-                          questionsManager.addPhotoToFeed(croppedFile.path,
-                              playersInPhoto, photoQuestionText);
-                        }
-
-                        //questionsManager.addPhotoToFeed(image.path);
-
-                        if (!mounted) return;
-                        await Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                              builder: (context) => Game(
-                                  players: players,
-                                  questionsManager: questionsManager)),
-                          (Route<dynamic> route) => false,
-                        );
-                      } catch (e) {
-                        // If an error occurs, log the error to the console.
-                        print(e);
-                      }
-                    },
-                    child: Column(
+          picPath != null
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          widget.questionsManager.addPhotoToFeed(
+                              picPath!, widget.playersInPhoto, widget.photoQuestionText);
+                          Navigator.pop(context);
+                          widget.onAcceptPic();
+                        },
+                        child: Text("ACCEPT")),
+                    TextButton(
+                        onPressed: () {
+                          setState(() {
+                            picPath = null;
+                            initializeCamera(selectedCamera);
+                          });
+                        },
+                        child: Text("RETAKE")),
+                  ],
+                )
+              : Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.circle,
-                              size: 100,
-                              color: Colors.white,
-                            ),
-                          ],
+                        SizedBox(),
+                        FloatingActionButton(
+                          heroTag: null,
+                          backgroundColor: Colors.black,
+                          // Provide an onPressed callback.
+                          onPressed: () {
+                            if (selectedCamera == 0) {
+                              setState(() {
+                                toggleFlash();
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text(
+                                    "Can't turn flash on while on selfie mode"),
+                                duration: const Duration(seconds: 2),
+                              ));
+                            }
+                          },
+                          child: isFlashOn
+                              ? const Icon(Icons.flash_on, size: 35)
+                              : Icon(
+                                  Icons.flash_off,
+                                  size: 35,
+                                  color: selectedCamera == 0
+                                      ? Colors.white
+                                      : Colors.grey.shade500,
+                                ),
                         ),
-                        SizedBox(
-                          height: 50,
-                        )
+                        GestureDetector(
+                          onTap: () async {
+                            // Take the Picture in a try / catch block. If anything goes wrong,
+                            // catch the error.
+                            try {
+                              // Ensure that the camera is initialized.
+                              await _initializeControllerFuture;
+
+                              // Attempt to take a picture and get the file `image`
+                              // where it was saved.
+
+                              final image = await _controller.takePicture();
+                              if (!mounted) return;
+
+                              ImageProperties properties =
+                                  await FlutterNativeImage.getImageProperties(
+                                      image.path);
+
+                              int width = properties.height!;
+
+                              var offset = (properties.width! - width) / 2;
+
+                              File? croppedFile;
+
+                              if (Platform.isAndroid) {
+                                // Android-specific code
+                                print("it is ANDROID");
+                                width = properties.height!;
+                                offset = (properties.width! - width) / 2;
+                                croppedFile =
+                                    await FlutterNativeImage.cropImage(
+                                        image.path,
+                                        offset.round(),
+                                        0,
+                                        width,
+                                        width);
+                                // questionsManager.addPhotoToFeed(croppedFile.path,
+                                //     playersInPhoto, photoQuestionText);
+                              } else if (Platform.isIOS) {
+                                print("it is iphone");
+                                // iOS-specific code
+                                width = properties.width!;
+                                offset = (properties.height! - width) / 2;
+                                croppedFile =
+                                    await FlutterNativeImage.cropImage(
+                                        image.path,
+                                        0,
+                                        offset.round(),
+                                        width,
+                                        width);
+                              }
+
+                              if (!mounted) return;
+                              setState(() {
+                                picPath = croppedFile!.path;
+                                _controller.dispose();
+                              });
+                            } catch (e) {
+                              // If an error occurs, log the error to the console.
+                              print(e);
+                            }
+                          },
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.circle,
+                                    size: 100,
+                                    color: Colors.white,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 50,
+                              )
+                            ],
+                          ),
+                        ),
+                        FloatingActionButton(
+                          backgroundColor: Colors.black,
+                          // Provide an onPressed callback.
+                          onPressed: () {
+                            if (widget.cameras.length > 1) {
+                              setState(() {
+                                selectedCamera =
+                                    selectedCamera == 0 ? 1 : 0; //Switch camera
+                                initializeCamera(selectedCamera);
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text('No secondary camera found'),
+                                duration: const Duration(seconds: 2),
+                              ));
+                            }
+                          },
+                          child: const Icon(
+                            Icons.flip_camera_ios,
+                            size: 45,
+                          ),
+                        ),
+                        SizedBox()
                       ],
                     ),
-                  ),
-                  FloatingActionButton(
-                    backgroundColor: Colors.black,
-                    // Provide an onPressed callback.
-                    onPressed: () {
-                      if (widget.cameras.length > 1) {
-                        setState(() {
-                          selectedCamera =
-                              selectedCamera == 0 ? 1 : 0; //Switch camera
-                          initializeCamera(selectedCamera);
-                        });
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('No secondary camera found'),
-                          duration: const Duration(seconds: 2),
-                        ));
-                      }
-                    },
-                    child: const Icon(
-                      Icons.flip_camera_ios,
-                      size: 45,
+                    Text(
+                      "Tap for photo",
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white.withOpacity(0.5),
+                          fontWeight: FontWeight.w200),
                     ),
-                  ),
-                  SizedBox()
-                ],
-              ),
-              Text(
-                "Tap for photo",
-                style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white.withOpacity(0.5),
-                    fontWeight: FontWeight.w200),
-              ),
-            ],
-          ),
+                  ],
+                ),
           SizedBox()
         ],
       ),
@@ -326,22 +410,5 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       //_showCameraException(e);
       rethrow;
     }
-  }
-}
-
-// A widget that displays the picture taken by the user.
-class DisplayPictureScreen extends StatelessWidget {
-  final String imagePath;
-
-  const DisplayPictureScreen({super.key, required this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Display the Picture')),
-      // The image is stored as a file on the device. Use the `Image.file`
-      // constructor with the given path to display the image.
-      body: Image.file(File(imagePath)),
-    );
   }
 }

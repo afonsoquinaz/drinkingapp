@@ -49,7 +49,7 @@ class _GameScreenState extends State<GameScreen> {
 
   void addQuestions(){
     for (int i = 0; i < 20; i++) {
-      var question = questionsManager.getWidgetForQuestion(players, context);
+      var question = questionsManager.getWidgetForQuestion(players, context, () => _matchEngine);
       _swipeItems.add(SwipeItem(
           content: [
             Content(

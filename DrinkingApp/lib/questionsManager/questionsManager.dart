@@ -18,6 +18,7 @@ import 'package:flutter_lorem/flutter_lorem.dart';
 import 'package:flutter/material.dart';
 import 'package:group_button/group_button.dart';
 import 'package:signature/signature.dart';
+import 'package:swipe_cards/swipe_cards.dart';
 
 import 'NamesWheel.dart';
 
@@ -88,7 +89,7 @@ class QuestionsManager {
     return currentQuestion;
   }
 
-  Question getWidgetForQuestion(List<UserClass> players, context) {
+  Question getWidgetForQuestion(List<UserClass> players, context, MatchEngine? Function() getMatchEngine) {
     var doubleValue = Random().nextDouble();
     if (doubleValue <= 0.2) {
       this.currentQuestion = getWheelOfNames(players);
@@ -105,7 +106,7 @@ class QuestionsManager {
       this.currentQuestion = getSignatureQuestion(players);
       return currentQuestion;
     } else if (doubleValue <= 0.8) {
-      this.currentQuestion = getPhotoQuestion(players, context);
+      this.currentQuestion = getPhotoQuestion(players, context, getMatchEngine);
       return currentQuestion;
     } else if (doubleValue <= 0.9) {
       this.currentQuestion = getWheelOfChallanges(players);
@@ -165,7 +166,7 @@ class QuestionsManager {
         nbrGlasses: getRandomNumberOfGlasses());
   }
 
-  Question getPhotoQuestion(List<UserClass> players, context) {
+  Question getPhotoQuestion(List<UserClass> players, context, MatchEngine? Function() getMatchEngine) {
     photoQuestions.shuffle();
 
     int player = Random().nextInt(players.length);
@@ -202,12 +203,14 @@ class QuestionsManager {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
+                      settings: RouteSettings(name: "PicQuestion"),
                         builder: (context) => TakePictureScreen(
                               cameras: cameras,
                               questionsManager: this,
                               players: players,
                               playersInPhoto: playersForPhoto,
                               photoQuestionText: photoQuestions.first,
+                              onAcceptPic: () => getMatchEngine()?.currentItem?.nope()
                             )));
               },
               child: Container(
