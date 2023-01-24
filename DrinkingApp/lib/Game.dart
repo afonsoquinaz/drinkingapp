@@ -4,6 +4,7 @@ import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 import 'package:drinkingapp/questionsManager/questionsManager.dart';
+import 'Constants/WhoDrinksText.dart';
 import 'Views/EndGameView.dart';
 import 'Views/GameFeedView.dart';
 import 'package:swipe_cards/swipe_cards.dart';
@@ -319,12 +320,15 @@ class Content extends StatelessWidget {
         SizedBox(),
         Column(
           children: [
-            Text(
-              "The winner drinks " + question.nbrGlasses.toString() + " sips",
-              style: TextStyle(
-                  color:
-                      getTextColorForGameType(question.type).withOpacity(0.7)),
-            ),
+            Text(getTextForGameType(question.type).toString(),  style: TextStyle(
+        color:
+        getTextColorForGameType(question.type).withOpacity(0.7))),
+            //Text(
+            //  "The winner drinks " + question.nbrGlasses.toString() + " sips",
+            //  style: TextStyle(
+            //      color:
+            //          getTextColorForGameType(question.type).withOpacity(0.7)),
+            //),
             SizedBox(
               height: 10,
             ),

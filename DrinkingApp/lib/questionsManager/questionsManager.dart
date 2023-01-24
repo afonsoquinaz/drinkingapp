@@ -83,7 +83,11 @@ class QuestionsManager {
     "Who is most likely to watch porn?"
   ];
 
-  final List<String> challenges = ["The best to imitate a dog wins."];
+  final List<String> challenges = [
+    "The best to imitate a dog wins.",
+    "First to flush a toilet wins.",
+    "First to give 5 laps to the table wins ",
+  ];
   late Question currentQuestion =
       Question(type: "first", widget: Container(), nbrGlasses: 0);
   Question getCurrentQuestion() {
