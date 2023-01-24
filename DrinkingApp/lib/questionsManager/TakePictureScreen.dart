@@ -8,6 +8,7 @@ import 'package:drinkingapp/questionsManager/questionsManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image_watermark/image_watermark.dart';
+import 'package:vibration/vibration.dart';
 
 // A screen that allows users to take a picture using a given camera.s
 class TakePictureScreen extends StatefulWidget {
@@ -18,7 +19,7 @@ class TakePictureScreen extends StatefulWidget {
     required this.questionsManager,
     required this.players,
     required this.playersInPhoto,
-    required this.onAcceptPic,
+    required this.onAcceptPic, required this.isAppOnBackground,
   });
 
   final String photoQuestionText;
@@ -27,6 +28,7 @@ class TakePictureScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
   final QuestionsManager questionsManager;
   final void Function() onAcceptPic;
+  final bool Function() isAppOnBackground;
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState(
@@ -44,7 +46,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   final QuestionsManager questionsManager;
   final String photoQuestionText;
   Timer? countdownTimer;
-  Duration myDuration = Duration(minutes: 1, seconds: 30);
+  Duration myDuration = Duration(minutes: 0, seconds: 40);
   int selectedCamera = 0;
   bool isFlashOn = false;
   String? picPath;
@@ -117,6 +119,17 @@ class TakePictureScreenState extends State<TakePictureScreen> {
         Navigator.pop(context);
         countdownTimer!.cancel();
       } else {
+        vibrate() async {
+          if (myDuration.inMinutes < 1 && seconds <= 30) {
+            bool? canVibrate = await Vibration.hasVibrator();
+            if (canVibrate != null && canVibrate) {
+              Vibration.vibrate(duration: 30);
+            }
+          }
+        }
+        if (!widget.isAppOnBackground()) {
+          vibrate();
+        }
         myDuration = Duration(seconds: seconds);
       }
     });
@@ -177,11 +190,11 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                   width: size,
                   height: size,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
+                      borderRadius: BorderRadius.circular(15.0),
                       image: DecorationImage(
-                    image: Image.file(File(picPath!)).image,
-                    fit: BoxFit.fill,
-                  )),
+                        image: Image.file(File(picPath!)).image,
+                        fit: BoxFit.fill,
+                      )),
                 )
               : Container(
                   width: size,
@@ -197,7 +210,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                                   child: FutureBuilder<void>(
                                     future: _initializeControllerFuture,
                                     builder: (context, snapshot) {
-
                                       if (snapshot.connectionState ==
                                           ConnectionState.done) {
                                         return AspectRatio(
@@ -220,14 +232,14 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                   children: [
                     TextButton(
                         onPressed: () {
-                          widget.questionsManager.addPhotoToFeed(
-                              picPath!, widget.playersInPhoto, widget.photoQuestionText);
+                          widget.questionsManager.addPhotoToFeed(picPath!,
+                              widget.playersInPhoto, widget.photoQuestionText);
                           Navigator.pop(context);
                           widget.onAcceptPic();
                         },
                         child: Text("ACCEPT")),
                     TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           setState(() {
                             picPath = null;
                             initializeCamera(selectedCamera);
@@ -236,11 +248,10 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                         child: Text("RETAKE")),
                   ],
                 )
-              :
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              : Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         SizedBox(),
                         FloatingActionButton(

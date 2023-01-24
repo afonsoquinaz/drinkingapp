@@ -90,7 +90,7 @@ class QuestionsManager {
     return currentQuestion;
   }
 
-  Question getWidgetForQuestion(List<UserClass> players, context, MatchEngine? Function() getMatchEngine) {
+  Question getWidgetForQuestion(List<UserClass> players, context, MatchEngine? Function() getMatchEngine, bool Function() isAppOnBackground) {
     var doubleValue = Random().nextDouble();
     if (doubleValue <= 0.2) {
       this.currentQuestion = getWheelOfNames(players);
@@ -112,7 +112,7 @@ class QuestionsManager {
       this.currentQuestion = getSignatureQuestion(players);
       return currentQuestion;
     } else if (doubleValue <= 0.8) {
-      this.currentQuestion = getPhotoQuestion(players, context, getMatchEngine);
+      this.currentQuestion = getPhotoQuestion(players, context, getMatchEngine, isAppOnBackground);
       return currentQuestion;
     } else if (doubleValue <= 0.9) {
       this.currentQuestion = getWheelOfChallanges(players);
@@ -174,7 +174,7 @@ class QuestionsManager {
         nbrGlasses: getRandomNumberOfGlasses());
   }
 
-  Question getPhotoQuestion(List<UserClass> players, context, MatchEngine? Function() getMatchEngine) {
+  Question getPhotoQuestion(List<UserClass> players, context, MatchEngine? Function() getMatchEngine, bool Function() isAppOnBackground) {
     photoQuestions.shuffle();
 
     int player = Random().nextInt(players.length);
@@ -218,7 +218,8 @@ class QuestionsManager {
                               players: players,
                               playersInPhoto: playersForPhoto,
                               photoQuestionText: photoQuestions.first,
-                              onAcceptPic: () => getMatchEngine()?.currentItem?.nope()
+                              onAcceptPic: () => getMatchEngine()?.currentItem?.nope(),
+                              isAppOnBackground: isAppOnBackground,
                             )));
               },
               child: Container(
