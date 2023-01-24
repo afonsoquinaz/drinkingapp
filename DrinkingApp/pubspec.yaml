@@ -41,6 +41,8 @@ dependencies:
   group_button: ^5.2.2
   signature: ^5.3.0
   swipe_cards: ^2.0.0+1
+  drag_and_drop_lists: ^0.3.3
+  image_watermark: ^0.0.5
 
 dev_dependencies:
   flutter_test:

@@ -6,10 +6,10 @@ import 'package:drinkingapp/Views/CountdownTimer.dart';
 import 'package:drinkingapp/questionsManager/UserClass.dart';
 import 'package:drinkingapp/questionsManager/questionsManager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:image_watermark/image_watermark.dart';
 
-// A screen that allows users to take a picture using a given camera.
+// A screen that allows users to take a picture using a given camera.s
 class TakePictureScreen extends StatefulWidget {
   const TakePictureScreen({
     super.key,
@@ -236,10 +236,11 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                         child: Text("RETAKE")),
                   ],
                 )
-              : Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+              :
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         SizedBox(),
                         FloatingActionButton(
