@@ -44,6 +44,60 @@ class QuestionsManager {
     "Draw a shoe!"
   ];
 
+  final List<String> normalChallange = [
+    "Who has a tattoo drinks.",
+    "The last person to finish their drink drinks again.",
+    "Who has the same astrological sign drinks.",
+    "Everyone who has been skydiving drinks.",
+    "Who has a pet drinks.",
+    "The shortest person drinks.",
+    "Everyone who has been on a roller coaster drinks.",
+    "Who has a sibling drinks.",
+    "The person who has been to the most countries drinks.",
+    "Everyone who has been bungee jumping drinks.",
+    "Who has a phobia drinks.",
+    "The person who has the most tattoos drinks.",
+    "Everyone who has been scuba diving drinks.",
+    "Who has a unique talent drinks.",
+    "The person who has the most piercings drinks.",
+    "Everyone who has been snowboarding drinks.",
+    "Who has been to a concert in the past month drinks.",
+    "The person who has been to the most concerts drinks.",
+    "Everyone who has been to a professional sporting event drinks.",
+    "Who has a favorite sports team drinks.",
+    "The person who can name the most countries drinks.",
+    "Everyone who has been camping drinks.",
+    "Who has a fear of public speaking drinks.",
+    "The person who has the most colorful outfit drinks.",
+    "Everyone who has been to a music festival drinks.",
+    "Who has a favorite type of cuisine drinks.",
+    "The person who has the most books in their personal library drinks.",
+    "Everyone who has been to a theme park drinks.",
+    "Who has a favorite movie drinks.",
+    "The person who has seen the most movies drinks.",
+    "Everyone who has been to a beach drinks.",
+    "Who has a favorite TV show drinks.",
+    "The person who has seen the most TV shows drinks.",
+    "Everyone who has been to a spa drinks.",
+    "Who has a favorite video game drinks.",
+    "The person who has played the most video games drinks.",
+    "Everyone who has been to a water park drinks.",
+    "Who has a favorite type of music drinks.",
+    "The person who has listened to the most hours of music drinks.",
+    "Everyone who has been to an amusement park drinks.",
+    "Who has a favorite hobby drinks.",
+    "The person who has the most unique hobby drinks.",
+    "Everyone who has been to a museum drinks.",
+    "Who has a favorite type of art drinks.",
+    "The person who has seen the most art drinks.",
+    "Everyone who has been to a zoo drinks.",
+    "Who has a favorite type of animal drinks.",
+    "The person who has seen the most animals drinks.",
+    "Everyone who has been to an aquarium drinks.",
+    "Who has a favorite type of fish drinks."
+  ];
+
+
   final List<String> photoQuestions = [
     "Take a photo holding the most random Item of the house!",
     "Take a photo giving a Toast!",
@@ -280,12 +334,13 @@ class QuestionsManager {
   }
 
   Question getNewQuestion(List<UserClass> players) {
+    normalChallange.shuffle();
     GroupButton buttons = GroupButton(
         players: players, selected: List<bool>.filled(players.length, false));
     return Question(
       type: 'Normal Challenge',
       widget: Column(children: [
-        Text(lorem(paragraphs: 1, words: 10),
+        Text(normalChallange[0],
             textAlign: TextAlign.center,
             style: TextStyle(
                 fontSize: 22,

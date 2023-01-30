@@ -13,12 +13,18 @@ Color getColorForGameType(String gameType){
     //return(Color.fromARGB(255, 50, 117, 167));
   else if(gameType == "Fortune Wheel")
     return(Color.fromARGB(255, 30, 30, 30));
+  else if(gameType == "Roulette Wheel")
+    return(Color(0xFFF7ECE1));
+  else if(gameType == "Draw Challenge")
+    return(Color(0xFF7DE2D1));
+  else if(gameType == "Challanges Wheel")
+    return(Color(0xFF19535F));
 
   return(Color.fromARGB(255, 83, 204, 147));
 }
 
 Color getTextColorForGameType(String gameType){
-  if(gameType == "Fortune Wheel" || gameType == "1 vs 1")
+  if(gameType == "Fortune Wheel" || gameType == "1 vs 1" || gameType == "Challanges Wheel")
     return(Color.fromARGB(255, 255, 255, 255));
   else
     return(Color.fromARGB(255, 0, 0, 0));
